@@ -1,0 +1,17 @@
+disabled = false
+languageCode = "en"
+languageName = "English"
+weight = 1
+title = "Fadlan Abduh"
+
+[params]
+displayName = "EN"
+isoCode = "en"
+rtl = false
+dateFormat = "2 January 2006"
+description = "Web dev gone low-level"
+
+["params.author"]
+name = "Fadlan Abduh"
+headline = "I'm only human... or am I?"
+bio = "Overriding high-level code to master physical reality. Web dev gone deviant."
