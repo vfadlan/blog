@@ -4,6 +4,8 @@ draft: false
 params:
   author: Fadlan Abduh
 title: Hello, Bare Metal AVR.
+series: ["AVR"]
+series_order: 0
 ---
 
 ![ATMega328P SMD](/assets/img/harrison-19YCOjHosDk-unsplash.jpg)
