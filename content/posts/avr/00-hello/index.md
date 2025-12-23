@@ -80,13 +80,13 @@ _Pict 3: ATMega328P 28 pin DIP Pinout. Source: ATMega328P Datasheet._
 
 ## Bitwise Operators
 
-To handle all these bit-by-bit operations you I had to equip myself with the right tool: bit-wise operators. This operator simply gives me bit-wise manipulation technique:
+To handle all these bit-by-bit operations I had to equip myself with the right tool: bit-wise operators. This operator simply gives me bit-wise manipulation technique:
 * Clearing a bit on a register
 * Setting a bit 
 * Rotating a bit
 * Extracting a bit from registers
 * Reversing
-* Many other operators
+* Many other operations
 
 ## Input
 There are many ways to receive an input signal. You can receive it from some communication channel, sensor, or a simpler one, like a switch button and a potentiometer.
@@ -96,7 +96,7 @@ For handling digital input, it’s quite easy. What we do is the opposite of sen
 But an analog signal is slightly more complicated than that. There are some registers that you should take care of: DDRx, PORTx, PINx, ADMUX, ADCSRA. And, if you manage to start the ADC process, the output will be stored in two separate registers, ADCL and ADCH. They’re separated because ATMega328P have 10 bits ADC, while a register can only store up to 8 bits.
 
 ## First Project: Morse Code
-I have done some easy things that I have done with this thing. But I wouldn’t call them projects; exercise is the perfect description for that.
+I have done some easy things with this low-level stuff. But I wouldn’t call them projects; exercise is the perfect description for that.
 
 My first project is to encode a string into visible and audible Morse code (LEDs and buzzer). The code and schematics are available on my repo, see below. You can watch it on YouTube if you want:
 
@@ -110,16 +110,16 @@ Just like any other system, I would like to tell you how it works from input, pr
   2. ADC. This process will start right after the pull-down switch is triggered. The output will be stored in an int and converted to a string. Later on, it will be sent to the output.
 * The output. There are two types of Morse code that will be sent by this program:
   1. “Hello World”
-  2. The value of that analog input ranges from 0 to 1023.  
+  2. The value of that analog input ranges from 0 (represents 0v) to 1023 (represents 5v).  
 
-	For the ‘how’ Morse code is being sent, tsomehere are three LEDs (RGB) and a buzzer. Like I said, visible and audible. Each one indicates a different meaning:
-  * Red LED blink briefly = dot.
+	For the ‘how’ Morse code is being sent, there are three LEDs (RGB) and a buzzer. Like I said, visible and audible. Each one indicates a different meaning:
+  * Red LED blinks briefly = dot.
   * Green LED blinks shortly = dash.
   * Blue LED = separation. Separate words or indicate the starting point.
 
 ## Conclusion
 
-The shift from high-level to low-level gives me some kind of reward that I can't explain simply by mere words. I'll try.
+The shift from high-level to low-level gives me some kind of reward that I can't explain by mere words. I'll try.
 
 It gives me a broader yet deeper picture of how things work on a system. Stripping down the abstractions somehow makes me appreciate more about the everyday device around me. How such a simple thing has been engineered multiple times through trials and errors.
 
