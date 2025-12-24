@@ -211,7 +211,7 @@
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "1378"
+    "wordCount": "1347"
   }]
   </script>
 
@@ -554,7 +554,7 @@
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2025-12-22T15:24:54&#43;07:00">22 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>1378 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">7 mins</span>
+      <time datetime="2025-12-22T15:24:54&#43;07:00">22 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>1347 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">7 mins</span>
     
 
     
@@ -660,9 +660,8 @@
     alt="ATMega328P SMD"
     src="/assets/img/harrison-19YCOjHosDk-unsplash.jpg"
     ></figure>
-<p>For the past few months, I’ve been dabbling in some low-level programming. I&rsquo;ve been focusing on languages like C; which some might argue isn&rsquo;t &ldquo;true&rdquo; low-level, but it feels that way to me. Since late October, I’ve been reading <em>The C Programming Language</em> (Second Edition) by Kernighan &amp; Ritchie. That book is the &ldquo;Holy Bible&rdquo; of C; it packs all the essential knowledge into less than 300 pages, whereas most technical books take more than 400. In late November, I also started working with bare-metal AVR.</p>
-<p>In this series of blog (yes, you read that right, series), I will share my journey of diving to the low-level version of Arduino.</p>
-<p>P.S. Please do note that this is just a technical blog, and not a tutorial. I&rsquo;ll share some things that I recently find out and a few technical details. If you&rsquo;re looking for a tutorial, look somewhere else. I don&rsquo;t want to waste your time.</p>
+<p>For the past few months, I’ve been dabbling in some low-level programming. Was focused with the C language. <em>The C Programming Language</em> (Second Edition) by Kernighan &amp; Ritchie is my reference and guide book. That book is the &ldquo;Holy Bible&rdquo; of C; it packs all the essential knowledge into less than 300 pages, whereas most technical books take more than 400. Later on, at late November, I also started working with bare-metal AVR.</p>
+<p>This series documents my journey diving into low-level version of Arduino (ATMega328P).</p>
 
 <h2 class="relative group">Bare Metal AVR
     <div id="bare-metal-avr" class="anchor"></div>
@@ -673,8 +672,8 @@
     </span>
     
 </h2>
-<p>What is it? Bare Metal means running software directly on physical computer hardware without an excessive abstraction layer. AVR is a computer architecture for ATmega and ATTiny microcontrollers. The MCU that I use is the ATMega328P, the one from the Arduino UNO Development Board.</p>
-<p>I simply unplugged that chip from the Arduino Dev Board and ran my code directly on that chip. The ATMega328P can be programmed using a programmer, which is a device that uploads machine code to the chip using some cables.</p>
+<p>What is it? Bare Metal means running software directly on physical computer hardware without an excessive abstraction layer. AVR is a computer architecture for ATmega and ATTiny microcontrollers. The MCU that I use is the ATMega328P, the one used by the Arduino UNO Development Board.</p>
+<p>I simply unplugged that chip from the Arduino Dev Board and ran my code directly on that chip. The ATMega328P can be programmed using a programmer, which is quite of a hurdle to do.</p>
 <figure><img
     class="my-0 rounded-md"
     loading="lazy"
@@ -693,7 +692,7 @@
     src="/assets/img/328ppinout.png"
     ></figure>
 
-<em>Pict. 2: ATMega328P 28 pin DIP Pinout. Blue-highlighted text is connected to USBASP pinouts.</em></p>
+<em>Pict. 2: ATMega328P 28 pin DIP Pinout. Blue-highlighted text is connected to USBASP pinouts using jumper wires.</em></p>
 
 <h2 class="relative group">Arduino Works Perfectly Fine, Why All These Hurdles?
     <div id="arduino-works-perfectly-fine-why-all-these-hurdles" class="anchor"></div>
@@ -705,7 +704,7 @@
     
 </h2>
 <p>Well, first things first, the Arduino Development Board is a quick prototyping board that speeds up development. That’s why you’ll never see any device in the big electronic market that uses the Arduino Dev Board. It’s meant for development, not production.</p>
-<p>Arduino is based on a Microcontroller Unit (MCU), which is the ATMega328P. There are tons of MCU families out there; STM32, PIC, MSP, Renesas, and AVR are the most commonly used MCUs in the market.</p>
+<p>Arduino run upon an Microcontroller Unit (MCU), which is the ATMega328P. There are tons of MCU families out there; STM32, PIC, MSP, Renesas, and AVR are the most commonly used MCUs in the market.</p>
 <p>Second, it runs faster. By stripping off the Arduino abstractions, we can write a plain C program and flash it to the chip. Here’s a comparison between Arduino .ino code and its C equivalent:<br>
 The Arduino Code:</p>
 <pre tabindex="0"><code>void setup() {
@@ -722,7 +721,7 @@ void loop() {
 		// the code that loops forever
 	}
 }
-</code></pre><p>You see, Arduino is just an abstraction layer. Which is good if you want high portability and fast prototyping. But the abstraction is heavy, which costs you performance.<br>
+</code></pre><p>You see, Arduino is just an abstraction layer. Which is good if you want high portability and fast prototyping. But the abstraction itself is slow in terms of performance.<br>
 It won&rsquo;t matter if you just blink an LED every one second, but if you&rsquo;re doing something that requires you to have precise timing, even a millisecond matters.</p>
 <p>Those two are my reasons. The third is my motive: to challenge myself.</p>
 
@@ -735,7 +734,7 @@ It won&rsquo;t matter if you just blink an LED every one second, but if you&rsqu
     </span>
     
 </h2>
-<p>Just like any other computer, an MCU contains a CPU (Central Processing Unit). Inside it, there’s a small high-speed memory called registers that hold data temporarily during the execution cycle of the program instructions. These registers control how the GPIO, ADC, Timers, and any other peripherals should behave.</p>
+<p>Just like any other computer, an MCU contains a CPU (Central Processing Unit). Inside it, there’s a small high-speed memory called registers that hold data temporarily during the execution cycle of the program. These registers control how the GPIO, ADC, Timers, and any other peripherals should behave.</p>
 <p>The structure of each register is usually specified in the corresponding MCU Datasheet or Reference Manual. For example, if we want pin 15 to blink an LED, we have to dive into the datasheet:</p>
 <figure><img
     class="my-0 rounded-md"
@@ -761,7 +760,7 @@ This register handles the direction of data. As you can see below, there are 8 b
 
 <em>Pict 4: DDRB Register. Source: ATMega328P Datasheet.</em>
 To set <code>PB1</code> as an output, we should set bit-1 at the DDRB register as <code>1</code>.</li>
-<li><code>PORTB</code> Data Register
+<li><code>PORTB</code> Data Register<br>
 The <code>PORTB</code> register handles what signal each pin should send. It can be either HIGH or LOW, 1 or 0. To turn on the LED, simply set <code>1</code> to bit-1 at the <code>PORTB</code> register.
 <figure><img
     class="my-0 rounded-md"
@@ -784,13 +783,20 @@ The <code>PORTB</code> register handles what signal each pin should send. It can
     </span>
     
 </h2>
-<p>To handle all these bit-by-bit operations I had to equip myself with the right tool: bit-wise operators. This operator simply gives me bit-wise manipulation technique:</p>
+<p>To handle all these bit-by-bit operations I had to equip myself with the right tool: bit-wise operators. This operator simply gives me bit-wise manipulation techniques:</p>
 <ul>
-<li>Clearing a bit on a register</li>
-<li>Setting a bit</li>
-<li>Rotating a bit</li>
-<li>Extracting a bit from registers</li>
-<li>Reversing</li>
+<li>Clearing a bit on a register
+<pre tabindex="0"><code>REG &amp;= (~(1&lt;&lt;TARGET_BIT));
+</code></pre></li>
+<li>Setting a bit
+<pre tabindex="0"><code>REG |= (1&lt;&lt;TARGET_BIT);
+</code></pre></li>
+<li>Rotating a bit
+<pre tabindex="0"><code>ROTATED = (REG&lt;&lt;3) | (REG&gt;&gt;(8-3))
+</code></pre></li>
+<li>Extracting a bit from registers
+<pre tabindex="0"><code>DATA = (REG &gt;&gt; 4)
+</code></pre></li>
 <li>Many other operations</li>
 </ul>
 
@@ -804,8 +810,8 @@ The <code>PORTB</code> register handles what signal each pin should send. It can
     
 </h2>
 <p>There are many ways to receive an input signal. You can receive it from some communication channel, sensor, or a simpler one, like a switch button and a potentiometer.</p>
-<p>For handling digital input, it’s quite easy. What we do is the opposite of sending an output signal. We read the PORTx register.</p>
-<p>But an analog signal is slightly more complicated than that. There are some registers that you should take care of: DDRx, PORTx, PINx, ADMUX, ADCSRA. And, if you manage to start the ADC process, the output will be stored in two separate registers, ADCL and ADCH. They’re separated because ATMega328P have 10 bits ADC, while a register can only store up to 8 bits.</p>
+<p>For handling digital input, it’s quite easy. What we do is the opposite of sending an output signal. We read the <code>PORTx</code> register.</p>
+<p>But an analog signal is slightly more complicated than that. Firstly you have to do the conversion from analog to digital signal. In doing so, there are some registers that you should take care of: DDRx, PORTx, PINx, ADMUX, ADCSRA. And, if you manage to start the ADC process, the MCUs will store the output into two separate registers, ADCL and ADCH. They’re separated because ATMega328P have 10 bits ADC, while a register can only store up to 8 bits.</p>
 
 <h2 class="relative group">First Project: Morse Code
     <div id="first-project-morse-code" class="anchor"></div>
@@ -818,7 +824,7 @@ The <code>PORTB</code> register handles what signal each pin should send. It can
 </h2>
 <p>I have done some easy things with this low-level stuff. But I wouldn’t call them projects; exercise is the perfect description for that.</p>
 <p>My first project is to encode a string into visible and audible Morse code (LEDs and buzzer). The code and schematics are available on my repo, see below. You can watch it on YouTube if you want:</p>
-<p>Just like any other system, I would like to tell you how it works from input, process, to output:</p>
+<p>Just like any other system, here&rsquo;s how it works from input, process, to output:</p>
 <ul>
 <li>
 <p>The input. My program will accept two digital inputs and one analog input.</p>
@@ -830,7 +836,7 @@ The <code>PORTB</code> register handles what signal each pin should send. It can
 <li>
 <p>The process. Some of the main processes are:</p>
 <ol>
-<li>26 letters of alphabets -&gt; Morse code. This part is the most bad-looking code in my program.</li>
+<li>26 letters of alphabets -&gt; Morse code. It only uses switch case, and call two routines: <code>dot()</code>, <code>dash()</code>. This part is the most bad-looking code in my program, but at least it works.</li>
 <li>ADC. This process will start right after the pull-down switch is triggered. The output will be stored in an int and converted to a string. Later on, it will be sent to the output.</li>
 </ol>
 </li>
