@@ -159,6 +159,20 @@
 
 
 
+  
+  
+  <link
+    type="text/css"
+    rel="stylesheet"
+    href="/lib/lite-youtube-embed/lite-yt-embed.badabc6055b427669bbcf084097334cdf2029c85696c4a56e25239825d3571d26ef82b775ba19032ccd52135ccb412c9ba79da4e9e9b6f3939a6178a5f65ee5d.css"
+    integrity="sha512-utq8YFW0J2abvPCECXM0zfICnIVpbEpW4lI5gl01cdJu&#43;Ct3W6GQMszVITXMtBLJunnaTp6bbzk5pheKX2XuXQ==">
+  
+  
+  <script
+    type="text/javascript"
+    src="/lib/lite-youtube-embed/lite-yt-embed.58a8a22aed9d1cd05780869df4b0d87972fcd144a9eaff8f9a1453e58e6521c5a89ccd80bdb9f48e25ae5ee87b98bd9de51b14dd9988c60e4c89630433292084.js"
+    integrity="sha512-WKiiKu2dHNBXgIad9LDYeXL80USp6v&#43;PmhRT5Y5lIcWonM2Avbn0jiWuXuh7mL2d5RsU3ZmIxg5MiWMEMykghA=="></script>
+
 
 
 
@@ -681,8 +695,7 @@
     fetchpriority="low"
     alt="USB ASP"
     src="/assets/img/usbasp.png"
-    ></figure>
-<p><em>Pict. 1: USBASP Programmer, the one that I use.</em>
+    ><figcaption>Pict. 1: USBASP Programmer, the one that I use.</figcaption></figure>
 <figure><img
     class="my-0 rounded-md"
     loading="lazy"
@@ -690,9 +703,7 @@
     fetchpriority="low"
     alt="ATMega328P Pinout Diagram"
     src="/assets/img/328ppinout.png"
-    ></figure>
-
-<em>Pict. 2: ATMega328P 28 pin DIP Pinout. Blue-highlighted text is connected to USBASP pinouts using jumper wires.</em></p>
+    ><figcaption>Pict. 2: ATMega328P 28 pin DIP Pinout. Blue-highlighted text is connected to USBASP pinouts using jumper wires.</figcaption></figure>
 
 <h2 class="relative group">Arduino Works Perfectly Fine, Why All These Hurdles?
     <div id="arduino-works-perfectly-fine-why-all-these-hurdles" class="anchor"></div>
@@ -743,8 +754,7 @@ It won&rsquo;t matter if you just blink an LED every one second, but if you&rsqu
     fetchpriority="low"
     alt="ATMega328P Pinout Diagram"
     src="/assets/img/328ppinout.png"
-    ></figure>
-<p><em>Pict 3: ATMega328P 28 pin DIP Pinout. Source: ATMega328P Datasheet.</em></p>
+    ><figcaption>Pict 3: ATMega328P 28 pin DIP Pinout. Source: ATMega328P Datasheet.</figcaption></figure>
 <ol>
 <li>Pin 15 is identified as <code>PB1</code>. Each pin port has three registers: <code>DDRx</code>, <code>PORTx</code>, and <code>PINx</code> (x can be B, C, or D). Since we just want to output things, we can ignore the <code>PINx</code> register.</li>
 <li><code>DDRB</code>: Data Direction B Register<br>
@@ -756,9 +766,8 @@ This register handles the direction of data. As you can see below, there are 8 b
     fetchpriority="low"
     alt="DDRB Register"
     src="/assets/img/ddrbreg.png"
-    ></figure>
+    ><figcaption>Pict 4: DDRB Register. Source: ATMega328P Datasheet.</figcaption></figure>
 
-<em>Pict 4: DDRB Register. Source: ATMega328P Datasheet.</em>
 To set <code>PB1</code> as an output, we should set bit-1 at the DDRB register as <code>1</code>.</li>
 <li><code>PORTB</code> Data Register<br>
 The <code>PORTB</code> register handles what signal each pin should send. It can be either HIGH or LOW, 1 or 0. To turn on the LED, simply set <code>1</code> to bit-1 at the <code>PORTB</code> register.
@@ -769,9 +778,8 @@ The <code>PORTB</code> register handles what signal each pin should send. It can
     fetchpriority="low"
     alt="PORTB Register"
     src="/assets/img/portbreg.png"
-    ></figure>
-
-<em>Pict 5: PORTB Data Register. Source: ATMega328P Datasheet.</em></li>
+    ><figcaption>Pict 5: PORTB Data Register. Source: ATMega328P Datasheet.</figcaption></figure>
+</li>
 </ol>
 
 <h2 class="relative group">Bitwise Operators
@@ -824,6 +832,8 @@ The <code>PORTB</code> register handles what signal each pin should send. It can
 </h2>
 <p>I have done some easy things with this low-level stuff. But I wouldn’t call them projects; exercise is the perfect description for that.</p>
 <p>My first project is to encode a string into visible and audible Morse code (LEDs and buzzer). The code and schematics are available on my repo, see below. You can watch it on YouTube if you want:</p>
+<lite-youtube videoid="oyK-UIJMFic" playlabel="oyK-UIJMFic" params=""></lite-youtube>
+
 <p>Just like any other system, here&rsquo;s how it works from input, process, to output:</p>
 <ul>
 <li>
@@ -899,7 +909,7 @@ The <code>PORTB</code> register handles what signal each pin should send. It can
 <li>GitHub: <a
   href="https://github.com/vfadlan/avr-exp/tree/main/04-potensio-adc"
     target="_blank"
-  >04-potensio-adc</a></li>
+  >vfadlan/avr-exp/04-potensio-adc</a></li>
 <li><a
   href="https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf"
     target="_blank"

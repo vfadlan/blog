@@ -19,11 +19,9 @@ What is it? Bare Metal means running software directly on physical computer hard
 
 I simply unplugged that chip from the Arduino Dev Board and ran my code directly on that chip. The ATMega328P can be programmed using a programmer, which is quite of a hurdle to do.
 
-![USB ASP](/assets/img/usbasp.png)
+![USB ASP](/assets/img/usbasp.png "Pict. 1: USBASP Programmer, the one that I use.")
 
-_Pict. 1: USBASP Programmer, the one that I use._
-![ATMega328P Pinout Diagram](/assets/img/328ppinout.png)	
-_Pict. 2: ATMega328P 28 pin DIP Pinout. Blue-highlighted text is connected to USBASP pinouts using jumper wires._
+![ATMega328P Pinout Diagram](/assets/img/328ppinout.png "Pict. 2: ATMega328P 28 pin DIP Pinout. Blue-highlighted text is connected to USBASP pinouts using jumper wires.")	
 
 ## Arduino Works Perfectly Fine, Why All These Hurdles?
 Well, first things first, the Arduino Development Board is a quick prototyping board that speeds up development. That’s why you’ll never see any device in the big electronic market that uses the Arduino Dev Board. It’s meant for development, not production.
@@ -63,20 +61,16 @@ Just like any other computer, an MCU contains a CPU (Central Processing Unit). I
 
 The structure of each register is usually specified in the corresponding MCU Datasheet or Reference Manual. For example, if we want pin 15 to blink an LED, we have to dive into the datasheet:
 
-![ATMega328P Pinout Diagram](/assets/img/328ppinout.png)
-
-_Pict 3: ATMega328P 28 pin DIP Pinout. Source: ATMega328P Datasheet._
+![ATMega328P Pinout Diagram](/assets/img/328ppinout.png "Pict 3: ATMega328P 28 pin DIP Pinout. Source: ATMega328P Datasheet.")
 
 1. Pin 15 is identified as `PB1`. Each pin port has three registers: `DDRx`, `PORTx`, and `PINx` (x can be B, C, or D). Since we just want to output things, we can ignore the `PINx` register.
 2. `DDRB`: Data Direction B Register  
 	This register handles the direction of data. As you can see below, there are 8 bits of data. Each bit corresponds to a single pin (PB0-PB7). Default value is 0, which means it will act as input. Otherwise, it will act as an output.
-	![DDRB Register](/assets/img/ddrbreg.png)
-	_Pict 4: DDRB Register. Source: ATMega328P Datasheet._
+	![DDRB Register](/assets/img/ddrbreg.png "Pict 4: DDRB Register. Source: ATMega328P Datasheet.")
 		To set `PB1` as an output, we should set bit-1 at the DDRB register as `1`.
 3. `PORTB` Data Register  
    The `PORTB` register handles what signal each pin should send. It can be either HIGH or LOW, 1 or 0. To turn on the LED, simply set `1` to bit-1 at the `PORTB` register.
-	![PORTB Register](/assets/img/portbreg.png)
-	_Pict 5: PORTB Data Register. Source: ATMega328P Datasheet._
+	![PORTB Register](/assets/img/portbreg.png "Pict 5: PORTB Data Register. Source: ATMega328P Datasheet.")
 
 ## Bitwise Operators
 
@@ -109,6 +103,8 @@ But an analog signal is slightly more complicated than that. Firstly you have to
 I have done some easy things with this low-level stuff. But I wouldn’t call them projects; exercise is the perfect description for that.
 
 My first project is to encode a string into visible and audible Morse code (LEDs and buzzer). The code and schematics are available on my repo, see below. You can watch it on YouTube if you want:
+
+{{< youtubeLite id="oyK-UIJMFic" label="ATMega328P Bare Metal C Morse Code Demo" >}}
 
 Just like any other system, here's how it works from input, process, to output:
 
@@ -145,5 +141,5 @@ Thank you for spending your time reading all these yaps. It's an interesting for
 * Bit banging in rhytm to control WS2812B addressable RGB LED
 
 ## Links
-* GitHub: [04-potensio-adc](https://github.com/vfadlan/avr-exp/tree/main/04-potensio-adc)
+* GitHub: [vfadlan/avr-exp/04-potensio-adc](https://github.com/vfadlan/avr-exp/tree/main/04-potensio-adc)
 * [ATMega328P Datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf)
