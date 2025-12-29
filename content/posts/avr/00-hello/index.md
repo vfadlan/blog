@@ -8,7 +8,7 @@ series: ["AVR"]
 series_order: 0
 ---
 
-![ATMega328P SMD](/assets/img/harrison-19YCOjHosDk-unsplash.jpg)
+![ATMega328P SMD](featured.jpg)
 
 For the past few months, I’ve been dabbling in some low-level programming. Was focused with the C language. _The C Programming Language_ (Second Edition) by Kernighan & Ritchie is my reference and guide book. That book is the "Holy Bible" of C; it packs all the essential knowledge into less than 300 pages, whereas most technical books take more than 400. Later on, at late November, I also started working with bare-metal AVR.
 
