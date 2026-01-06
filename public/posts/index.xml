@@ -6,8 +6,18 @@
     <description>Recent content in Posts on Fadlan Abduh</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>© 2025 Fadlan Abduh</copyright>
-    <lastBuildDate>Sun, 28 Dec 2025 05:15:34 +0700</lastBuildDate><atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>© 2026 Fadlan Abduh</copyright>
+    <lastBuildDate>Sun, 04 Jan 2026 05:48:24 +0700</lastBuildDate><atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Writing Technical Blog</title>
+      <link>http://localhost:1313/posts/technical-blog/</link>
+      <pubDate>Sun, 04 Jan 2026 05:48:24 +0700</pubDate>
+      
+      <guid>http://localhost:1313/posts/technical-blog/</guid>
+      <description></description>
+      
+    </item>
     
     <item>
       <title>Animating LEDs with Shift Register</title>

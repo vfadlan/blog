@@ -88,6 +88,8 @@
   
   
   
+    
+  
   
     
   
@@ -95,8 +97,8 @@
   <link
     type="text/css"
     rel="stylesheet"
-    href="/css/main.bundle.min.267d0e74a0c9ab7a45f939698441409284e9483044f9cebcf57ec81c14c214e6a2cad4445c1332c08832edc29fab4f1f76a30b876d2d96cf7a1065f93ed78ca8.css"
-    integrity="sha512-Jn0OdKDJq3pF&#43;TlphEFAkoTpSDBE&#43;c689X7IHBTCFOaiytREXBMywIgy7cKfq08fdqMLh20tls96EGX5PteMqA==">
+    href="/css/main.bundle.min.28be18702a02b0b5ac6b7155d437b07f091a677af2b3c5730aae30a87587bfd0e278a9499515c271154afa012bc1aaf5625e415c6aeabfe292242a2bf55fc388.css"
+    integrity="sha512-KL4YcCoCsLWsa3FV1DewfwkaZ3rys8VzCq4wqHWHv9DieKlJlRXCcRVK&#43;gErwar1Yl5BXGrqv&#43;KSJCor9V/DiA==">
 
   
   
@@ -216,7 +218,7 @@
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "72"
+    "wordCount": "812"
   }]
   </script>
 
@@ -559,7 +561,7 @@
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>72 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">1 min</span>
+      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>812 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">4 mins</span>
     
 
     
@@ -667,7 +669,7 @@
 
 
         <div class="article-content max-w-prose mb-20">
-          <p>In previous blog, we talked about how we can send a digital output signal and retrieve both digital or analog input by using the GPIO pins and managing some registers. Go ahead read it if you have not:
+          <p>In today&rsquo;s blog, we&rsquo;ll discuss how we can animate 8 LEDs using a shift register. I assume you already know basic things about register, we&rsquo;ll talk a lot about it. If you want to know what that is, we also discussed that in previous blog:
 
 
 
@@ -845,7 +847,277 @@
   </section>
 
 </p>
-<p>My ATMega328P which is the 28 pin dip version, have 23 General Purpose Input Output (GPIO) pins. For now, I consider that number as plenty</p>
+<p>So, how to animate 8 LEDs? Simplest way is just to use 8 pins of the same port. For example, if we use Port B, we only have to handle DDRB register once and manipulating PORTB register for each frame of the animation. One problem though, the number of available pin in MCU is kind of scarce. Some MCUs even only got 12 pins including VCC and GND.</p>
+<p>Our case, ATMega328P actually have enough pins to handle all 8 LEDs using the same port. But let&rsquo;s do this the hard way for the sake of learning. That is by using a shift register.</p>
+
+<h2 class="relative group">Shift Register
+    <div id="shift-register" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#shift-register" aria-label="Anchor">#</a>
+    </span>
+    
+</h2>
+<p>The &ldquo;register&rdquo; on shift register is conceptually as the same as the one we talked before. Difference is how we manipulate the ones and zeros inside those registers. And &lsquo;shift&rsquo;, means that the data being held by those register will be shifted to the left if the clock pin (we&rsquo;ll discuss this soon) is triggered.</p>
+<p>Inside MCU, there are actually some internal shift registers. But the one that we will talk about is an external shift register in forms of Integrated Circuit. That means instead of assigning a value to a register address via C code, we manipulate those registers by sending electrical signal (HIGH or LOW) to its input pin. There are two types of shift register: Serial In Parallel Out (SIPO), and Parallel In Serial Out (PISO). We&rsquo;ll use SIPO since we want to minimize the use of MCU pin.</p>
+<p><em>Note: From now on and the rest of this blog, SR stands for Shift Register. There are other meaning of SR, but that&rsquo;s not what I discuss in this blog.</em></p>
+
+<h2 class="relative group">74HC595 IC
+    <div id="74hc595-ic" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#74hc595-ic" aria-label="Anchor">#</a>
+    </span>
+    
+</h2>
+
+<h3 class="relative group">Overview
+    <div id="overview" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#overview" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+<p>The 74HC595 is an Integrated Circuit, specifically a Serial In Parallel Out (SIPO) shift regsiter that contains 8-bits of it. Alongside the shift registers, there are also 8-bits storage register that stores binary data of 8 output pin (QA-H). The storage register will be updated to current state of shift register if the register clock pin (RCLK) is triggered.</p>
+
+<h3 class="relative group">Pin Descriptions
+    <div id="pin-descriptions" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#pin-descriptions" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="SN74HC595 DIP Pinout"
+    width="1131"
+    height="867"
+    src="/posts/avr/01-shift-register/img/sn74hc595-pinout_hu_4a805ef8c86c7725.png"
+    srcset="/posts/avr/01-shift-register/img/sn74hc595-pinout_hu_4a805ef8c86c7725.png 800w, /posts/avr/01-shift-register/img/sn74hc595-pinout.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/sn74hc595-pinout.png"><figcaption>Pinout of SNx4HC595, taken from the TI datasheet. Note that the line above SRCLR and OE stands for Active Low, it will be active when tied to ground.</figcaption></figure>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Pin Number</th>
+          <th style="text-align: left">Pin Name</th>
+          <th style="text-align: left">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">15,1-7</td>
+          <td style="text-align: left">Qa-Qh</td>
+          <td style="text-align: left">Parallel Output, fed from the storage register</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">8</td>
+          <td style="text-align: left">GND</td>
+          <td style="text-align: left">Ground Pin</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">9</td>
+          <td style="text-align: left">Qh&rsquo;</td>
+          <td style="text-align: left">Serial Output for daisy chaining (we&rsquo;re not going to use this)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">10</td>
+          <td style="text-align: left">SRCLR</td>
+          <td style="text-align: left">Shift Register Clear, active when pin tied to ground</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">11</td>
+          <td style="text-align: left">SRCLK</td>
+          <td style="text-align: left">Shift Register Clock, will shift the data inside SR if this pin goes from low to high (rising edge)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">12</td>
+          <td style="text-align: left">RCLK</td>
+          <td style="text-align: left">Register Clock, on rising edge data inside SR will be copied to storage register, this will update the output to current state of SR</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">13</td>
+          <td style="text-align: left">OE</td>
+          <td style="text-align: left">Output Enable, enabled when pin connected to ground</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">14</td>
+          <td style="text-align: left">SER</td>
+          <td style="text-align: left">Serial data input pin</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">16</td>
+          <td style="text-align: left">VCC</td>
+          <td style="text-align: left">Supply voltage ranging from -0.5V to 7V</td>
+      </tr>
+  </tbody>
+</table>
+
+<h3 class="relative group">Functional Characteristics
+    <div id="functional-characteristics" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#functional-characteristics" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="SN74HC595 Function Table"
+    width="1726"
+    height="764"
+    src="/posts/avr/01-shift-register/img/sn74hc595-function_hu_750f89e0d8511fcd.png"
+    srcset="/posts/avr/01-shift-register/img/sn74hc595-function_hu_750f89e0d8511fcd.png 800w, /posts/avr/01-shift-register/img/sn74hc595-function_hu_42fa6dc9131c00b0.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/sn74hc595-function.png"><figcaption>Functional Modes of SNx4HC595, taken from the TI datasheet.</figcaption></figure>
+<p>Before we start to examine table above, there is a few explanation of those input states:</p>
+<ul>
+<li>X: Don&rsquo;t Care whatever the state is,</li>
+<li>H: HIGH,</li>
+<li>L: LOW,high</li>
+<li>↑: Rising edge, when the pin goes from LOW to HIGH.</li>
+</ul>
+<p>The ↑ is considered as a pulse clock. In fact, that&rsquo;s the definition of a clock, a change of state from LOW to HIGH (called the rising edge) or HIGH to LOW (falling edge). If the state goes back to previous state, it will be called Clock Pulse.</p>
+<ul>
+<li>Function 1 and 2, to enable the output pins (Qa-Qh), we shall connect OE pin to ground.</li>
+<li>Function 3, we shouldn&rsquo;t tied SRCLR to ground since it will clear the SR.</li>
+<li>Function 4, when SER is LOW and SRCLR high and we trigger SRCLK with a pulse, the shift register will be shifted from A to B, B to C and so on. The A, will be 0.</li>
+<li>Function 5, the same as before but SER is HIGH. This time, the shift register value will be shifted too but the A will be 1.</li>
+<li>Function 6, RCLK is triggered by rising edge, the SR data will be copied to the storage register. This will update the output (Qa-Qh).</li>
+</ul>
+
+<h3 class="relative group">Nomenclature of the 7400 series IC (bonus)
+    <div id="nomenclature-of-the-7400-series-ic-bonus" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#nomenclature-of-the-7400-series-ic-bonus" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+
+<h2 class="relative group">Interrupts
+    <div id="interrupts" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#interrupts" aria-label="Anchor">#</a>
+    </span>
+    
+</h2>
+
+<h3 class="relative group">A Brief Description
+    <div id="a-brief-description" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#a-brief-description" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+
+<h3 class="relative group">Blocking vs Non-Blocking Process
+    <div id="blocking-vs-non-blocking-process" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#blocking-vs-non-blocking-process" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+
+<h3 class="relative group">How Regular Polling Handles Blocking Process
+    <div id="how-regular-polling-handles-blocking-process" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#how-regular-polling-handles-blocking-process" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+
+<h3 class="relative group">Interrupts in ATMega328P
+    <div id="interrupts-in-atmega328p" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#interrupts-in-atmega328p" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+
+<h2 class="relative group">Putting it All Together
+    <div id="putting-it-all-together" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#putting-it-all-together" aria-label="Anchor">#</a>
+    </span>
+    
+</h2>
+
+<h3 class="relative group">The Animation
+    <div id="the-animation" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#the-animation" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+
+<h3 class="relative group">Writing The Bytes to Shift Register
+    <div id="writing-the-bytes-to-shift-register" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#writing-the-bytes-to-shift-register" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+
+<h3 class="relative group">Interrupt for Interface
+    <div id="interrupt-for-interface" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#interrupt-for-interface" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+
+<h3 class="relative group">Just Watch.
+    <div id="just-watch" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#just-watch" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+
+<h2 class="relative group">Sum Up
+    <div id="sum-up" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#sum-up" aria-label="Anchor">#</a>
+    </span>
+    
+</h2>
 
           
           
@@ -937,6 +1209,19 @@
         </span>
         <span class="flex flex-col items-end">
           
+            <a
+              class="flex text-right text-neutral-700 hover:text-primary-600 dark:text-neutral dark:hover:text-primary-400"
+              href="/posts/technical-blog/">
+              <span class="leading-6">
+                Writing Technical Blog&ensp;<span class="inline-block rtl:rotate-180">&rarr;</span>
+              </span>
+            </a>
+            
+              <span class="me-6 mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                <time datetime="2026-01-04T05:48:24&#43;07:00">4 January 2026</time>
+              </span>
+            
+          
         </span>
       </div>
     </div>
@@ -1002,7 +1287,7 @@
     
       <p class="text-sm text-neutral-500 dark:text-neutral-400">
           &copy;
-          2025
+          2026
           Fadlan Abduh
       </p>
     
