@@ -218,7 +218,7 @@
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "812"
+    "wordCount": "907"
   }]
   </script>
 
@@ -561,7 +561,7 @@
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>812 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">4 mins</span>
+      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>907 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">5 mins</span>
     
 
     
@@ -669,7 +669,7 @@
 
 
         <div class="article-content max-w-prose mb-20">
-          <p>In today&rsquo;s blog, we&rsquo;ll discuss how we can animate 8 LEDs using a shift register. I assume you already know basic things about register, we&rsquo;ll talk a lot about it. If you want to know what that is, we also discussed that in previous blog:
+          <p>Di blog kali ini, kita akan membahas tentang bagaimana menganimasikan 8 LED dengan shift register. Sebelum lanjut, saya harap Anda sudah memahami beberapa hal dasar tentang register, kita akan membahas ini berulang kali kedepannya. Jika ingin tahu, silakan baca blog sebelumnya atau sumber lain.
 
 
 
@@ -847,8 +847,9 @@
   </section>
 
 </p>
-<p>So, how to animate 8 LEDs? Simplest way is just to use 8 pins of the same port. For example, if we use Port B, we only have to handle DDRB register once and manipulating PORTB register for each frame of the animation. One problem though, the number of available pin in MCU is kind of scarce. Some MCUs even only got 12 pins including VCC and GND.</p>
-<p>Our case, ATMega328P actually have enough pins to handle all 8 LEDs using the same port. But let&rsquo;s do this the hard way for the sake of learning. That is by using a shift register.</p>
+<p>Jadi, bagaimana caranya menganimasikan 8 LED dengan mikrokontroler? Cara paling sederhana adalah menggunakan 8 pin GPIO dari port yang sama. Contoh, jika kita menggunakan Port B, kita hanya perlu mengubah register DDRB sekali dan memanipulasi PORTB untuk setiap frame-nya. Selesai.</p>
+<p>Tapi terdapat masalah lain, jumlah pin GPIO pada MCU sangatlah terbatas. Beberapa MCU bahkan hanya memiliki 6 GPIO. Atau, meskipun jumlah pin yang dimiliki melimpah, kita tidak tahu pada update versi selanjutnya akan membutuhkan berapa banyak pin.</p>
+<p>Pada kasus kita, ATMega328P sebenarnya memiliki pin yang cukup untuk menangani 8 LED dengan port yang sama. <em>But let&rsquo;s do it anyway</em>.</p>
 
 <h2 class="relative group">Shift Register
     <div id="shift-register" class="anchor"></div>
@@ -859,9 +860,10 @@
     </span>
     
 </h2>
-<p>The &ldquo;register&rdquo; on shift register is conceptually as the same as the one we talked before. Difference is how we manipulate the ones and zeros inside those registers. And &lsquo;shift&rsquo;, means that the data being held by those register will be shifted to the left if the clock pin (we&rsquo;ll discuss this soon) is triggered.</p>
-<p>Inside MCU, there are actually some internal shift registers. But the one that we will talk about is an external shift register in forms of Integrated Circuit. That means instead of assigning a value to a register address via C code, we manipulate those registers by sending electrical signal (HIGH or LOW) to its input pin. There are two types of shift register: Serial In Parallel Out (SIPO), and Parallel In Serial Out (PISO). We&rsquo;ll use SIPO since we want to minimize the use of MCU pin.</p>
-<p><em>Note: From now on and the rest of this blog, SR stands for Shift Register. There are other meaning of SR, but that&rsquo;s not what I discuss in this blog.</em></p>
+<p>Kata &ldquo;register&rdquo; pada shift register secara konsep sama saja seperti register yang ada pada MCU. Register is register. Yang membedakan adalah kata &ldquo;shift&rdquo; (geser). Jadi, shift register adalah salah satu jenis register yang bisa menggeser data di dalamnya dari bit 0 ke bit 1, bit 1 ke bit 2, dan seterusnya ketika diberi sinyal clock.</p>
+<p>Di dalam MCU juga terdapat internal shift register, tapi kali ini kita akan membahas tentang external shift register dalam bentuk Integrated Circuit (IC). Karena ini eksternal, satu-satunya cara untuk memanipulasi register adalah dengan mengirimkan sinyal elektrik HIGH dan LOW. Alih-alih melakukan assignment seperti <code>PORTB = 0x3F;</code> pada program MCU.</p>
+<p>Terdapat dua jenis shift register: Serial In Parallel Out (SIPO), dan Parallel In Serial Out (PISO). Yang akan kita gunakan adalah SIPO karena kita ingin mengurangi penggunaan pin MCU.</p>
+<p><em>Catatan: Mulai sekarang sampai blog ini selesai, SR berarti Shift Register. Perlu diingat bahwa terdapat makna lain dari SR.</em></p>
 
 <h2 class="relative group">74HC595 IC
     <div id="74hc595-ic" class="anchor"></div>
@@ -882,7 +884,11 @@
     </span>
     
 </h3>
-<p>The 74HC595 is an Integrated Circuit, specifically a Serial In Parallel Out (SIPO) shift regsiter that contains 8-bits of it. Alongside the shift registers, there are also 8-bits storage register that stores binary data of 8 output pin (QA-H). The storage register will be updated to current state of shift register if the register clock pin (RCLK) is triggered.</p>
+<p>74HC595 adalah Integrated Circuit yang berguna untuk mengubah input serial menjadi output paralel (SIPO) dengan kapasitas maksimal 8-bit. Di dalamnya, terdapat dua macam register:</p>
+<ul>
+<li>shift register berguna sebagai &ldquo;antrean&rdquo; data masuk,</li>
+<li>storage register (disebut juga latch) berguna untuk menyimpan data dari shift register dan diteruskan ke pin output. Data shift register hanya akan disimpan jika pin RCLK diberi perubahan sinyal dari LOW ke HIGH.</li>
+</ul>
 
 <h3 class="relative group">Pin Descriptions
     <div id="pin-descriptions" class="anchor"></div>
@@ -904,7 +910,7 @@
     src="/posts/avr/01-shift-register/img/sn74hc595-pinout_hu_4a805ef8c86c7725.png"
     srcset="/posts/avr/01-shift-register/img/sn74hc595-pinout_hu_4a805ef8c86c7725.png 800w, /posts/avr/01-shift-register/img/sn74hc595-pinout.png 1280w"
     sizes="(min-width: 768px) 50vw, 65vw"
-    data-zoom-src="/posts/avr/01-shift-register/img/sn74hc595-pinout.png"><figcaption>Pinout of SNx4HC595, taken from the TI datasheet. Note that the line above SRCLR and OE stands for Active Low, it will be active when tied to ground.</figcaption></figure>
+    data-zoom-src="/posts/avr/01-shift-register/img/sn74hc595-pinout.png"><figcaption>Pinout SNx4HC595, diambil dari datasheet Texas Instruments (TI). Perlu dicatat bahwa garis di atas pin OE dan RCLK memiliki Acrive Low, pin tersebut akan aktif jika dihubungkan ke ground.</figcaption></figure>
 <table>
   <thead>
       <tr>
@@ -917,47 +923,47 @@
       <tr>
           <td style="text-align: left">15,1-7</td>
           <td style="text-align: left">Qa-Qh</td>
-          <td style="text-align: left">Parallel Output, fed from the storage register</td>
+          <td style="text-align: left">Parallel Output, diambil dari storage register.</td>
       </tr>
       <tr>
           <td style="text-align: left">8</td>
           <td style="text-align: left">GND</td>
-          <td style="text-align: left">Ground Pin</td>
+          <td style="text-align: left">Ground Pin.</td>
       </tr>
       <tr>
           <td style="text-align: left">9</td>
-          <td style="text-align: left">Qh&rsquo;</td>
-          <td style="text-align: left">Serial Output for daisy chaining (we&rsquo;re not going to use this)</td>
+          <td style="text-align: left">Qh'</td>
+          <td style="text-align: left">Serial Output untuk merangkai 2 shift register atau lebih (kita abaikan di blog ini).</td>
       </tr>
       <tr>
           <td style="text-align: left">10</td>
           <td style="text-align: left">SRCLR</td>
-          <td style="text-align: left">Shift Register Clear, active when pin tied to ground</td>
+          <td style="text-align: left">Shift Register Clear, aktif ketika terhubung ground.</td>
       </tr>
       <tr>
           <td style="text-align: left">11</td>
           <td style="text-align: left">SRCLK</td>
-          <td style="text-align: left">Shift Register Clock, will shift the data inside SR if this pin goes from low to high (rising edge)</td>
+          <td style="text-align: left">Shift Register Clock, akan menggeser data di dalam shift register jika pin ini diberi sinyal dari LOW ke HIGH (rising edge).</td>
       </tr>
       <tr>
           <td style="text-align: left">12</td>
           <td style="text-align: left">RCLK</td>
-          <td style="text-align: left">Register Clock, on rising edge data inside SR will be copied to storage register, this will update the output to current state of SR</td>
+          <td style="text-align: left">Register Clock, saat diberi rising edge data shift register akan disalin ke storage register, sehingga mengubah output.</td>
       </tr>
       <tr>
           <td style="text-align: left">13</td>
           <td style="text-align: left">OE</td>
-          <td style="text-align: left">Output Enable, enabled when pin connected to ground</td>
+          <td style="text-align: left">Output Enable, aktif ketika terhubung ke ground</td>
       </tr>
       <tr>
           <td style="text-align: left">14</td>
           <td style="text-align: left">SER</td>
-          <td style="text-align: left">Serial data input pin</td>
+          <td style="text-align: left">Serial data, jalur masuk data serial.</td>
       </tr>
       <tr>
           <td style="text-align: left">16</td>
           <td style="text-align: left">VCC</td>
-          <td style="text-align: left">Supply voltage ranging from -0.5V to 7V</td>
+          <td style="text-align: left">Suplai tegangan dari -0.5V sampai dengan 7V.</td>
       </tr>
   </tbody>
 </table>
@@ -982,22 +988,24 @@
     src="/posts/avr/01-shift-register/img/sn74hc595-function_hu_750f89e0d8511fcd.png"
     srcset="/posts/avr/01-shift-register/img/sn74hc595-function_hu_750f89e0d8511fcd.png 800w, /posts/avr/01-shift-register/img/sn74hc595-function_hu_42fa6dc9131c00b0.png 1280w"
     sizes="(min-width: 768px) 50vw, 65vw"
-    data-zoom-src="/posts/avr/01-shift-register/img/sn74hc595-function.png"><figcaption>Functional Modes of SNx4HC595, taken from the TI datasheet.</figcaption></figure>
-<p>Before we start to examine table above, there is a few explanation of those input states:</p>
+    data-zoom-src="/posts/avr/01-shift-register/img/sn74hc595-function.png"><figcaption>Tabel mode fungsi SNx4HC595, diambil dari datasheet TI.</figcaption></figure>
+<p>Sebelum kita menelaah tabel di atas, berikut beberapa penjelasan untuk masing-masing jenis input:</p>
 <ul>
-<li>X: Don&rsquo;t Care whatever the state is,</li>
+<li>X: Don&rsquo;t care, tidak peduli input yang diberikan,</li>
 <li>H: HIGH,</li>
-<li>L: LOW,high</li>
-<li>↑: Rising edge, when the pin goes from LOW to HIGH.</li>
+<li>L: Low,</li>
+<li>↑: Rising edge, ketika sinyal berubah dari LOW ke HIGH.</li>
 </ul>
-<p>The ↑ is considered as a pulse clock. In fact, that&rsquo;s the definition of a clock, a change of state from LOW to HIGH (called the rising edge) or HIGH to LOW (falling edge). If the state goes back to previous state, it will be called Clock Pulse.</p>
+<p>Rising edge (↑) adalah bagian dari sinyal clock. Sinyal clock adalah sinyal referensi periodik yang memicu transisi logika. Periodik memiliki arti sinyal berubah dalam periode tertentu, dari HIGH ke LOW dan sebaliknya, dan mungkin diulangi lagi. Sinyal ini digunakan sebagai referensi sehingga seluruh komponen memproses data secara bersamaan/serentak.</p>
+<p>Berikut adalah penjelasan masing-masing mode:</p>
 <ul>
-<li>Function 1 and 2, to enable the output pins (Qa-Qh), we shall connect OE pin to ground.</li>
-<li>Function 3, we shouldn&rsquo;t tied SRCLR to ground since it will clear the SR.</li>
-<li>Function 4, when SER is LOW and SRCLR high and we trigger SRCLK with a pulse, the shift register will be shifted from A to B, B to C and so on. The A, will be 0.</li>
-<li>Function 5, the same as before but SER is HIGH. This time, the shift register value will be shifted too but the A will be 1.</li>
-<li>Function 6, RCLK is triggered by rising edge, the SR data will be copied to the storage register. This will update the output (Qa-Qh).</li>
+<li>Fungsi 1 dan 2, untuk mengaktifkan pin output (Qa-Qh), pin OE harus disambungkan ke ground.</li>
+<li>Fungsi 3, kita perlu menghubungkan pin SRCLR ke VCC agar SR tidak di-clear.</li>
+<li>Fungsi 4, ketika SER bernilai LOW, SRCLR HIGH, dan memberi SRCLK sinyal clock: SR akan bergeser dan bit pertama akan bernilai 0.</li>
+<li>Fungsi 5, Sama seperti sebelumnya, namun SER bernilai HIGH sehingga SR bergeser dan bit pertama bernilai 1.</li>
+<li>Fungsi 6, ketika RCLK diberi sinyal clock (rising edge), data di dalam SR akan disalin ke storage register.</li>
 </ul>
+<p>Jadi, koneksi ke MCU yang perlu ditentukan adalah untuk pin SER, SRCLK, dan RCLK. Sedangkan untuk pin output, masing-masing pin dihubungkan ke katoda LED. Untuk pin lain, OE dihubungkan ke ground, dan SRCLR dihubungkan ke VCC.</p>
 
 <h3 class="relative group">Nomenclature of the 7400 series IC (bonus)
     <div id="nomenclature-of-the-7400-series-ic-bonus" class="anchor"></div>
@@ -1008,6 +1016,43 @@
     </span>
     
 </h3>
+<p>IC 74HC595 memiliki makna dalam penamaannya. Untuk deskripsi lebih detail Anda dapat meninjau laman wikipedia berikut: <a
+  href="https://en.wikipedia.org/wiki/7400-series_integrated_circuits"
+    target="_blank"
+  >7400-series Integrated Circuits</a>. Berikut adalah ringkasannya:</p>
+<ul>
+<li>Kode 74 di depan merepresentasikan temperatur operasinya: <figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="TI TTL Prefix"
+    width="670"
+    height="282"
+    src="/posts/avr/01-shift-register/img/74-prefix-nomen.png"
+    srcset="/posts/avr/01-shift-register/img/74-prefix-nomen.png 800w, /posts/avr/01-shift-register/img/74-prefix-nomen.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/74-prefix-nomen.png"></figure>
+</li>
+<li>HC adalah singkatan dari Highspeed CMOS, ini adalah kode family line. Terdapat banyak family line lain seperti L (Low Power), C (CMOS), F (Fast), dan masih banyak lagi. Untuk lebih detailnya silakan baca <a
+  href="https://en.wikipedia.org/wiki/7400-series_integrated_circuits#Families"
+    target="_blank"
+  >di sini</a>.</li>
+<li>Sedangkan 595 adalah kode subfamily. Banyak subfamily lain seperti 165 (SIPO SR), 00 (Quad AND Gate), 114 (Dual J-K Flip-Flop), dsb.
+IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Namun, perusahaan lain memiliki lisensi untuk memproduksi seri ini. Sehingga, diberikan prefiks untuk memberi keterangan perusahaan yang memproduksinya: <figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="TTL Manufacturer Prefix"
+    width="601"
+    height="280"
+    src="/posts/avr/01-shift-register/img/74-manprefix-nomen.png"
+    srcset="/posts/avr/01-shift-register/img/74-manprefix-nomen.png 800w, /posts/avr/01-shift-register/img/74-manprefix-nomen.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/74-manprefix-nomen.png"></figure>
+</li>
+</ul>
 
 <h2 class="relative group">Interrupts
     <div id="interrupts" class="anchor"></div>
@@ -1208,19 +1253,6 @@
           
         </span>
         <span class="flex flex-col items-end">
-          
-            <a
-              class="flex text-right text-neutral-700 hover:text-primary-600 dark:text-neutral dark:hover:text-primary-400"
-              href="/posts/technical-blog/">
-              <span class="leading-6">
-                Writing Technical Blog&ensp;<span class="inline-block rtl:rotate-180">&rarr;</span>
-              </span>
-            </a>
-            
-              <span class="me-6 mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-                <time datetime="2026-01-04T05:48:24&#43;07:00">4 January 2026</time>
-              </span>
-            
           
         </span>
       </div>

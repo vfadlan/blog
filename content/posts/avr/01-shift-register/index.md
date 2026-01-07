@@ -1,61 +1,75 @@
 ---
 date: 2025-12-28T05:15:34+07:00
-draft: true
+draft: false
 params:
   author: Fadlan Abduh
 title: Animating LEDs with Shift Register
 series: ["AVR"]
 series_order: 1
 ---
-In today's blog, we'll discuss how we can animate 8 LEDs using a shift register. I assume you already know basic things about register, we'll talk a lot about it. If you want to know what that is, we also discussed that in previous blog:
+Di blog kali ini, kita akan membahas tentang bagaimana menganimasikan 8 LED dengan shift register. Sebelum lanjut, saya harap Anda sudah memahami beberapa hal dasar tentang register, kita akan membahas ini berulang kali kedepannya. Jika ingin tahu, silakan baca blog sebelumnya atau sumber lain.
 {{< article link="/posts/avr/00-hello/" showSummary=true compactSummary=true >}}
 
-So, how to animate 8 LEDs? Simplest way is just to use 8 pins of the same port. For example, if we use Port B, we only have to handle DDRB register once and manipulating PORTB register for each frame of the animation. One problem though, the number of available pin in MCU is kind of scarce. Some MCUs even only got 12 pins including VCC and GND. 
+Jadi, bagaimana caranya menganimasikan 8 LED dengan mikrokontroler? Cara paling sederhana adalah menggunakan 8 pin GPIO dari port yang sama. Contoh, jika kita menggunakan Port B, kita hanya perlu mengubah register DDRB sekali dan memanipulasi PORTB untuk setiap frame-nya. Selesai.
 
-Our case, ATMega328P actually have enough pins to handle all 8 LEDs using the same port. But let's do this the hard way for the sake of learning. That is by using a shift register.
+Tapi terdapat masalah lain, jumlah pin GPIO pada MCU sangatlah terbatas. Beberapa MCU bahkan hanya memiliki 6 GPIO. Atau, meskipun jumlah pin yang dimiliki melimpah, kita tidak tahu pada update versi selanjutnya akan membutuhkan berapa banyak pin.
+
+Pada kasus kita, ATMega328P sebenarnya memiliki pin yang cukup untuk menangani 8 LED dengan port yang sama. _But let's do it anyway_.
 
 ## Shift Register
-The "register" on shift register is conceptually as the same as the one we talked before. Difference is how we manipulate the ones and zeros inside those registers. And 'shift', means that the data being held by those register will be shifted to the left if the clock pin (we'll discuss this soon) is triggered.
+Kata "register" pada shift register secara konsep sama saja seperti register yang ada pada MCU. Register is register. Yang membedakan adalah kata "shift" (geser). Jadi, shift register adalah salah satu jenis register yang bisa menggeser data di dalamnya dari bit 0 ke bit 1, bit 1 ke bit 2, dan seterusnya ketika diberi sinyal clock.
 
-Inside MCU, there are actually some internal shift registers. But the one that we will talk about is an external shift register in forms of Integrated Circuit. That means instead of assigning a value to a register address via C code, we manipulate those registers by sending electrical signal (HIGH or LOW) to its input pin. There are two types of shift register: Serial In Parallel Out (SIPO), and Parallel In Serial Out (PISO). We'll use SIPO since we want to minimize the use of MCU pin. 
+Di dalam MCU juga terdapat internal shift register, tapi kali ini kita akan membahas tentang external shift register dalam bentuk Integrated Circuit (IC). Karena ini eksternal, satu-satunya cara untuk memanipulasi register adalah dengan mengirimkan sinyal elektrik HIGH dan LOW. Alih-alih melakukan assignment seperti `PORTB = 0x3F;` pada program MCU.
 
-_Note: From now on and the rest of this blog, SR stands for Shift Register. There are other meaning of SR, but that's not what I discuss in this blog._
+Terdapat dua jenis shift register: Serial In Parallel Out (SIPO), dan Parallel In Serial Out (PISO). Yang akan kita gunakan adalah SIPO karena kita ingin mengurangi penggunaan pin MCU.
+
+_Catatan: Mulai sekarang sampai blog ini selesai, SR berarti Shift Register. Perlu diingat bahwa terdapat makna lain dari SR._
+
 ## 74HC595 IC
 ### Overview
-The 74HC595 is an Integrated Circuit, specifically a Serial In Parallel Out (SIPO) shift regsiter that contains 8-bits of it. Alongside the shift registers, there are also 8-bits storage register that stores binary data of 8 output pin (QA-H). The storage register will be updated to current state of shift register if the register clock pin (RCLK) is triggered.
+74HC595 adalah Integrated Circuit yang berguna untuk mengubah input serial menjadi output paralel (SIPO) dengan kapasitas maksimal 8-bit. Di dalamnya, terdapat dua macam register:
+* shift register berguna sebagai "antrean" data masuk,
+* storage register (disebut juga latch) berguna untuk menyimpan data dari shift register dan diteruskan ke pin output. Data shift register hanya akan disimpan jika pin RCLK diberi perubahan sinyal dari LOW ke HIGH.
 
 ### Pin Descriptions
-![SN74HC595 DIP Pinout](img/sn74hc595-pinout.png "Pinout of SNx4HC595, taken from the TI datasheet. Note that the line above SRCLR and OE stands for Active Low, it will be active when tied to ground.")
+![SN74HC595 DIP Pinout](img/sn74hc595-pinout.png "Pinout SNx4HC595, diambil dari datasheet Texas Instruments (TI). Perlu dicatat bahwa garis di atas pin OE dan RCLK memiliki Acrive Low, pin tersebut akan aktif jika dihubungkan ke ground.")
 |Pin Number|Pin Name|Description|
 |:--|:--|:--|
-|15,1-7|Qa-Qh|Parallel Output, fed from the storage register|
-|8|GND|Ground Pin|
-|9|Qh'|Serial Output for daisy chaining (we're not going to use this)|
-|10|SRCLR|Shift Register Clear, active when pin tied to ground|
-|11|SRCLK|Shift Register Clock, will shift the data inside SR if this pin goes from low to high (rising edge) |
-|12|RCLK|Register Clock, on rising edge data inside SR will be copied to storage register, this will update the output to current state of SR|
-|13|OE|Output Enable, enabled when pin connected to ground|
-|14|SER|Serial data input pin|
-|16|VCC|Supply voltage ranging from -0.5V to 7V|
+|15,1-7|Qa-Qh|Parallel Output, diambil dari storage register.|
+|8|GND|Ground Pin.|
+|9|Qh'|Serial Output untuk merangkai 2 shift register atau lebih (kita abaikan di blog ini).|
+|10|SRCLR|Shift Register Clear, aktif ketika terhubung ground.|
+|11|SRCLK|Shift Register Clock, akan menggeser data di dalam shift register jika pin ini diberi sinyal dari LOW ke HIGH (rising edge).|
+|12|RCLK|Register Clock, saat diberi rising edge data shift register akan disalin ke storage register, sehingga mengubah output.|
+|13|OE|Output Enable, aktif ketika terhubung ke ground| 
+|14|SER|Serial data, jalur masuk data serial.|
+|16|VCC|Suplai tegangan dari -0.5V sampai dengan 7V.|
 
 ### Functional Characteristics
-![SN74HC595 Function Table](img/sn74hc595-function.png "Functional Modes of SNx4HC595, taken from the TI datasheet.")
+![SN74HC595 Function Table](img/sn74hc595-function.png "Tabel mode fungsi SNx4HC595, diambil dari datasheet TI.")
 
-Before we start to examine table above, there is a few explanation of those input states:
-* X: Don't Care whatever the state is,
+Sebelum kita menelaah tabel di atas, berikut beberapa penjelasan untuk masing-masing jenis input:
+* X: Don't care, tidak peduli input yang diberikan,
 * H: HIGH,
-* L: LOW,high
-* ↑: Rising edge, when the pin goes from LOW to HIGH.
+* L: Low,
+* ↑: Rising edge, ketika sinyal berubah dari LOW ke HIGH.
 
-The ↑ is considered as a pulse clock. In fact, that's the definition of a clock, a change of state from LOW to HIGH (called the rising edge) or HIGH to LOW (falling edge). If the state goes back to previous state, it will be called Clock Pulse.
+Rising edge (↑) adalah bagian dari sinyal clock. Sinyal clock adalah sinyal referensi periodik yang memicu transisi logika. Periodik memiliki arti sinyal berubah dalam periode tertentu, dari HIGH ke LOW dan sebaliknya, dan mungkin diulangi lagi. Sinyal ini digunakan sebagai referensi sehingga seluruh komponen memproses data secara bersamaan/serentak.
 
-* Function 1 and 2, to enable the output pins (Qa-Qh), we shall connect OE pin to ground.  
-* Function 3, we shouldn't tied SRCLR to ground since it will clear the SR.  
-* Function 4, when SER is LOW and SRCLR high and we trigger SRCLK with a pulse, the shift register will be shifted from A to B, B to C and so on. The A, will be 0.  
-* Function 5, the same as before but SER is HIGH. This time, the shift register value will be shifted too but the A will be 1.  
-* Function 6, RCLK is triggered by rising edge, the SR data will be copied to the storage register. This will update the output (Qa-Qh).
+Berikut adalah penjelasan masing-masing mode:
+* Fungsi 1 dan 2, untuk mengaktifkan pin output (Qa-Qh), pin OE harus disambungkan ke ground.  
+* Fungsi 3, kita perlu menghubungkan pin SRCLR ke VCC agar SR tidak di-clear.  
+* Fungsi 4, ketika SER bernilai LOW, SRCLR HIGH, dan memberi SRCLK sinyal clock: SR akan bergeser dan bit pertama akan bernilai 0.
+* Fungsi 5, Sama seperti sebelumnya, namun SER bernilai HIGH sehingga SR bergeser dan bit pertama bernilai 1.  
+* Fungsi 6, ketika RCLK diberi sinyal clock (rising edge), data di dalam SR akan disalin ke storage register.
+
+Jadi, koneksi ke MCU yang perlu ditentukan adalah untuk pin SER, SRCLK, dan RCLK. Sedangkan untuk pin output, masing-masing pin dihubungkan ke katoda LED. Untuk pin lain, OE dihubungkan ke ground, dan SRCLR dihubungkan ke VCC.
 ### Nomenclature of the 7400 series IC (bonus)
-
+IC 74HC595 memiliki makna dalam penamaannya. Untuk deskripsi lebih detail Anda dapat meninjau laman wikipedia berikut: [7400-series Integrated Circuits](https://en.wikipedia.org/wiki/7400-series_integrated_circuits). Berikut adalah ringkasannya:
+* Kode 74 di depan merepresentasikan temperatur operasinya: ![TI TTL Prefix](img/74-prefix-nomen.png)
+* HC adalah singkatan dari Highspeed CMOS, ini adalah kode family line. Terdapat banyak family line lain seperti L (Low Power), C (CMOS), F (Fast), dan masih banyak lagi. Untuk lebih detailnya silakan baca [di sini](https://en.wikipedia.org/wiki/7400-series_integrated_circuits#Families).
+* Sedangkan 595 adalah kode subfamily. Banyak subfamily lain seperti 165 (SIPO SR), 00 (Quad AND Gate), 114 (Dual J-K Flip-Flop), dsb.
+IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Namun, perusahaan lain memiliki lisensi untuk memproduksi seri ini. Sehingga, diberikan prefiks untuk memberi keterangan perusahaan yang memproduksinya: ![TTL Manufacturer Prefix](img/74-manprefix-nomen.png)
 ## Interrupts
 ### A Brief Description
 ### Blocking vs Non-Blocking Process
