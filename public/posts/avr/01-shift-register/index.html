@@ -218,7 +218,7 @@
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "907"
+    "wordCount": "1142"
   }]
   </script>
 
@@ -561,7 +561,7 @@
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>907 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">5 mins</span>
+      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>1142 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">6 mins</span>
     
 
     
@@ -669,7 +669,7 @@
 
 
         <div class="article-content max-w-prose mb-20">
-          <p>Di blog kali ini, kita akan membahas tentang bagaimana menganimasikan 8 LED dengan shift register. Sebelum lanjut, saya harap Anda sudah memahami beberapa hal dasar tentang register, kita akan membahas ini berulang kali kedepannya. Jika ingin tahu, silakan baca blog sebelumnya atau sumber lain.
+          <p>Di blog kali ini, kita akan membahas tentang bagaimana menganimasikan 8 LED dengan shift register. Sebelum lanjut, saya mengasumsikan pembaca sudah memahami beberapa hal dasar tentang register, kita akan membahas ini berulang kali kedepannya. Jika ingin tahu, silakan baca blog sebelumnya atau sumber lain.
 
 
 
@@ -847,9 +847,9 @@
   </section>
 
 </p>
-<p>Jadi, bagaimana caranya menganimasikan 8 LED dengan mikrokontroler? Cara paling sederhana adalah menggunakan 8 pin GPIO dari port yang sama. Contoh, jika kita menggunakan Port B, kita hanya perlu mengubah register DDRB sekali dan memanipulasi PORTB untuk setiap frame-nya. Selesai.</p>
+<p>Jadi, bagaimana caranya menganimasikan 8 LED dengan mikrokontroler? Cara paling sederhana adalah menggunakan 8 pin GPIO dari port yang sama. Contoh, jika kita menggunakan Port B, maka kita perlu mengubah register DDRB sekali dan memanipulasi PORTB untuk setiap frame-nya. Selesai.</p>
 <p>Tapi terdapat masalah lain, jumlah pin GPIO pada MCU sangatlah terbatas. Beberapa MCU bahkan hanya memiliki 6 GPIO. Atau, meskipun jumlah pin yang dimiliki melimpah, kita tidak tahu pada update versi selanjutnya akan membutuhkan berapa banyak pin.</p>
-<p>Pada kasus kita, ATMega328P sebenarnya memiliki pin yang cukup untuk menangani 8 LED dengan port yang sama. <em>But let&rsquo;s do it anyway</em>.</p>
+<p>Pada kasus kita, ATMega328P sebenarnya memiliki pin yang cukup untuk menangani 8 LED dengan port yang sama. <em>But, let&rsquo;s do it anyway</em>.</p>
 
 <h2 class="relative group">Shift Register
     <div id="shift-register" class="anchor"></div>
@@ -884,10 +884,23 @@
     </span>
     
 </h3>
-<p>74HC595 adalah Integrated Circuit yang berguna untuk mengubah input serial menjadi output paralel (SIPO) dengan kapasitas maksimal 8-bit. Di dalamnya, terdapat dua macam register:</p>
+<p><figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="Shift Register Illustration"
+    width="665"
+    height="342"
+    src="/posts/avr/01-shift-register/img/working-sr.gif"
+    srcset="/posts/avr/01-shift-register/img/working-sr.gif 800w, /posts/avr/01-shift-register/img/working-sr.gif 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/working-sr.gif"><figcaption>Ilustrasi shift register, sumber lastminuteengineers.com</figcaption></figure>
+
+74HC595 adalah Integrated Circuit yang berguna untuk mengubah input serial menjadi output paralel (SIPO) dengan kapasitas maksimal 8-bit. Di dalamnya, terdapat dua macam register:</p>
 <ul>
 <li>shift register berguna sebagai &ldquo;antrean&rdquo; data masuk,</li>
-<li>storage register (disebut juga latch) berguna untuk menyimpan data dari shift register dan diteruskan ke pin output. Data shift register hanya akan disimpan jika pin RCLK diberi perubahan sinyal dari LOW ke HIGH.</li>
+<li>storage register (disebut juga latch) berguna untuk menyimpan data dari shift register dan diteruskan ke pin output. Data shift register hanya akan disimpan jika pin RCLK (disebut juga latch) diberi perubahan sinyal dari LOW ke HIGH.</li>
 </ul>
 
 <h3 class="relative group">Pin Descriptions
@@ -989,15 +1002,16 @@
     srcset="/posts/avr/01-shift-register/img/sn74hc595-function_hu_750f89e0d8511fcd.png 800w, /posts/avr/01-shift-register/img/sn74hc595-function_hu_42fa6dc9131c00b0.png 1280w"
     sizes="(min-width: 768px) 50vw, 65vw"
     data-zoom-src="/posts/avr/01-shift-register/img/sn74hc595-function.png"><figcaption>Tabel mode fungsi SNx4HC595, diambil dari datasheet TI.</figcaption></figure>
-<p>Sebelum kita menelaah tabel di atas, berikut beberapa penjelasan untuk masing-masing jenis input:</p>
+<p>Untuk memahami tabel di atas, berikut beberapa penjelasan untuk masing-masing jenis input:</p>
 <ul>
 <li>X: Don&rsquo;t care, tidak peduli input yang diberikan,</li>
 <li>H: HIGH,</li>
 <li>L: Low,</li>
 <li>↑: Rising edge, ketika sinyal berubah dari LOW ke HIGH.</li>
 </ul>
-<p>Rising edge (↑) adalah bagian dari sinyal clock. Sinyal clock adalah sinyal referensi periodik yang memicu transisi logika. Periodik memiliki arti sinyal berubah dalam periode tertentu, dari HIGH ke LOW dan sebaliknya, dan mungkin diulangi lagi. Sinyal ini digunakan sebagai referensi sehingga seluruh komponen memproses data secara bersamaan/serentak.</p>
-<p>Berikut adalah penjelasan masing-masing mode:</p>
+<p>Pada tabel fungsi, perubahan data dipicu oleh sinyal clock. Yang diperhatikan bukan sinyal HIGH atau LOW, tetapi transisi dari LOW ke HIGH (rising edge).
+ss
+Berikut adalah penjelasan masing-masing mode:</p>
 <ul>
 <li>Fungsi 1 dan 2, untuk mengaktifkan pin output (Qa-Qh), pin OE harus disambungkan ke ground.</li>
 <li>Fungsi 3, kita perlu menghubungkan pin SRCLR ke VCC agar SR tidak di-clear.</li>
@@ -1007,16 +1021,16 @@
 </ul>
 <p>Jadi, koneksi ke MCU yang perlu ditentukan adalah untuk pin SER, SRCLK, dan RCLK. Sedangkan untuk pin output, masing-masing pin dihubungkan ke katoda LED. Untuk pin lain, OE dihubungkan ke ground, dan SRCLR dihubungkan ke VCC.</p>
 
-<h3 class="relative group">Nomenclature of the 7400 series IC (bonus)
-    <div id="nomenclature-of-the-7400-series-ic-bonus" class="anchor"></div>
+<h3 class="relative group">Nomenclature of the 7400 series IC (opsional)
+    <div id="nomenclature-of-the-7400-series-ic-opsional" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
-        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#nomenclature-of-the-7400-series-ic-bonus" aria-label="Anchor">#</a>
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#nomenclature-of-the-7400-series-ic-opsional" aria-label="Anchor">#</a>
     </span>
     
 </h3>
-<p>IC 74HC595 memiliki makna dalam penamaannya. Untuk deskripsi lebih detail Anda dapat meninjau laman wikipedia berikut: <a
+<p>IC 74HC595 memiliki makna dalam penamaannya. Untuk deskripsi lebih detail Anda dapat meninjau laman Wikipedia berikut: <a
   href="https://en.wikipedia.org/wiki/7400-series_integrated_circuits"
     target="_blank"
   >7400-series Integrated Circuits</a>. Berikut adalah ringkasannya:</p>
@@ -1073,26 +1087,20 @@ IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Nam
     </span>
     
 </h3>
+<p>Interrupt adalah salah satu fungs dasar pada mikrokontroler yang berguna untuk menginterupsi program utama untuk melakukan proses lain yang lebih penting. Secara teknis, interrupt adalah sinyal yang menginformasikan CPU agar menghentikan apapun yang sedang dilakukan untuk sementara waktu. Setelah itu, Interrupt Service Routine (ISR) akan dijalankan. ISR umumnya ditulis dalam bentuk routine/fungsi. Kemudian, CPU akan kembali melanjutkan proses yang sebelumnya diinterupsi.</p>
 
-<h3 class="relative group">Blocking vs Non-Blocking Process
-    <div id="blocking-vs-non-blocking-process" class="anchor"></div>
+<h3 class="relative group">Blocking Process
+    <div id="blocking-process" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
-        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#blocking-vs-non-blocking-process" aria-label="Anchor">#</a>
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#blocking-process" aria-label="Anchor">#</a>
     </span>
     
 </h3>
-
-<h3 class="relative group">How Regular Polling Handles Blocking Process
-    <div id="how-regular-polling-handles-blocking-process" class="anchor"></div>
-    
-    <span
-        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
-        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#how-regular-polling-handles-blocking-process" aria-label="Anchor">#</a>
-    </span>
-    
-</h3>
+<p>Pertanyaannya, kenapa perlu menggunakan interrupt? Apakah tidak cukup menggunakan if di dalam main loop? Untuk menjawabnya, kita perlu mengingat bahwa sebuah CPU hanya bisa melakukan satu tugas  dalam satu waktu. Sementara itu, proses seperti animasi LED adalah proses yang memakan waktu, sebagian besar waktunya digunakan untuk menunggu beberapa ratus ms agar kita dapat melihat animasinya.</p>
+<p>Misalkan kita menambahkan tombol &lsquo;previous&rsquo;, &rsquo;next&rsquo;, dan &lsquo;restart&rsquo; yang berguna untuk mengontrol animasi mana yang diputar. Tanpa interrupt, jika salah satu tombol ditekan maka kita harus menunggu animasi saat ini selesai baru menjalankan aksi sesuai tombol.</p>
+<p>Dengan interrupt, kita bisa menginterupsi di tengah-tengah proses animasi. Kemudian di dalam ISR, ditentukan animasi mana yang akan dimainkan selanjutnya. Setelah itu, ISR akan kembali ke proses yang diinterupsi. Bedanya, kali ini fungsi tersebut akan dihentikan paksa sehingga iterasi main loop juga akan dihentikan paksa.</p>
 
 <h3 class="relative group">Interrupts in ATMega328P
     <div id="interrupts-in-atmega328p" class="anchor"></div>
@@ -1163,6 +1171,7 @@ IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Nam
     </span>
     
 </h2>
+<p><em>*Catatan: Blog pertama pada seri ini ditulis dalam Bahasa Inggris dengan struktur yang tidak konkrit dan grammar yang kacau serta canggung. Blog tersebut juga tidak memberikan contoh kode yang cukup. Saya memutuskan untuk pindah ke Bahasa Indonesia karena target audiens yang lebih mudah diraih adalah audiens lokal. Pembenaran ketiga, bahwasanya jumlah blog teknis yang ditulis dalam Bahasa Indonesia kalah jauh dibandingkan Bahasa Inggris.</em></p>
 
           
           
