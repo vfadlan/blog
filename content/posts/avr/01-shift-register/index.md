@@ -70,6 +70,7 @@ IC 74HC595 memiliki makna dalam penamaannya. Untuk deskripsi lebih detail Anda d
 * Kode 74 di depan merepresentasikan temperatur operasinya: ![TI TTL Prefix](img/74-prefix-nomen.png)
 * HC adalah singkatan dari Highspeed CMOS, ini adalah kode family line. Terdapat banyak family line lain seperti L (Low Power), C (CMOS), F (Fast), dan masih banyak lagi. Untuk lebih detailnya silakan baca [di sini](https://en.wikipedia.org/wiki/7400-series_integrated_circuits#Families).
 * Sedangkan 595 adalah kode subfamily. Banyak subfamily lain seperti 165 (SIPO SR), 00 (Quad AND Gate), 114 (Dual J-K Flip-Flop), dsb.
+
 IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Namun, perusahaan lain memiliki lisensi untuk memproduksi seri ini. Sehingga, diberikan prefiks untuk memberi keterangan perusahaan yang memproduksinya: ![TTL Manufacturer Prefix](img/74-manprefix-nomen.png)
 
 ## Interrupts
@@ -79,17 +80,52 @@ Interrupt adalah salah satu fungs dasar pada mikrokontroler yang berguna untuk m
 ### Blocking Process
 Pertanyaannya, kenapa perlu menggunakan interrupt? Apakah tidak cukup menggunakan if di dalam main loop? Untuk menjawabnya, kita perlu mengingat bahwa sebuah CPU hanya bisa melakukan satu tugas  dalam satu waktu. Sementara itu, proses seperti animasi LED adalah proses yang memakan waktu, sebagian besar waktunya digunakan untuk menunggu beberapa ratus ms agar kita dapat melihat animasinya. 
 
-Misalkan kita menambahkan tombol 'previous', 'next', dan 'restart' yang berguna untuk mengontrol animasi mana yang diputar. Tanpa interrupt, jika salah satu tombol ditekan maka kita harus menunggu animasi saat ini selesai baru menjalankan aksi sesuai tombol.
+Misalkan kita menambahkan tombol 'previous', 'next', dan 'restart' yang berguna untuk mengontrol animasi mana yang diputar. Tanpa interrupt, jika salah satu tombol ditekan maka tombol itu akan diabakan selama animasi sedang berjalan.
 
 Dengan interrupt, kita bisa menginterupsi di tengah-tengah proses animasi. Kemudian di dalam ISR, ditentukan animasi mana yang akan dimainkan selanjutnya. Setelah itu, ISR akan kembali ke proses yang diinterupsi. Bedanya, kali ini fungsi tersebut akan dihentikan paksa sehingga iterasi main loop juga akan dihentikan paksa.
-### Interrupts in ATMega328P
 
+### Interrupts in ATMega328P
+Pada ATMega328P terdapat beberapa macam interrupt, masing-masing memiliki alamat ISR-nya sendiri. 
+![Interrupt Vector Table of the ATMega328P](img/atmega328p-intvect.png "Macam sumber interrupt, RESET adalah prioritas tertinggi. Diambil dari datasheet ATMega328P.")
+Ketika tombol dengan konfigurasi pull-up resistor ditekan, kondisi pin terkait akan berubah. Maka, untuk menerapkan interrupt, digunakan jenis Pin Change Interrupt (PCINT). Terdapat 3 PCINT (PCINT0-PCINT2), PCINT0 serta PCINT 2 masing-masing menangani 8 pin, dan PCINT1 menangani 7 pin.
+Secara default interrupt tidak digunakan, pemanggilan fungsi `sei()` akan mengaktifkan interrupt secara global. Selanjutnya, untuk mengaktifkan interrupt vector tertentu, perlu memanipulasi register interrupt terkait.
+![EIMSK Register](img/eimsk.png)
+```
+EIMSK |= (1 << INT1);
+```
+Ekspresi di atas akan memodifikasi EIMSK (External Interrupt Mask Register), mengubah 0 menjadi 1 pada bit INT1. Sehingga interrupt vector INT1 menjadi aktif. Ketika terdapat sinyal interrupt INT1 diciptakan, MCU akan segera menjalankan ISR yang sudah didefinisikan:
+```
+ISR (INT1_vect) {
+  // isr tasks
+}
+```
+ISR dapat diinterupsi oleh interrupt vector yang memiliki prioritas lebih tinggi. Contoh, INT1 dapat diinterupsi oleh INT0 dan RESET. 
+
+Proses di dalam ISR sebaiknya dibuat seringkas mungkin. 
 ## Putting it All Together
 ### The Animation
 ### Writing The Bytes to Shift Register
 ### Interrupt for Interface
+```
+#include <avr/interrupt.h>
+int main() {
+  PCICR |= (1 << PCIE2);
+  PCMSK2 |=  (1 << PCINT21) | (1 << PCINT22) | (1 << PCINT23);
+  sei();
+
+  while (1) {
+    // main loop program here
+  }
+}
+```
+Untuk mendefinisikan program dengan interrupt, diperlukan library `<avr/interrupt.h>`. Selanjutnya, terdapat 2 register yang perlu ditangani:
+* `PCICR` (Pin Change Interrupt Control Register)
+
+
 ### Just Watch.
 
 ## Sum Up
 
-_*Catatan: Blog pertama pada seri ini ditulis dalam Bahasa Inggris dengan struktur yang tidak konkrit dan grammar yang kacau serta canggung. Blog tersebut juga tidak memberikan contoh kode yang cukup. Saya memutuskan untuk pindah ke Bahasa Indonesia karena target audiens yang lebih mudah diraih adalah audiens lokal. Pembenaran ketiga, bahwasanya jumlah blog teknis yang ditulis dalam Bahasa Indonesia kalah jauh dibandingkan Bahasa Inggris._
+## Catatan Kaki
+1. Blog pertama pada seri ini ditulis dalam Bahasa Inggris dengan struktur yang tidak konkrit dan grammar yang kacau serta canggung. Blog tersebut juga tidak memberikan contoh kode yang cukup. Saya memutuskan untuk pindah ke Bahasa Indonesia karena target audiens yang lebih mudah diraih adalah audiens lokal. Pembenaran ketiga, bahwasanya jumlah blog teknis yang ditulis dalam Bahasa Indonesia kalah jauh dibandingkan Bahasa Inggris.
+2. Sebelumnya, saya sudah mencoba SN74HC595 tanpa MCU, hanya push button dan led. Hasilnya tidak bisa diprediksi. Hal ini terjadi karena push button akan memberikan sinyal yang "bouncing" (naik turun dari HIGH ke LOW) ketika ditekan. Walaupun bounce tersebut terjadi sangat cepat, namun IC famili HC (High Speed CMOS) sangat sensitif terhadap bouncing. Opsi selain menggunakan MCU adalah dengan menambahkan debouncing circuit, atau menggunakan IC 74HCS595. HCS, High Speed CMOS Schotticky Diode, IC tersebut menambahkan hysteresis sehingga dapat mengabaikan sinyal bouncing lebih dulu sebelum merespon.

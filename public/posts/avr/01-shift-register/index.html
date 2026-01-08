@@ -218,7 +218,7 @@
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "1142"
+    "wordCount": "1440"
   }]
   </script>
 
@@ -561,7 +561,7 @@
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>1142 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">6 mins</span>
+      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>1440 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">7 mins</span>
     
 
     
@@ -1052,8 +1052,9 @@ Berikut adalah penjelasan masing-masing mode:</p>
   href="https://en.wikipedia.org/wiki/7400-series_integrated_circuits#Families"
     target="_blank"
   >di sini</a>.</li>
-<li>Sedangkan 595 adalah kode subfamily. Banyak subfamily lain seperti 165 (SIPO SR), 00 (Quad AND Gate), 114 (Dual J-K Flip-Flop), dsb.
-IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Namun, perusahaan lain memiliki lisensi untuk memproduksi seri ini. Sehingga, diberikan prefiks untuk memberi keterangan perusahaan yang memproduksinya: <figure><img
+<li>Sedangkan 595 adalah kode subfamily. Banyak subfamily lain seperti 165 (SIPO SR), 00 (Quad AND Gate), 114 (Dual J-K Flip-Flop), dsb.</li>
+</ul>
+<p>IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Namun, perusahaan lain memiliki lisensi untuk memproduksi seri ini. Sehingga, diberikan prefiks untuk memberi keterangan perusahaan yang memproduksinya: <figure><img
     class="my-0 rounded-md"
     loading="lazy"
     decoding="async"
@@ -1065,8 +1066,7 @@ IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Nam
     srcset="/posts/avr/01-shift-register/img/74-manprefix-nomen.png 800w, /posts/avr/01-shift-register/img/74-manprefix-nomen.png 1280w"
     sizes="(min-width: 768px) 50vw, 65vw"
     data-zoom-src="/posts/avr/01-shift-register/img/74-manprefix-nomen.png"></figure>
-</li>
-</ul>
+</p>
 
 <h2 class="relative group">Interrupts
     <div id="interrupts" class="anchor"></div>
@@ -1099,7 +1099,7 @@ IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Nam
     
 </h3>
 <p>Pertanyaannya, kenapa perlu menggunakan interrupt? Apakah tidak cukup menggunakan if di dalam main loop? Untuk menjawabnya, kita perlu mengingat bahwa sebuah CPU hanya bisa melakukan satu tugas  dalam satu waktu. Sementara itu, proses seperti animasi LED adalah proses yang memakan waktu, sebagian besar waktunya digunakan untuk menunggu beberapa ratus ms agar kita dapat melihat animasinya.</p>
-<p>Misalkan kita menambahkan tombol &lsquo;previous&rsquo;, &rsquo;next&rsquo;, dan &lsquo;restart&rsquo; yang berguna untuk mengontrol animasi mana yang diputar. Tanpa interrupt, jika salah satu tombol ditekan maka kita harus menunggu animasi saat ini selesai baru menjalankan aksi sesuai tombol.</p>
+<p>Misalkan kita menambahkan tombol &lsquo;previous&rsquo;, &rsquo;next&rsquo;, dan &lsquo;restart&rsquo; yang berguna untuk mengontrol animasi mana yang diputar. Tanpa interrupt, jika salah satu tombol ditekan maka tombol itu akan diabakan selama animasi sedang berjalan.</p>
 <p>Dengan interrupt, kita bisa menginterupsi di tengah-tengah proses animasi. Kemudian di dalam ISR, ditentukan animasi mana yang akan dimainkan selanjutnya. Setelah itu, ISR akan kembali ke proses yang diinterupsi. Bedanya, kali ini fungsi tersebut akan dihentikan paksa sehingga iterasi main loop juga akan dihentikan paksa.</p>
 
 <h3 class="relative group">Interrupts in ATMega328P
@@ -1111,6 +1111,42 @@ IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Nam
     </span>
     
 </h3>
+<p>Pada ATMega328P terdapat beberapa macam interrupt, masing-masing memiliki alamat ISR-nya sendiri.
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="Interrupt Vector Table of the ATMega328P"
+    width="981"
+    height="858"
+    src="/posts/avr/01-shift-register/img/atmega328p-intvect_hu_a5da77b80d055dda.png"
+    srcset="/posts/avr/01-shift-register/img/atmega328p-intvect_hu_a5da77b80d055dda.png 800w, /posts/avr/01-shift-register/img/atmega328p-intvect.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/atmega328p-intvect.png"><figcaption>Macam sumber interrupt, RESET adalah prioritas tertinggi. Diambil dari datasheet ATMega328P.</figcaption></figure>
+
+Ketika tombol dengan konfigurasi pull-up resistor ditekan, kondisi pin terkait akan berubah. Maka, untuk menerapkan interrupt, digunakan jenis Pin Change Interrupt (PCINT). Terdapat 3 PCINT (PCINT0-PCINT2), PCINT0 serta PCINT 2 masing-masing menangani 8 pin, dan PCINT1 menangani 7 pin.
+Secara default interrupt tidak digunakan, pemanggilan fungsi <code>sei()</code> akan mengaktifkan interrupt secara global. Selanjutnya, untuk mengaktifkan interrupt vector tertentu, perlu memanipulasi register interrupt terkait.
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="EIMSK Register"
+    width="1094"
+    height="213"
+    src="/posts/avr/01-shift-register/img/eimsk_hu_d93d096502b70681.png"
+    srcset="/posts/avr/01-shift-register/img/eimsk_hu_d93d096502b70681.png 800w, /posts/avr/01-shift-register/img/eimsk.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/eimsk.png"></figure>
+</p>
+<pre tabindex="0"><code>EIMSK |= (1 &lt;&lt; INT1);
+</code></pre><p>Ekspresi di atas akan memodifikasi EIMSK (External Interrupt Mask Register), mengubah 0 menjadi 1 pada bit INT1. Sehingga interrupt vector INT1 menjadi aktif. Ketika terdapat sinyal interrupt INT1 diciptakan, MCU akan segera menjalankan ISR yang sudah didefinisikan:</p>
+<pre tabindex="0"><code>ISR (INT1_vect) {
+  // isr tasks
+}
+</code></pre><p>ISR dapat diinterupsi oleh interrupt vector yang memiliki prioritas lebih tinggi. Contoh, INT1 dapat diinterupsi oleh INT0 dan RESET.</p>
+<p>Proses di dalam ISR sebaiknya dibuat seringkas mungkin.</p>
 
 <h2 class="relative group">Putting it All Together
     <div id="putting-it-all-together" class="anchor"></div>
@@ -1151,6 +1187,20 @@ IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Nam
     </span>
     
 </h3>
+<pre tabindex="0"><code>#include &lt;avr/interrupt.h&gt;
+int main() {
+  PCICR |= (1 &lt;&lt; PCIE2);
+  PCMSK2 |=  (1 &lt;&lt; PCINT21) | (1 &lt;&lt; PCINT22) | (1 &lt;&lt; PCINT23);
+  sei();
+
+  while (1) {
+    // main loop program here
+  }
+}
+</code></pre><p>Untuk mendefinisikan program dengan interrupt, diperlukan library <code>&lt;avr/interrupt.h&gt;</code>. Selanjutnya, terdapat 2 register yang perlu ditangani:</p>
+<ul>
+<li><code>PCICR</code> (Pin Change Interrupt Control Register)</li>
+</ul>
 
 <h3 class="relative group">Just Watch.
     <div id="just-watch" class="anchor"></div>
@@ -1171,7 +1221,20 @@ IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Nam
     </span>
     
 </h2>
-<p><em>*Catatan: Blog pertama pada seri ini ditulis dalam Bahasa Inggris dengan struktur yang tidak konkrit dan grammar yang kacau serta canggung. Blog tersebut juga tidak memberikan contoh kode yang cukup. Saya memutuskan untuk pindah ke Bahasa Indonesia karena target audiens yang lebih mudah diraih adalah audiens lokal. Pembenaran ketiga, bahwasanya jumlah blog teknis yang ditulis dalam Bahasa Indonesia kalah jauh dibandingkan Bahasa Inggris.</em></p>
+
+<h2 class="relative group">Catatan Kaki
+    <div id="catatan-kaki" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#catatan-kaki" aria-label="Anchor">#</a>
+    </span>
+    
+</h2>
+<ol>
+<li>Blog pertama pada seri ini ditulis dalam Bahasa Inggris dengan struktur yang tidak konkrit dan grammar yang kacau serta canggung. Blog tersebut juga tidak memberikan contoh kode yang cukup. Saya memutuskan untuk pindah ke Bahasa Indonesia karena target audiens yang lebih mudah diraih adalah audiens lokal. Pembenaran ketiga, bahwasanya jumlah blog teknis yang ditulis dalam Bahasa Indonesia kalah jauh dibandingkan Bahasa Inggris.</li>
+<li>Sebelumnya, saya sudah mencoba SN74HC595 tanpa MCU, hanya push button dan led. Hasilnya tidak bisa diprediksi. Hal ini terjadi karena push button akan memberikan sinyal yang &ldquo;bouncing&rdquo; (naik turun dari HIGH ke LOW) ketika ditekan. Walaupun bounce tersebut terjadi sangat cepat, namun IC famili HC (High Speed CMOS) sangat sensitif terhadap bouncing. Opsi selain menggunakan MCU adalah dengan menambahkan debouncing circuit, atau menggunakan IC 74HCS595. HCS, High Speed CMOS Schotticky Diode, IC tersebut menambahkan hysteresis sehingga dapat mengabaikan sinyal bouncing lebih dulu sebelum merespon.</li>
+</ol>
 
           
           
