@@ -7,6 +7,27 @@ title: Animating LEDs with Shift Register
 series: ["AVR"]
 series_order: 1
 ---
+## Table of Contents
+1. [Intro](#intro)
+2. [Shift Register](#shift-register)
+3. [IC SN74HC595](#ic-sn74hc595)  
+  a. [↳Overview](#overview)  
+  b. [↳Pin Descriptions](#pin-descriptions)  
+  c. [↳Functional Characteristics](#functional-characteristics)  
+  d. [↳Nomenclature of the 7400 series IC (trivia)](#nomenclature-of-the-7400-series-ic-opsional)
+4. [Interrupts](#interrupts)  
+  a. [↳A Brief Description](#a-brief-description)  
+  b. [↳Blocking Process](#blocking-process)  
+  c. [↳Interrupts in ATMega328P](#interrupts-in-atmega328p)  
+5. [Putting it All Together](#putting-it-all-together)  
+  a. [↳Writing Bytes to the Shift Register](#writing-bytes-to-the-shift-register)
+  b. [↳The Animation](#the-animation)  
+  c. [↳Interrupt for Interface](#interrupt-for-interface)  
+  d. [↳Result](#result)
+6. [Conclusion](#conclusion)
+7. [References and Further Reading](#references-and-further-reading)
+8. [Foot Notes](#foot-notes)
+## Intro
 Di blog kali ini, kita akan membahas tentang bagaimana menganimasikan 8 LED dengan shift register. Sebelum lanjut, saya mengasumsikan pembaca sudah memahami beberapa hal dasar tentang register, kita akan membahas ini berulang kali kedepannya. Jika ingin tahu, silakan baca blog sebelumnya atau sumber lain.
 {{< article link="/posts/avr/00-hello/" showSummary=true compactSummary=true >}}
 
@@ -25,7 +46,7 @@ Terdapat dua jenis shift register: Serial In Parallel Out (SIPO), dan Parallel I
 
 _Catatan: Mulai sekarang sampai blog ini selesai, SR berarti Shift Register. Perlu diingat bahwa terdapat makna lain dari SR._
 
-## 74HC595 IC
+## IC SN74HC595
 ### Overview
 ![Shift Register Illustration](img/working-sr.gif "Ilustrasi shift register, sumber lastminuteengineers.com")
 74HC595 adalah Integrated Circuit yang berguna untuk mengubah input serial menjadi output paralel (SIPO) dengan kapasitas maksimal 8-bit. Di dalamnya, terdapat dua macam register:
@@ -65,7 +86,7 @@ Berikut adalah penjelasan masing-masing mode:
 * Fungsi 6, ketika RCLK diberi sinyal clock (rising edge), data di dalam SR akan disalin ke storage register.
 
 Jadi, koneksi ke MCU yang perlu ditentukan adalah untuk pin SER, SRCLK, dan RCLK. Sedangkan untuk pin output, masing-masing pin dihubungkan ke katoda LED. Untuk pin lain, OE dihubungkan ke ground, dan SRCLR dihubungkan ke VCC.
-### Nomenclature of the 7400 series IC (opsional)
+### Nomenclature of the 7400 series IC (trivia)
 IC 74HC595 memiliki makna dalam penamaannya. Untuk deskripsi lebih detail Anda dapat meninjau laman Wikipedia berikut: [7400-series Integrated Circuits](https://en.wikipedia.org/wiki/7400-series_integrated_circuits). Berikut adalah ringkasannya:
 * Kode 74 di depan merepresentasikan temperatur operasinya: ![TI TTL Prefix](img/74-prefix-nomen.png)
 * HC adalah singkatan dari Highspeed CMOS, ini adalah kode family line. Terdapat banyak family line lain seperti L (Low Power), C (CMOS), F (Fast), dan masih banyak lagi. Untuk lebih detailnya silakan baca [di sini](https://en.wikipedia.org/wiki/7400-series_integrated_circuits#Families).
@@ -87,26 +108,97 @@ Dengan interrupt, kita bisa menginterupsi di tengah-tengah proses animasi. Kemud
 ### Interrupts in ATMega328P
 Pada ATMega328P terdapat beberapa macam interrupt, masing-masing memiliki alamat ISR-nya sendiri. 
 ![Interrupt Vector Table of the ATMega328P](img/atmega328p-intvect.png "Macam sumber interrupt, RESET adalah prioritas tertinggi. Diambil dari datasheet ATMega328P.")
-Ketika tombol dengan konfigurasi pull-up resistor ditekan, kondisi pin terkait akan berubah. Maka, untuk menerapkan interrupt, digunakan jenis Pin Change Interrupt (PCINT). Terdapat 3 PCINT (PCINT0-PCINT2), PCINT0 serta PCINT 2 masing-masing menangani 8 pin, dan PCINT1 menangani 7 pin.
-Secara default interrupt tidak digunakan, pemanggilan fungsi `sei()` akan mengaktifkan interrupt secara global. Selanjutnya, untuk mengaktifkan interrupt vector tertentu, perlu memanipulasi register interrupt terkait.
+Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondisi pin terkait akan berubah. Maka, untuk menerapkan interrupt, digunakan jenis Pin Change Interrupt (PCINT). Terdapat 3 PCINT (PCINT0-PCINT2), PCINT0 serta PCINT 2 masing-masing menangani 8 pin, dan PCINT1 menangani 7 pin.
+
+Untuk menggunakan fitur interrupt, sertakan library `<avr/interrupt.h>`. Secara default interrupt tidak aktif, untuk mengaktifkan interrupt global, pangggil fungsi `sei()`. Selanjutnya, untuk mengaktifkan interrupt vector spesifik, register interrupt terkait perlu dimanipulasi.
+
 ![EIMSK Register](img/eimsk.png)
-```
+```c
 EIMSK |= (1 << INT1);
+sei();
 ```
-Ekspresi di atas akan memodifikasi EIMSK (External Interrupt Mask Register), mengubah 0 menjadi 1 pada bit INT1. Sehingga interrupt vector INT1 menjadi aktif. Ketika terdapat sinyal interrupt INT1 diciptakan, MCU akan segera menjalankan ISR yang sudah didefinisikan:
-```
+Ekspresi di atas akan memodifikasi EIMSK (External Interrupt Mask Register), mengubah 0 menjadi 1 pada bit INT1. Sehingga interrupt vector INT1 menjadi aktif. Pemanggilan fungsi `sei()` akan mengaktifkan interrupt secara global. 
+
+Ketika terdapat sinyal interrupt INT1 diciptakan, MCU akan segera menjalankan ISR yang sudah didefinisikan:
+```c
 ISR (INT1_vect) {
   // isr tasks
 }
 ```
-ISR dapat diinterupsi oleh interrupt vector yang memiliki prioritas lebih tinggi. Contoh, INT1 dapat diinterupsi oleh INT0 dan RESET. 
+ISR dapat diinterupsi oleh interrupt vector yang memiliki prioritas lebih tinggi. Contoh, INT1 dapat diinterupsi oleh INT0 dan RESET.
 
-Proses di dalam ISR sebaiknya dibuat seringkas mungkin. 
+Proses di dalam ISR sebaiknya dibuat seringkas mungkin. Salah satu cara untuk mempersingkatnya adalah menggunakan variable sebagai flag. Ketika sinyal interrupt diberikan, ISR mengisi flag dengan nilai `true`. Flag tersebut akan dievaluasi menggunakan control-flow sebelum mengeksekusi suatu proses.
 ## Putting it All Together
-### The Animation
-### Writing The Bytes to Shift Register
-### Interrupt for Interface
+### Writing Bytes to the Shift Register
+Sebuah LED dapat direpresentasikan sebagai satu bit, delapan LED direpresentasikan menjadi delapan bit atau satu byte. Delapan LED tersebut selanjutnya dihubungkan ke output parallel IC shift register, SN74HC595. Sekarang, kita perlu mencari cara untuk mengirimkan data secara serial ke dalam IC tersebut.
+
+Dengan mengabaikan pin-pin output dan pin lain yang terhubung ke ground atau VCC, berikut adalah pin yang tersisa dan perlu dihubungkan ke ATMega328P:
+1. SRCLK (11) ke PD0 (2),
+2. RCLK (12) ke PD1 (3), dan
+3. SER (14) ke PD2 (4).
+
+Pin-pin di atas digunakan dalam fungsi-fungsi primer yang melakukan: bit shifting, trigger SR clock, latch SR ke output.
+
+_*Catatan: Nomor pin SN74HC595 mengacu package DIP-16, dan ATMega328P DIP-28_
+```c
+#define SER PD0
+#define R_CLK PD1
+#define SR_CLK PD2
+
+void tick(void) {
+  PORTD |= (1 << SR_CLK);
+  _delay_ms(1);
+  PORTD &= (~(1 << SR_CLK));
+}
 ```
+Ketika routine `tick()` dieksekusi, data shift register akan digeser dengan nilai bit ke-0 mengikuti nilai `SER` atau `PD0` pada saat fungsi dieksekusi. Hal ini sesuai dengan karakteristik SR pada datasheet yang [sudah kita bahas](#functional-characteristics).
+```c
+void shift_bit(bool bit) {
+  if (bit)    PORTD |= (1 << SER);
+  else        PORTD &= (~(1 << SER));
+
+  tick();
+}
+```
+Fungsi `shift_bit(bool bit)` menerima boolean sebagai parameter. Boolean tersebut dijadikan sebagai nilai `PD0`. Setelah nilai `PD0` diubah, fungsi `tick()` dipanggil sehingga bit ke-0 pada SR ditentukan oleh parameter `bit`.
+```c
+bool latch(void) {
+  if (restart_requested) {
+    restart_requested = false;
+    return false;
+  }
+
+  PORTD |= (1 << R_CLK);
+  _delay_ms(1);
+  PORTD &= (~(1 << R_CLK));
+  return true;
+}
+```
+Fokus ke bawah terlebih dahulu, fungsi `latch()` akan menyalakan `R_CLK` atau `PD1` selama 1ms. Sesuai datasheet, high pada `RCLK` akan menyalin data pada SR ke storage register yang menyimpan nilai output.
+
+Kembali ke atas. Di dalam fungsi `latch()`, `restart_requested` yang merupakan variable flag akan diperiksa. Jika bernilai `true`, flag tersebut akan dikembalikan ke nilai defaultnya. Setelah itu menghentikan eksekusi fungsi `latch()` dengan `return false;`.
+
+Proses serupa terjadi secara bertumpuk/bersarang, fungsi yang memanggil `latch()` dan mendapatkan nilai `false` akan mengakhiri dirinya dengan mengembalikan nilai `false`. Dan seterusnya.
+
+Sehingga ketika sinyal interrupt diberikan, semua proses secara instan akan terhenti dan memulai ulang _main-loop_ untuk memulai animasi sebelumnya, selanjutnya, atau memulai ulang animasi saat ini.
+
+```c
+bool sr_write(uint8_t data) {
+  for (int i=0; i<8; i++) {
+    shift_bit(data & 0x80);
+    data <<= 1;
+  }
+  return latch();
+}
+```
+Fungsi `sr_write(uint8_t data)` menerima parameter `data` yang berukuran 8-bit. Fungsi tersebut memasukkan data bit-demi-bit ke dalam SR dimulai dari _Most Significant Bit_ (MSB First).
+
+Di dalam setiap iterasi for, bit paling kiri (`data & 0x80`) dimasukkan ke dalam SR. Selanjutnya, variabel `data` akan digeser 1 posisi ke kiri.
+
+Setelah semua bit dimasukkan ke dalam SR, fungsi `latch() dipanggil.
+### The Animation
+### Interrupt for Interface
+```c
 #include <avr/interrupt.h>
 int main() {
   PCICR |= (1 << PCIE2);
@@ -122,10 +214,7 @@ Untuk mendefinisikan program dengan interrupt, diperlukan library `<avr/interrup
 * `PCICR` (Pin Change Interrupt Control Register)
 
 
-### Just Watch.
+### Result
 
-## Sum Up
-
-## Catatan Kaki
-1. Blog pertama pada seri ini ditulis dalam Bahasa Inggris dengan struktur yang tidak konkrit dan grammar yang kacau serta canggung. Blog tersebut juga tidak memberikan contoh kode yang cukup. Saya memutuskan untuk pindah ke Bahasa Indonesia karena target audiens yang lebih mudah diraih adalah audiens lokal. Pembenaran ketiga, bahwasanya jumlah blog teknis yang ditulis dalam Bahasa Indonesia kalah jauh dibandingkan Bahasa Inggris.
-2. Sebelumnya, saya sudah mencoba SN74HC595 tanpa MCU, hanya push button dan led. Hasilnya tidak bisa diprediksi. Hal ini terjadi karena push button akan memberikan sinyal yang "bouncing" (naik turun dari HIGH ke LOW) ketika ditekan. Walaupun bounce tersebut terjadi sangat cepat, namun IC famili HC (High Speed CMOS) sangat sensitif terhadap bouncing. Opsi selain menggunakan MCU adalah dengan menambahkan debouncing circuit, atau menggunakan IC 74HCS595. HCS, High Speed CMOS Schotticky Diode, IC tersebut menambahkan hysteresis sehingga dapat mengabaikan sinyal bouncing lebih dulu sebelum merespon.
+## Conclusion
+## References and Further Reading

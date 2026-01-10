@@ -218,7 +218,7 @@
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "1440"
+    "wordCount": "1838"
   }]
   </script>
 
@@ -561,7 +561,7 @@
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>1440 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">7 mins</span>
+      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>1838 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">9 mins</span>
     
 
     
@@ -669,7 +669,67 @@
 
 
         <div class="article-content max-w-prose mb-20">
-          <p>Di blog kali ini, kita akan membahas tentang bagaimana menganimasikan 8 LED dengan shift register. Sebelum lanjut, saya mengasumsikan pembaca sudah memahami beberapa hal dasar tentang register, kita akan membahas ini berulang kali kedepannya. Jika ingin tahu, silakan baca blog sebelumnya atau sumber lain.
+          
+<h2 class="relative group">Table of Contents
+    <div id="table-of-contents" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#table-of-contents" aria-label="Anchor">#</a>
+    </span>
+    
+</h2>
+<ol>
+<li><a
+  href="#intro">Intro</a></li>
+<li><a
+  href="#shift-register">Shift Register</a></li>
+<li><a
+  href="#ic-sn74hc595">IC SN74HC595</a><br>
+a. <a
+  href="#overview">↳Overview</a><br>
+b. <a
+  href="#pin-descriptions">↳Pin Descriptions</a><br>
+c. <a
+  href="#functional-characteristics">↳Functional Characteristics</a><br>
+d. <a
+  href="#nomenclature-of-the-7400-series-ic-opsional">↳Nomenclature of the 7400 series IC (trivia)</a></li>
+<li><a
+  href="#interrupts">Interrupts</a><br>
+a. <a
+  href="#a-brief-description">↳A Brief Description</a><br>
+b. <a
+  href="#blocking-process">↳Blocking Process</a><br>
+c. <a
+  href="#interrupts-in-atmega328p">↳Interrupts in ATMega328P</a></li>
+<li><a
+  href="#putting-it-all-together">Putting it All Together</a><br>
+a. <a
+  href="#writing-bytes-to-the-shift-register">↳Writing Bytes to the Shift Register</a>
+b. <a
+  href="#the-animation">↳The Animation</a><br>
+c. <a
+  href="#interrupt-for-interface">↳Interrupt for Interface</a><br>
+d. <a
+  href="#result">↳Result</a></li>
+<li><a
+  href="#conclusion">Conclusion</a></li>
+<li><a
+  href="#references-and-further-reading">References and Further Reading</a></li>
+<li><a
+  href="#foot-notes">Foot Notes</a></li>
+</ol>
+
+<h2 class="relative group">Intro
+    <div id="intro" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#intro" aria-label="Anchor">#</a>
+    </span>
+    
+</h2>
+<p>Di blog kali ini, kita akan membahas tentang bagaimana menganimasikan 8 LED dengan shift register. Sebelum lanjut, saya mengasumsikan pembaca sudah memahami beberapa hal dasar tentang register, kita akan membahas ini berulang kali kedepannya. Jika ingin tahu, silakan baca blog sebelumnya atau sumber lain.
 
 
 
@@ -865,12 +925,12 @@
 <p>Terdapat dua jenis shift register: Serial In Parallel Out (SIPO), dan Parallel In Serial Out (PISO). Yang akan kita gunakan adalah SIPO karena kita ingin mengurangi penggunaan pin MCU.</p>
 <p><em>Catatan: Mulai sekarang sampai blog ini selesai, SR berarti Shift Register. Perlu diingat bahwa terdapat makna lain dari SR.</em></p>
 
-<h2 class="relative group">74HC595 IC
-    <div id="74hc595-ic" class="anchor"></div>
+<h2 class="relative group">IC SN74HC595
+    <div id="ic-sn74hc595" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
-        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#74hc595-ic" aria-label="Anchor">#</a>
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#ic-sn74hc595" aria-label="Anchor">#</a>
     </span>
     
 </h2>
@@ -1021,12 +1081,12 @@ Berikut adalah penjelasan masing-masing mode:</p>
 </ul>
 <p>Jadi, koneksi ke MCU yang perlu ditentukan adalah untuk pin SER, SRCLK, dan RCLK. Sedangkan untuk pin output, masing-masing pin dihubungkan ke katoda LED. Untuk pin lain, OE dihubungkan ke ground, dan SRCLR dihubungkan ke VCC.</p>
 
-<h3 class="relative group">Nomenclature of the 7400 series IC (opsional)
-    <div id="nomenclature-of-the-7400-series-ic-opsional" class="anchor"></div>
+<h3 class="relative group">Nomenclature of the 7400 series IC (trivia)
+    <div id="nomenclature-of-the-7400-series-ic-trivia" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
-        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#nomenclature-of-the-7400-series-ic-opsional" aria-label="Anchor">#</a>
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#nomenclature-of-the-7400-series-ic-trivia" aria-label="Anchor">#</a>
     </span>
     
 </h3>
@@ -1125,8 +1185,8 @@ Berikut adalah penjelasan masing-masing mode:</p>
     sizes="(min-width: 768px) 50vw, 65vw"
     data-zoom-src="/posts/avr/01-shift-register/img/atmega328p-intvect.png"><figcaption>Macam sumber interrupt, RESET adalah prioritas tertinggi. Diambil dari datasheet ATMega328P.</figcaption></figure>
 
-Ketika tombol dengan konfigurasi pull-up resistor ditekan, kondisi pin terkait akan berubah. Maka, untuk menerapkan interrupt, digunakan jenis Pin Change Interrupt (PCINT). Terdapat 3 PCINT (PCINT0-PCINT2), PCINT0 serta PCINT 2 masing-masing menangani 8 pin, dan PCINT1 menangani 7 pin.
-Secara default interrupt tidak digunakan, pemanggilan fungsi <code>sei()</code> akan mengaktifkan interrupt secara global. Selanjutnya, untuk mengaktifkan interrupt vector tertentu, perlu memanipulasi register interrupt terkait.
+Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondisi pin terkait akan berubah. Maka, untuk menerapkan interrupt, digunakan jenis Pin Change Interrupt (PCINT). Terdapat 3 PCINT (PCINT0-PCINT2), PCINT0 serta PCINT 2 masing-masing menangani 8 pin, dan PCINT1 menangani 7 pin.</p>
+<p>Untuk menggunakan fitur interrupt, sertakan library <code>&lt;avr/interrupt.h&gt;</code>. Secara default interrupt tidak aktif, untuk mengaktifkan interrupt global, pangggil fungsi <code>sei()</code>. Selanjutnya, untuk mengaktifkan interrupt vector spesifik, register interrupt terkait perlu dimanipulasi.</p>
 <figure><img
     class="my-0 rounded-md"
     loading="lazy"
@@ -1139,14 +1199,15 @@ Secara default interrupt tidak digunakan, pemanggilan fungsi <code>sei()</code> 
     srcset="/posts/avr/01-shift-register/img/eimsk_hu_d93d096502b70681.png 800w, /posts/avr/01-shift-register/img/eimsk.png 1280w"
     sizes="(min-width: 768px) 50vw, 65vw"
     data-zoom-src="/posts/avr/01-shift-register/img/eimsk.png"></figure>
-</p>
-<pre tabindex="0"><code>EIMSK |= (1 &lt;&lt; INT1);
-</code></pre><p>Ekspresi di atas akan memodifikasi EIMSK (External Interrupt Mask Register), mengubah 0 menjadi 1 pada bit INT1. Sehingga interrupt vector INT1 menjadi aktif. Ketika terdapat sinyal interrupt INT1 diciptakan, MCU akan segera menjalankan ISR yang sudah didefinisikan:</p>
-<pre tabindex="0"><code>ISR (INT1_vect) {
-  // isr tasks
-}
-</code></pre><p>ISR dapat diinterupsi oleh interrupt vector yang memiliki prioritas lebih tinggi. Contoh, INT1 dapat diinterupsi oleh INT0 dan RESET.</p>
-<p>Proses di dalam ISR sebaiknya dibuat seringkas mungkin.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">EIMSK</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">INT1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">sei</span><span class="p">();</span>
+</span></span></code></pre></div><p>Ekspresi di atas akan memodifikasi EIMSK (External Interrupt Mask Register), mengubah 0 menjadi 1 pada bit INT1. Sehingga interrupt vector INT1 menjadi aktif. Pemanggilan fungsi <code>sei()</code> akan mengaktifkan interrupt secara global.</p>
+<p>Ketika terdapat sinyal interrupt INT1 diciptakan, MCU akan segera menjalankan ISR yang sudah didefinisikan:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">ISR</span> <span class="p">(</span><span class="n">INT1_vect</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// isr tasks
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></div><p>ISR dapat diinterupsi oleh interrupt vector yang memiliki prioritas lebih tinggi. Contoh, INT1 dapat diinterupsi oleh INT0 dan RESET.</p>
+<p>Proses di dalam ISR sebaiknya dibuat seringkas mungkin. Salah satu cara untuk mempersingkatnya adalah menggunakan variable sebagai flag. Ketika sinyal interrupt diberikan, ISR mengisi flag dengan nilai <code>true</code>. Flag tersebut akan dievaluasi menggunakan control-flow sebelum mengeksekusi suatu proses.</p>
 
 <h2 class="relative group">Putting it All Together
     <div id="putting-it-all-together" class="anchor"></div>
@@ -1158,22 +1219,74 @@ Secara default interrupt tidak digunakan, pemanggilan fungsi <code>sei()</code> 
     
 </h2>
 
+<h3 class="relative group">Writing Bytes to the Shift Register
+    <div id="writing-bytes-to-the-shift-register" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#writing-bytes-to-the-shift-register" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+<p>Sebuah LED dapat direpresentasikan sebagai satu bit, delapan LED direpresentasikan menjadi delapan bit atau satu byte. Delapan LED tersebut selanjutnya dihubungkan ke output parallel IC shift register, SN74HC595. Sekarang, kita perlu mencari cara untuk mengirimkan data secara serial ke dalam IC tersebut.</p>
+<p>Dengan mengabaikan pin-pin output dan pin lain yang terhubung ke ground atau VCC, berikut adalah pin yang tersisa dan perlu dihubungkan ke ATMega328P:</p>
+<ol>
+<li>SRCLK (11) ke PD0 (2),</li>
+<li>RCLK (12) ke PD1 (3), dan</li>
+<li>SER (14) ke PD2 (4).</li>
+</ol>
+<p>Pin-pin di atas digunakan dalam fungsi-fungsi primer yang melakukan: bit shifting, trigger SR clock, latch SR ke output.</p>
+<p><em>*Catatan: Nomor pin SN74HC595 mengacu package DIP-16, dan ATMega328P DIP-28</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define SER PD0
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define R_CLK PD1
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define SR_CLK PD2
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">tick</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">PORTD</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SR_CLK</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">_delay_ms</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">PORTD</span> <span class="o">&amp;=</span> <span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SR_CLK</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Ketika routine <code>tick()</code> dieksekusi, data shift register akan digeser dengan nilai bit ke-0 mengikuti nilai <code>SER</code> atau <code>PD0</code> pada saat fungsi dieksekusi. Hal ini sesuai dengan karakteristik SR pada datasheet yang <a
+  href="#functional-characteristics">sudah kita bahas</a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">shift_bit</span><span class="p">(</span><span class="kt">bool</span> <span class="n">bit</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">bit</span><span class="p">)</span>    <span class="n">PORTD</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SER</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span>        <span class="n">PORTD</span> <span class="o">&amp;=</span> <span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SER</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nf">tick</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Fungsi <code>shift_bit(bool bit)</code> menerima boolean sebagai parameter. Boolean tersebut dijadikan sebagai nilai <code>PD0</code>. Setelah nilai <code>PD0</code> diubah, fungsi <code>tick()</code> dipanggil sehingga bit ke-0 pada SR ditentukan oleh parameter <code>bit</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">latch</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">restart_requested</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">restart_requested</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">PORTD</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">R_CLK</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">_delay_ms</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">PORTD</span> <span class="o">&amp;=</span> <span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">R_CLK</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Fokus ke bawah terlebih dahulu, fungsi <code>latch()</code> akan menyalakan <code>R_CLK</code> atau <code>PD1</code> selama 1ms. Sesuai datasheet, high pada <code>RCLK</code> akan menyalin data pada SR ke storage register yang menyimpan nilai output.</p>
+<p>Kembali ke atas. Di dalam fungsi <code>latch()</code>, <code>restart_requested</code> yang merupakan variable flag akan diperiksa. Jika bernilai <code>true</code>, flag tersebut akan dikembalikan ke nilai defaultnya. Setelah itu menghentikan eksekusi fungsi <code>latch()</code> dengan <code>return false;</code>.</p>
+<p>Proses serupa terjadi secara bertumpuk/bersarang, fungsi yang memanggil <code>latch()</code> dan mendapatkan nilai <code>false</code> akan mengakhiri dirinya dengan mengembalikan nilai <code>false</code>. Dan seterusnya.</p>
+<p>Sehingga ketika sinyal interrupt diberikan, semua proses secara instan akan terhenti dan memulai ulang <em>main-loop</em> untuk memulai animasi sebelumnya, selanjutnya, atau memulai ulang animasi saat ini.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">sr_write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">shift_bit</span><span class="p">(</span><span class="n">data</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nf">latch</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Fungsi <code>sr_write(uint8_t data)</code> menerima parameter <code>data</code> yang berukuran 8-bit. Fungsi tersebut memasukkan data bit-demi-bit ke dalam SR dimulai dari <em>Most Significant Bit</em> (MSB First).</p>
+<p>Di dalam setiap iterasi for, bit paling kiri (<code>data &amp; 0x80</code>) dimasukkan ke dalam SR. Selanjutnya, variabel <code>data</code> akan digeser 1 posisi ke kiri.</p>
+<p>Setelah semua bit dimasukkan ke dalam SR, fungsi `latch() dipanggil.</p>
+
 <h3 class="relative group">The Animation
     <div id="the-animation" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
         <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#the-animation" aria-label="Anchor">#</a>
-    </span>
-    
-</h3>
-
-<h3 class="relative group">Writing The Bytes to Shift Register
-    <div id="writing-the-bytes-to-shift-register" class="anchor"></div>
-    
-    <span
-        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
-        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#writing-the-bytes-to-shift-register" aria-label="Anchor">#</a>
     </span>
     
 </h3>
@@ -1187,54 +1300,50 @@ Secara default interrupt tidak digunakan, pemanggilan fungsi <code>sei()</code> 
     </span>
     
 </h3>
-<pre tabindex="0"><code>#include &lt;avr/interrupt.h&gt;
-int main() {
-  PCICR |= (1 &lt;&lt; PCIE2);
-  PCMSK2 |=  (1 &lt;&lt; PCINT21) | (1 &lt;&lt; PCINT22) | (1 &lt;&lt; PCINT23);
-  sei();
-
-  while (1) {
-    // main loop program here
-  }
-}
-</code></pre><p>Untuk mendefinisikan program dengan interrupt, diperlukan library <code>&lt;avr/interrupt.h&gt;</code>. Selanjutnya, terdapat 2 register yang perlu ditangani:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;avr/interrupt.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">PCICR</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCIE2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">PCMSK2</span> <span class="o">|=</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCINT21</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCINT22</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCINT23</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">sei</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// main loop program here
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Untuk mendefinisikan program dengan interrupt, diperlukan library <code>&lt;avr/interrupt.h&gt;</code>. Selanjutnya, terdapat 2 register yang perlu ditangani:</p>
 <ul>
 <li><code>PCICR</code> (Pin Change Interrupt Control Register)</li>
 </ul>
 
-<h3 class="relative group">Just Watch.
-    <div id="just-watch" class="anchor"></div>
+<h3 class="relative group">Result
+    <div id="result" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
-        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#just-watch" aria-label="Anchor">#</a>
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#result" aria-label="Anchor">#</a>
     </span>
     
 </h3>
 
-<h2 class="relative group">Sum Up
-    <div id="sum-up" class="anchor"></div>
+<h2 class="relative group">Conclusion
+    <div id="conclusion" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
-        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#sum-up" aria-label="Anchor">#</a>
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#conclusion" aria-label="Anchor">#</a>
     </span>
     
 </h2>
 
-<h2 class="relative group">Catatan Kaki
-    <div id="catatan-kaki" class="anchor"></div>
+<h2 class="relative group">References and Further Reading
+    <div id="references-and-further-reading" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
-        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#catatan-kaki" aria-label="Anchor">#</a>
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#references-and-further-reading" aria-label="Anchor">#</a>
     </span>
     
 </h2>
-<ol>
-<li>Blog pertama pada seri ini ditulis dalam Bahasa Inggris dengan struktur yang tidak konkrit dan grammar yang kacau serta canggung. Blog tersebut juga tidak memberikan contoh kode yang cukup. Saya memutuskan untuk pindah ke Bahasa Indonesia karena target audiens yang lebih mudah diraih adalah audiens lokal. Pembenaran ketiga, bahwasanya jumlah blog teknis yang ditulis dalam Bahasa Indonesia kalah jauh dibandingkan Bahasa Inggris.</li>
-<li>Sebelumnya, saya sudah mencoba SN74HC595 tanpa MCU, hanya push button dan led. Hasilnya tidak bisa diprediksi. Hal ini terjadi karena push button akan memberikan sinyal yang &ldquo;bouncing&rdquo; (naik turun dari HIGH ke LOW) ketika ditekan. Walaupun bounce tersebut terjadi sangat cepat, namun IC famili HC (High Speed CMOS) sangat sensitif terhadap bouncing. Opsi selain menggunakan MCU adalah dengan menambahkan debouncing circuit, atau menggunakan IC 74HCS595. HCS, High Speed CMOS Schotticky Diode, IC tersebut menambahkan hysteresis sehingga dapat mengabaikan sinyal bouncing lebih dulu sebelum merespon.</li>
-</ol>
 
           
           
