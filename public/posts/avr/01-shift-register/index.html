@@ -218,7 +218,7 @@
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "1838"
+    "wordCount": "2136"
   }]
   </script>
 
@@ -561,7 +561,7 @@
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>1838 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">9 mins</span>
+      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>2136 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">11 mins</span>
     
 
     
@@ -705,7 +705,7 @@ c. <a
 <li><a
   href="#putting-it-all-together">Putting it All Together</a><br>
 a. <a
-  href="#writing-bytes-to-the-shift-register">↳Writing Bytes to the Shift Register</a>
+  href="#writing-bytes-to-the-shift-register">↳Writing Bytes to the Shift Register</a><br>
 b. <a
   href="#the-animation">↳The Animation</a><br>
 c. <a
@@ -729,7 +729,7 @@ d. <a
     </span>
     
 </h2>
-<p>Di blog kali ini, kita akan membahas tentang bagaimana menganimasikan 8 LED dengan shift register. Sebelum lanjut, saya mengasumsikan pembaca sudah memahami beberapa hal dasar tentang register, kita akan membahas ini berulang kali kedepannya. Jika ingin tahu, silakan baca blog sebelumnya atau sumber lain.
+<p>Di blog kali ini, kita akan membahas tentang bagaimana menganimasikan 8 LED dengan shift register. Sebelum lanjut, saya mengasumsikan pembaca sudah memahami beberapa hal dasar tentang register, kita segera menemui ini berulang kali kedepannya. Jika ingin tahu, silakan baca blog sebelumnya atau sumber lain.
 
 
 
@@ -921,7 +921,7 @@ d. <a
     
 </h2>
 <p>Kata &ldquo;register&rdquo; pada shift register secara konsep sama saja seperti register yang ada pada MCU. Register is register. Yang membedakan adalah kata &ldquo;shift&rdquo; (geser). Jadi, shift register adalah salah satu jenis register yang bisa menggeser data di dalamnya dari bit 0 ke bit 1, bit 1 ke bit 2, dan seterusnya ketika diberi sinyal clock.</p>
-<p>Di dalam MCU juga terdapat internal shift register, tapi kali ini kita akan membahas tentang external shift register dalam bentuk Integrated Circuit (IC). Karena ini eksternal, satu-satunya cara untuk memanipulasi register adalah dengan mengirimkan sinyal elektrik HIGH dan LOW. Alih-alih melakukan assignment seperti <code>PORTB = 0x3F;</code> pada program MCU.</p>
+<p>Di dalam MCU juga terdapat internal shift register, tapi kali ini kita hanya membahas tentang external shift register dalam bentuk Integrated Circuit (IC). Karena ini eksternal, satu-satunya cara untuk memanipulasi register adalah dengan mengirimkan sinyal elektrik HIGH dan LOW. Alih-alih melakukan assignment seperti <code>PORTB = 0x3F;</code> pada program MCU.</p>
 <p>Terdapat dua jenis shift register: Serial In Parallel Out (SIPO), dan Parallel In Serial Out (PISO). Yang akan kita gunakan adalah SIPO karena kita ingin mengurangi penggunaan pin MCU.</p>
 <p><em>Catatan: Mulai sekarang sampai blog ini selesai, SR berarti Shift Register. Perlu diingat bahwa terdapat makna lain dari SR.</em></p>
 
@@ -1075,7 +1075,7 @@ Berikut adalah penjelasan masing-masing mode:</p>
 <ul>
 <li>Fungsi 1 dan 2, untuk mengaktifkan pin output (Qa-Qh), pin OE harus disambungkan ke ground.</li>
 <li>Fungsi 3, kita perlu menghubungkan pin SRCLR ke VCC agar SR tidak di-clear.</li>
-<li>Fungsi 4, ketika SER bernilai LOW, SRCLR HIGH, dan memberi SRCLK sinyal clock: SR akan bergeser dan bit pertama akan bernilai 0.</li>
+<li>Fungsi 4, ketika SER bernilai LOW, SRCLR HIGH, dan memberi SRCLK sinyal clock: SR akan bergeser dan bit pertama bernilai 0.</li>
 <li>Fungsi 5, Sama seperti sebelumnya, namun SER bernilai HIGH sehingga SR bergeser dan bit pertama bernilai 1.</li>
 <li>Fungsi 6, ketika RCLK diberi sinyal clock (rising edge), data di dalam SR akan disalin ke storage register.</li>
 </ul>
@@ -1147,7 +1147,7 @@ Berikut adalah penjelasan masing-masing mode:</p>
     </span>
     
 </h3>
-<p>Interrupt adalah salah satu fungs dasar pada mikrokontroler yang berguna untuk menginterupsi program utama untuk melakukan proses lain yang lebih penting. Secara teknis, interrupt adalah sinyal yang menginformasikan CPU agar menghentikan apapun yang sedang dilakukan untuk sementara waktu. Setelah itu, Interrupt Service Routine (ISR) akan dijalankan. ISR umumnya ditulis dalam bentuk routine/fungsi. Kemudian, CPU akan kembali melanjutkan proses yang sebelumnya diinterupsi.</p>
+<p>Interrupt adalah salah satu fungs dasar pada mikrokontroler yang berguna untuk menginterupsi program utama untuk melakukan proses lain yang lebih penting. Secara teknis, interrupt adalah sinyal yang menginformasikan CPU agar menghentikan apapun yang sedang dilakukan untuk sementara waktu. Setelah itu, Interrupt Service Routine (ISR) akan dijalankan. ISR umumnya ditulis dalam bentuk routine/fungsi. Kemudian, CPU kembali melanjutkan proses yang sebelumnya diinterupsi.</p>
 
 <h3 class="relative group">Blocking Process
     <div id="blocking-process" class="anchor"></div>
@@ -1159,8 +1159,8 @@ Berikut adalah penjelasan masing-masing mode:</p>
     
 </h3>
 <p>Pertanyaannya, kenapa perlu menggunakan interrupt? Apakah tidak cukup menggunakan if di dalam main loop? Untuk menjawabnya, kita perlu mengingat bahwa sebuah CPU hanya bisa melakukan satu tugas  dalam satu waktu. Sementara itu, proses seperti animasi LED adalah proses yang memakan waktu, sebagian besar waktunya digunakan untuk menunggu beberapa ratus ms agar kita dapat melihat animasinya.</p>
-<p>Misalkan kita menambahkan tombol &lsquo;previous&rsquo;, &rsquo;next&rsquo;, dan &lsquo;restart&rsquo; yang berguna untuk mengontrol animasi mana yang diputar. Tanpa interrupt, jika salah satu tombol ditekan maka tombol itu akan diabakan selama animasi sedang berjalan.</p>
-<p>Dengan interrupt, kita bisa menginterupsi di tengah-tengah proses animasi. Kemudian di dalam ISR, ditentukan animasi mana yang akan dimainkan selanjutnya. Setelah itu, ISR akan kembali ke proses yang diinterupsi. Bedanya, kali ini fungsi tersebut akan dihentikan paksa sehingga iterasi main loop juga akan dihentikan paksa.</p>
+<p>Misalkan kita menambahkan tombol &lsquo;previous&rsquo;, &rsquo;next&rsquo;, dan &lsquo;restart&rsquo; yang berguna untuk mengontrol animasi mana yang diputar. Tanpa interrupt, jika salah satu tombol ditekan maka tombol itu diabakan selama animasi sedang berjalan.</p>
+<p>Dengan interrupt, kita bisa menginterupsi di tengah-tengah proses animasi. Kemudian di dalam ISR, ditentukan animasi mana yang harus diputar selanjutnya. Setelah itu, ISR kembali ke proses yang diinterupsi. Bedanya, kali ini fungsi tersebut dihentikan paksa sehingga iterasi main loop juga akan dihentikan paksa.</p>
 
 <h3 class="relative group">Interrupts in ATMega328P
     <div id="interrupts-in-atmega328p" class="anchor"></div>
@@ -1184,6 +1184,19 @@ Berikut adalah penjelasan masing-masing mode:</p>
     srcset="/posts/avr/01-shift-register/img/atmega328p-intvect_hu_a5da77b80d055dda.png 800w, /posts/avr/01-shift-register/img/atmega328p-intvect.png 1280w"
     sizes="(min-width: 768px) 50vw, 65vw"
     data-zoom-src="/posts/avr/01-shift-register/img/atmega328p-intvect.png"><figcaption>Macam sumber interrupt, RESET adalah prioritas tertinggi. Diambil dari datasheet ATMega328P.</figcaption></figure>
+
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="ATMega328P DIP-28 pinout and its corresponding PCINT Vector"
+    width="816"
+    height="678"
+    src="/posts/avr/01-shift-register/img/atmega328p_pin_pcintvect_hu_acbd62bf3ee26f6e.png"
+    srcset="/posts/avr/01-shift-register/img/atmega328p_pin_pcintvect_hu_acbd62bf3ee26f6e.png 800w, /posts/avr/01-shift-register/img/atmega328p_pin_pcintvect.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/atmega328p_pin_pcintvect.png"><figcaption>Pinout ATMega328P DIP-28 dan vector PCINT masing-masing GPIO</figcaption></figure>
 
 Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondisi pin terkait akan berubah. Maka, untuk menerapkan interrupt, digunakan jenis Pin Change Interrupt (PCINT). Terdapat 3 PCINT (PCINT0-PCINT2), PCINT0 serta PCINT 2 masing-masing menangani 8 pin, dan PCINT1 menangani 7 pin.</p>
 <p>Untuk menggunakan fitur interrupt, sertakan library <code>&lt;avr/interrupt.h&gt;</code>. Secara default interrupt tidak aktif, untuk mengaktifkan interrupt global, pangggil fungsi <code>sei()</code>. Selanjutnya, untuk mengaktifkan interrupt vector spesifik, register interrupt terkait perlu dimanipulasi.</p>
@@ -1279,7 +1292,7 @@ Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondi
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><p>Fungsi <code>sr_write(uint8_t data)</code> menerima parameter <code>data</code> yang berukuran 8-bit. Fungsi tersebut memasukkan data bit-demi-bit ke dalam SR dimulai dari <em>Most Significant Bit</em> (MSB First).</p>
 <p>Di dalam setiap iterasi for, bit paling kiri (<code>data &amp; 0x80</code>) dimasukkan ke dalam SR. Selanjutnya, variabel <code>data</code> akan digeser 1 posisi ke kiri.</p>
-<p>Setelah semua bit dimasukkan ke dalam SR, fungsi `latch() dipanggil.</p>
+<p>Setelah semua bit dimasukkan ke dalam SR, fungsi <code>latch()</code> dipanggil.</p>
 
 <h3 class="relative group">The Animation
     <div id="the-animation" class="anchor"></div>
@@ -1290,6 +1303,76 @@ Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondi
     </span>
     
 </h3>
+<p>Tiga fungsi yang telah dibuat, pada akhirnya digunakan untuk menyala-matikan 8 LED yang terhubung ke IC SR.</p>
+<p>Untuk menampilkan animasi, kita perlu memanipulasi SR untuk menampilkan frame selama beberapa ms, kemudian menampilkan frame selanjutnya. Satu frame direpresentasikan oleh <code>uint8_t</code>, masing-masing bitnya menentukan nyala-mati satu buah LED.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;util/delay.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">draw_pattern</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">pattern</span><span class="p">,</span> <span class="kt">int</span> <span class="n">delay_ms</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">sr_write</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span> <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">delay_ms</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">_delay_ms</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Fungsi <code>draw_pattern(uint8_t pattern, int delay_ms)</code> menampilkan <code>pattern</code> setidaknya selama <code>delay_ms</code>.</p>
+<p>Perlu diingat bahwa fungsi <code>_delay_ms(int)</code> hanya menerima bilangan konstan. Untuk mengakalinya, digunakan <code>for</code> loop dengan iterasi sebanyak <code>delay_ms</code>, di mana setiap iterasinya melakukan delay selama 1ms.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">binary_counter</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">256</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">draw_pattern</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Fungsi <code>binary_conter()</code> akan melakukan iterasi dari 0-255, nilai biner dari pencacah <code>i</code> kemudian ditampilkan selama 30ms.</p>
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="Anim Eval Binary Counter"
+    width="1920"
+    height="720"
+    src="/posts/avr/01-shift-register/img/anim-eval-binary_counter_hu_992eafd04769edb3.gif"
+    srcset="/posts/avr/01-shift-register/img/anim-eval-binary_counter_hu_992eafd04769edb3.gif 800w, /posts/avr/01-shift-register/img/anim-eval-binary_counter_hu_35d0abd954ce4563.gif 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/anim-eval-binary_counter.gif"><figcaption>Emulasi shift register untuk animasi binary_counter() melalui CLI.</figcaption></figure>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">bounce_left_right</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">draw_pattern</span><span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">),</span> <span class="mi">80</span><span class="p">))</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">7</span><span class="p">;</span> <span class="n">i</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">draw_pattern</span><span class="p">((</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="p">),</span> <span class="mi">80</span><span class="p">))</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Selain menggunakan nilai biner dari suatu bilangan, operasi bitwise juga dapat digunakan untuk melakukan animasi. Fungsi <code>bounce_left_right()</code> menampilkan &ldquo;bola&rdquo; yang memantul dari kanan ke kiri dan sebaliknya.</p>
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="low"
+    alt="Anim Eval Bounce Left Right"
+    src="img/anim-eval-bounce_left_right.gif"
+    ><figcaption>Emulasi shift register untuk animasi bounce_left_right() melalui CLI.</figcaption></figure>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">left_sign</span><span class="p">(</span><span class="kt">int</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">&lt;</span><span class="n">len</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">shift_bit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">shift_bit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">latch</span><span class="p">())</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">_delay_ms</span><span class="p">(</span><span class="mi">150</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Routine <code>left_sign(int len)</code>, alih-alih memanggil fungsi seperti <code>sr_write</code> atau <code>draw_pattern</code>, ia menggunakan fungsi yang lebih dasar. <code>shift_bit</code> dan <code>latch</code>.</p>
+<p>Routine di atas akan melakukan bit shifting bernilai 1 sebanyak <code>len</code> kali, dan 0 sebanyak <code>8-len</code> kali. Animasi yang dihasilkan adalah LED sejumlah <code>len</code> bergeser ke kiri seperti lampu sign kendaraan.
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="low"
+    alt="Anim Eval Bounce Left Right"
+    src="img/anim-eval-left_sign.gif"
+    ><figcaption>Emulasi shift register untuk animasi left_sign(int len) melalui CLI.</figcaption></figure>
+</p>
 
 <h3 class="relative group">Interrupt for Interface
     <div id="interrupt-for-interface" class="anchor"></div>

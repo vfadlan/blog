@@ -20,7 +20,7 @@ series_order: 1
   b. [↳Blocking Process](#blocking-process)  
   c. [↳Interrupts in ATMega328P](#interrupts-in-atmega328p)  
 5. [Putting it All Together](#putting-it-all-together)  
-  a. [↳Writing Bytes to the Shift Register](#writing-bytes-to-the-shift-register)
+  a. [↳Writing Bytes to the Shift Register](#writing-bytes-to-the-shift-register)  
   b. [↳The Animation](#the-animation)  
   c. [↳Interrupt for Interface](#interrupt-for-interface)  
   d. [↳Result](#result)
@@ -28,7 +28,7 @@ series_order: 1
 7. [References and Further Reading](#references-and-further-reading)
 8. [Foot Notes](#foot-notes)
 ## Intro
-Di blog kali ini, kita akan membahas tentang bagaimana menganimasikan 8 LED dengan shift register. Sebelum lanjut, saya mengasumsikan pembaca sudah memahami beberapa hal dasar tentang register, kita akan membahas ini berulang kali kedepannya. Jika ingin tahu, silakan baca blog sebelumnya atau sumber lain.
+Di blog kali ini, kita akan membahas tentang bagaimana menganimasikan 8 LED dengan shift register. Sebelum lanjut, saya mengasumsikan pembaca sudah memahami beberapa hal dasar tentang register, kita segera menemui ini berulang kali kedepannya. Jika ingin tahu, silakan baca blog sebelumnya atau sumber lain.
 {{< article link="/posts/avr/00-hello/" showSummary=true compactSummary=true >}}
 
 Jadi, bagaimana caranya menganimasikan 8 LED dengan mikrokontroler? Cara paling sederhana adalah menggunakan 8 pin GPIO dari port yang sama. Contoh, jika kita menggunakan Port B, maka kita perlu mengubah register DDRB sekali dan memanipulasi PORTB untuk setiap frame-nya. Selesai.
@@ -40,7 +40,7 @@ Pada kasus kita, ATMega328P sebenarnya memiliki pin yang cukup untuk menangani 8
 ## Shift Register
 Kata "register" pada shift register secara konsep sama saja seperti register yang ada pada MCU. Register is register. Yang membedakan adalah kata "shift" (geser). Jadi, shift register adalah salah satu jenis register yang bisa menggeser data di dalamnya dari bit 0 ke bit 1, bit 1 ke bit 2, dan seterusnya ketika diberi sinyal clock.
 
-Di dalam MCU juga terdapat internal shift register, tapi kali ini kita akan membahas tentang external shift register dalam bentuk Integrated Circuit (IC). Karena ini eksternal, satu-satunya cara untuk memanipulasi register adalah dengan mengirimkan sinyal elektrik HIGH dan LOW. Alih-alih melakukan assignment seperti `PORTB = 0x3F;` pada program MCU.
+Di dalam MCU juga terdapat internal shift register, tapi kali ini kita hanya membahas tentang external shift register dalam bentuk Integrated Circuit (IC). Karena ini eksternal, satu-satunya cara untuk memanipulasi register adalah dengan mengirimkan sinyal elektrik HIGH dan LOW. Alih-alih melakukan assignment seperti `PORTB = 0x3F;` pada program MCU.
 
 Terdapat dua jenis shift register: Serial In Parallel Out (SIPO), dan Parallel In Serial Out (PISO). Yang akan kita gunakan adalah SIPO karena kita ingin mengurangi penggunaan pin MCU.
 
@@ -81,7 +81,7 @@ ss
 Berikut adalah penjelasan masing-masing mode:
 * Fungsi 1 dan 2, untuk mengaktifkan pin output (Qa-Qh), pin OE harus disambungkan ke ground.  
 * Fungsi 3, kita perlu menghubungkan pin SRCLR ke VCC agar SR tidak di-clear.  
-* Fungsi 4, ketika SER bernilai LOW, SRCLR HIGH, dan memberi SRCLK sinyal clock: SR akan bergeser dan bit pertama akan bernilai 0.
+* Fungsi 4, ketika SER bernilai LOW, SRCLR HIGH, dan memberi SRCLK sinyal clock: SR akan bergeser dan bit pertama bernilai 0.
 * Fungsi 5, Sama seperti sebelumnya, namun SER bernilai HIGH sehingga SR bergeser dan bit pertama bernilai 1.  
 * Fungsi 6, ketika RCLK diberi sinyal clock (rising edge), data di dalam SR akan disalin ke storage register.
 
@@ -96,18 +96,19 @@ IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Nam
 
 ## Interrupts
 ### A Brief Description
-Interrupt adalah salah satu fungs dasar pada mikrokontroler yang berguna untuk menginterupsi program utama untuk melakukan proses lain yang lebih penting. Secara teknis, interrupt adalah sinyal yang menginformasikan CPU agar menghentikan apapun yang sedang dilakukan untuk sementara waktu. Setelah itu, Interrupt Service Routine (ISR) akan dijalankan. ISR umumnya ditulis dalam bentuk routine/fungsi. Kemudian, CPU akan kembali melanjutkan proses yang sebelumnya diinterupsi.
+Interrupt adalah salah satu fungs dasar pada mikrokontroler yang berguna untuk menginterupsi program utama untuk melakukan proses lain yang lebih penting. Secara teknis, interrupt adalah sinyal yang menginformasikan CPU agar menghentikan apapun yang sedang dilakukan untuk sementara waktu. Setelah itu, Interrupt Service Routine (ISR) akan dijalankan. ISR umumnya ditulis dalam bentuk routine/fungsi. Kemudian, CPU kembali melanjutkan proses yang sebelumnya diinterupsi.
 
 ### Blocking Process
 Pertanyaannya, kenapa perlu menggunakan interrupt? Apakah tidak cukup menggunakan if di dalam main loop? Untuk menjawabnya, kita perlu mengingat bahwa sebuah CPU hanya bisa melakukan satu tugas  dalam satu waktu. Sementara itu, proses seperti animasi LED adalah proses yang memakan waktu, sebagian besar waktunya digunakan untuk menunggu beberapa ratus ms agar kita dapat melihat animasinya. 
 
-Misalkan kita menambahkan tombol 'previous', 'next', dan 'restart' yang berguna untuk mengontrol animasi mana yang diputar. Tanpa interrupt, jika salah satu tombol ditekan maka tombol itu akan diabakan selama animasi sedang berjalan.
+Misalkan kita menambahkan tombol 'previous', 'next', dan 'restart' yang berguna untuk mengontrol animasi mana yang diputar. Tanpa interrupt, jika salah satu tombol ditekan maka tombol itu diabakan selama animasi sedang berjalan.
 
-Dengan interrupt, kita bisa menginterupsi di tengah-tengah proses animasi. Kemudian di dalam ISR, ditentukan animasi mana yang akan dimainkan selanjutnya. Setelah itu, ISR akan kembali ke proses yang diinterupsi. Bedanya, kali ini fungsi tersebut akan dihentikan paksa sehingga iterasi main loop juga akan dihentikan paksa.
+Dengan interrupt, kita bisa menginterupsi di tengah-tengah proses animasi. Kemudian di dalam ISR, ditentukan animasi mana yang harus diputar selanjutnya. Setelah itu, ISR kembali ke proses yang diinterupsi. Bedanya, kali ini fungsi tersebut dihentikan paksa sehingga iterasi main loop juga akan dihentikan paksa.
 
 ### Interrupts in ATMega328P
 Pada ATMega328P terdapat beberapa macam interrupt, masing-masing memiliki alamat ISR-nya sendiri. 
 ![Interrupt Vector Table of the ATMega328P](img/atmega328p-intvect.png "Macam sumber interrupt, RESET adalah prioritas tertinggi. Diambil dari datasheet ATMega328P.")
+![ATMega328P DIP-28 pinout and its corresponding PCINT Vector](img/atmega328p_pin_pcintvect.png "Pinout ATMega328P DIP-28 dan vector PCINT masing-masing GPIO")
 Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondisi pin terkait akan berubah. Maka, untuk menerapkan interrupt, digunakan jenis Pin Change Interrupt (PCINT). Terdapat 3 PCINT (PCINT0-PCINT2), PCINT0 serta PCINT 2 masing-masing menangani 8 pin, dan PCINT1 menangani 7 pin.
 
 Untuk menggunakan fitur interrupt, sertakan library `<avr/interrupt.h>`. Secara default interrupt tidak aktif, untuk mengaktifkan interrupt global, pangggil fungsi `sei()`. Selanjutnya, untuk mengaktifkan interrupt vector spesifik, register interrupt terkait perlu dimanipulasi.
@@ -195,8 +196,70 @@ Fungsi `sr_write(uint8_t data)` menerima parameter `data` yang berukuran 8-bit. 
 
 Di dalam setiap iterasi for, bit paling kiri (`data & 0x80`) dimasukkan ke dalam SR. Selanjutnya, variabel `data` akan digeser 1 posisi ke kiri.
 
-Setelah semua bit dimasukkan ke dalam SR, fungsi `latch() dipanggil.
+Setelah semua bit dimasukkan ke dalam SR, fungsi `latch()` dipanggil.
 ### The Animation
+Tiga fungsi yang telah dibuat, pada akhirnya digunakan untuk menyala-matikan 8 LED yang terhubung ke IC SR.
+
+Untuk menampilkan animasi, kita perlu memanipulasi SR untuk menampilkan frame selama beberapa ms, kemudian menampilkan frame selanjutnya. Satu frame direpresentasikan oleh `uint8_t`, masing-masing bitnya menentukan nyala-mati satu buah LED.
+
+```c
+#include <util/delay.h>
+
+bool draw_pattern(uint8_t pattern, int delay_ms) {
+  if (!sr_write(pattern)) return false;
+  for (int i = 0; i < delay_ms; i++) {
+    _delay_ms(1);
+  }
+  return true;
+}
+```
+
+Fungsi `draw_pattern(uint8_t pattern, int delay_ms)` menampilkan `pattern` setidaknya selama `delay_ms`. 
+
+Perlu diingat bahwa fungsi `_delay_ms(int)` hanya menerima bilangan konstan. Untuk mengakalinya, digunakan `for` loop dengan iterasi sebanyak `delay_ms`, di mana setiap iterasinya melakukan delay selama 1ms.
+
+```c
+void binary_counter() {
+  for (int i=0; i<256; i++) {
+    if (!draw_pattern(i, 30)) return;
+  }
+}
+```
+Fungsi `binary_conter()` akan melakukan iterasi dari 0-255, nilai biner dari pencacah `i` kemudian ditampilkan selama 30ms.
+
+![Anim Eval Binary Counter](img/anim-eval-binary_counter.gif "Emulasi shift register untuk animasi binary_counter() melalui CLI.")
+
+```c
+void bounce_left_right() {
+  for (int i=0; i<8; i++) {
+    if (!draw_pattern((1 << i), 80)) return;
+  }
+  for (int i=7; i>=0; i--) { 
+    if (!draw_pattern((1<<i), 80)) return;
+  }
+}
+```
+Selain menggunakan nilai biner dari suatu bilangan, operasi bitwise juga dapat digunakan untuk melakukan animasi. Fungsi `bounce_left_right()` menampilkan "bola" yang memantul dari kanan ke kiri dan sebaliknya.
+
+![Anim Eval Bounce Left Right](img/anim-eval-bounce_left_right.gif "Emulasi shift register untuk animasi bounce_left_right() melalui CLI.")
+
+```c
+void left_sign(int len) {
+  for (int i=0; i<8; i++) {
+    if (i<len) {
+      shift_bit(1);
+    } else {
+      shift_bit(0);
+    }
+    if (!latch()) return;
+    _delay_ms(150);
+  }
+}
+```
+Routine `left_sign(int len)`, alih-alih memanggil fungsi seperti `sr_write` atau `draw_pattern`, ia menggunakan fungsi yang lebih dasar. `shift_bit` dan `latch`.
+
+Routine di atas akan melakukan bit shifting bernilai 1 sebanyak `len` kali, dan 0 sebanyak `8-len` kali. Animasi yang dihasilkan adalah LED sejumlah `len` bergeser ke kiri seperti lampu sign kendaraan.
+![Anim Eval Bounce Left Right](img/anim-eval-left_sign.gif "Emulasi shift register untuk animasi left_sign(int len) melalui CLI.")
 ### Interrupt for Interface
 ```c
 #include <avr/interrupt.h>
