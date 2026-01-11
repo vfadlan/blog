@@ -218,7 +218,7 @@
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "2136"
+    "wordCount": "2841"
   }]
   </script>
 
@@ -561,7 +561,7 @@
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>2136 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">11 mins</span>
+      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>2841 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">14 mins</span>
     
 
     
@@ -691,9 +691,7 @@ a. <a
 b. <a
   href="#pin-descriptions">↳Pin Descriptions</a><br>
 c. <a
-  href="#functional-characteristics">↳Functional Characteristics</a><br>
-d. <a
-  href="#nomenclature-of-the-7400-series-ic-opsional">↳Nomenclature of the 7400 series IC (trivia)</a></li>
+  href="#functional-characteristics">↳Functional Characteristics</a></li>
 <li><a
   href="#interrupts">Interrupts</a><br>
 a. <a
@@ -715,201 +713,27 @@ d. <a
 <li><a
   href="#conclusion">Conclusion</a></li>
 <li><a
+  href="#nomenclature-of-the-7400-series-ic-opsional">↳Nomenclature of the 7400 series IC (trivia)</a></li>
+<li><a
   href="#references-and-further-reading">References and Further Reading</a></li>
 <li><a
   href="#foot-notes">Foot Notes</a></li>
 </ol>
 
-<h2 class="relative group">Intro
-    <div id="intro" class="anchor"></div>
+<h2 class="relative group">Overview
+    <div id="overview" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
-        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#intro" aria-label="Anchor">#</a>
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#overview" aria-label="Anchor">#</a>
     </span>
     
 </h2>
-<p>Di blog kali ini, kita akan membahas tentang bagaimana menganimasikan 8 LED dengan shift register. Sebelum lanjut, saya mengasumsikan pembaca sudah memahami beberapa hal dasar tentang register, kita segera menemui ini berulang kali kedepannya. Jika ingin tahu, silakan baca blog sebelumnya atau sumber lain.
-
-
-
-
-
-  
-
-
-  <section class="space-y-10 w-full">
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  
-
-
-
-
-
-
-
-
-  
-  
-    
-
-    
-    
-      
-      
-        
-      
-        
-      
-        
-      
-    
-
-    
-    
-
-    
-    
-      
-        
-        
-          
-        
-      
-    
-  
-
-
-
-<article class="flex flex-col md:flex-row relative">
-  
-    <div class="flex-none relative overflow-hidden  thumbnail-shadow md:mr-7 thumbnail">
-      <img
-        src="/posts/avr/00-hello/featured_hu_e70df96e5c874fbf.jpg"
-        alt="Hello, Bare Metal AVR."
-        loading="lazy"
-        decoding="async"
-        class="not-prose absolute inset-0 w-full h-full object-cover">
-    </div>
-  
-  <div class=" mt-3 md:mt-0">
-    <header class="items-center text-start text-xl font-semibold">
-      <a
-        
-          href="/posts/avr/00-hello/"
-        
-        class="not-prose before:absolute before:inset-0 decoration-primary-500 dark:text-neutral text-xl font-bold text-neutral-800 hover:underline hover:underline-offset-2">
-        <h2>
-          Hello, Bare Metal AVR.
-          
-        </h2>
-      </a>
-      
-      
-    </header>
-    <div class="text-sm text-neutral-500 dark:text-neutral-400">
-      
-
-
-
-
-
-
-
-  
-
-  
-  
-  
-    
-  
-
-  
-
-  
-    
-  
-
-  
-
-  
-    
-  
-
-  
-    
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  <div class="flex flex-row flex-wrap items-center">
-    
-    
-      <time datetime="2025-12-22T15:24:54&#43;07:00">22 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>1347 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">7 mins</span>
-    
-
-    
-    
-  </div>
-
-  
-
-  
-  
-
-  
-  
-
-
-
-    </div>
-    
-    
-      
-    
-    
-      
-      
-        
-      
-      <div class="overflow-hidden pt-1">
-        <div class="line-clamp-3 prose dark:prose-invert max-w-fit">
-          
-        </div>
-      </div>
-    
-  </div>
-</article>
-
-  </section>
-
-</p>
-<p>Jadi, bagaimana caranya menganimasikan 8 LED dengan mikrokontroler? Cara paling sederhana adalah menggunakan 8 pin GPIO dari port yang sama. Contoh, jika kita menggunakan Port B, maka kita perlu mengubah register DDRB sekali dan memanipulasi PORTB untuk setiap frame-nya. Selesai.</p>
+<p>Bagaimana caranya menganimasikan 8 LED dengan mikrokontroler? Cara paling sederhana adalah menggunakan 8 pin GPIO dari port yang sama. Contoh, jika kita menggunakan Port B, maka kita perlu mengubah register DDRB sekali dan memanipulasi PORTB untuk setiap frame-nya. Selesai.</p>
 <p>Tapi terdapat masalah lain, jumlah pin GPIO pada MCU sangatlah terbatas. Beberapa MCU bahkan hanya memiliki 6 GPIO. Atau, meskipun jumlah pin yang dimiliki melimpah, kita tidak tahu pada update versi selanjutnya akan membutuhkan berapa banyak pin.</p>
-<p>Pada kasus kita, ATMega328P sebenarnya memiliki pin yang cukup untuk menangani 8 LED dengan port yang sama. <em>But, let&rsquo;s do it anyway</em>.</p>
+<p>Salah satu solusi yang dapat digunakan adalah IC Shift Register Serial In Parallel Out, yang akan kita gunakan adalah IC SN74HC595. Sementara IC tersebut menangani 8 LED, digunakan 3 tombol sebagai interface: previous, restart, dan next. Interrupt akan mendeteksi ketika salah satu tombol ditekan. Itulah yang akan kita bahas kali ini.</p>
+<p>Sebenarnya, ATMega328P memiliki pin yang cukup untuk menangani 8 LED dengan port yang sama. <em>But, let&rsquo;s do it anyway</em>.</p>
+<p><em>Catatan: Blog ini tidak ditujukan sebagai tutorial atau blog singkat, melainkan &rsquo;technical walkthrough&rsquo; tentang program yang saya buat. Itulah mengapa blog ini cukup panjang.</em></p>
 
 <h2 class="relative group">Shift Register
     <div id="shift-register" class="anchor"></div>
@@ -936,11 +760,11 @@ d. <a
 </h2>
 
 <h3 class="relative group">Overview
-    <div id="overview" class="anchor"></div>
+    <div id="overview-1" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
-        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#overview" aria-label="Anchor">#</a>
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#overview-1" aria-label="Anchor">#</a>
     </span>
     
 </h3>
@@ -1069,9 +893,8 @@ d. <a
 <li>L: Low,</li>
 <li>↑: Rising edge, ketika sinyal berubah dari LOW ke HIGH.</li>
 </ul>
-<p>Pada tabel fungsi, perubahan data dipicu oleh sinyal clock. Yang diperhatikan bukan sinyal HIGH atau LOW, tetapi transisi dari LOW ke HIGH (rising edge).
-ss
-Berikut adalah penjelasan masing-masing mode:</p>
+<p>Pada tabel fungsi, perubahan data dipicu oleh sinyal clock. Yang diperhatikan bukan sinyal HIGH atau LOW, tetapi transisi dari LOW ke HIGH (rising edge).</p>
+<p>Berikut adalah penjelasan masing-masing mode:</p>
 <ul>
 <li>Fungsi 1 dan 2, untuk mengaktifkan pin output (Qa-Qh), pin OE harus disambungkan ke ground.</li>
 <li>Fungsi 3, kita perlu menghubungkan pin SRCLR ke VCC agar SR tidak di-clear.</li>
@@ -1080,53 +903,6 @@ Berikut adalah penjelasan masing-masing mode:</p>
 <li>Fungsi 6, ketika RCLK diberi sinyal clock (rising edge), data di dalam SR akan disalin ke storage register.</li>
 </ul>
 <p>Jadi, koneksi ke MCU yang perlu ditentukan adalah untuk pin SER, SRCLK, dan RCLK. Sedangkan untuk pin output, masing-masing pin dihubungkan ke katoda LED. Untuk pin lain, OE dihubungkan ke ground, dan SRCLR dihubungkan ke VCC.</p>
-
-<h3 class="relative group">Nomenclature of the 7400 series IC (trivia)
-    <div id="nomenclature-of-the-7400-series-ic-trivia" class="anchor"></div>
-    
-    <span
-        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
-        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#nomenclature-of-the-7400-series-ic-trivia" aria-label="Anchor">#</a>
-    </span>
-    
-</h3>
-<p>IC 74HC595 memiliki makna dalam penamaannya. Untuk deskripsi lebih detail Anda dapat meninjau laman Wikipedia berikut: <a
-  href="https://en.wikipedia.org/wiki/7400-series_integrated_circuits"
-    target="_blank"
-  >7400-series Integrated Circuits</a>. Berikut adalah ringkasannya:</p>
-<ul>
-<li>Kode 74 di depan merepresentasikan temperatur operasinya: <figure><img
-    class="my-0 rounded-md"
-    loading="lazy"
-    decoding="async"
-    fetchpriority="auto"
-    alt="TI TTL Prefix"
-    width="670"
-    height="282"
-    src="/posts/avr/01-shift-register/img/74-prefix-nomen.png"
-    srcset="/posts/avr/01-shift-register/img/74-prefix-nomen.png 800w, /posts/avr/01-shift-register/img/74-prefix-nomen.png 1280w"
-    sizes="(min-width: 768px) 50vw, 65vw"
-    data-zoom-src="/posts/avr/01-shift-register/img/74-prefix-nomen.png"></figure>
-</li>
-<li>HC adalah singkatan dari Highspeed CMOS, ini adalah kode family line. Terdapat banyak family line lain seperti L (Low Power), C (CMOS), F (Fast), dan masih banyak lagi. Untuk lebih detailnya silakan baca <a
-  href="https://en.wikipedia.org/wiki/7400-series_integrated_circuits#Families"
-    target="_blank"
-  >di sini</a>.</li>
-<li>Sedangkan 595 adalah kode subfamily. Banyak subfamily lain seperti 165 (SIPO SR), 00 (Quad AND Gate), 114 (Dual J-K Flip-Flop), dsb.</li>
-</ul>
-<p>IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Namun, perusahaan lain memiliki lisensi untuk memproduksi seri ini. Sehingga, diberikan prefiks untuk memberi keterangan perusahaan yang memproduksinya: <figure><img
-    class="my-0 rounded-md"
-    loading="lazy"
-    decoding="async"
-    fetchpriority="auto"
-    alt="TTL Manufacturer Prefix"
-    width="601"
-    height="280"
-    src="/posts/avr/01-shift-register/img/74-manprefix-nomen.png"
-    srcset="/posts/avr/01-shift-register/img/74-manprefix-nomen.png 800w, /posts/avr/01-shift-register/img/74-manprefix-nomen.png 1280w"
-    sizes="(min-width: 768px) 50vw, 65vw"
-    data-zoom-src="/posts/avr/01-shift-register/img/74-manprefix-nomen.png"></figure>
-</p>
 
 <h2 class="relative group">Interrupts
     <div id="interrupts" class="anchor"></div>
@@ -1158,7 +934,7 @@ Berikut adalah penjelasan masing-masing mode:</p>
     </span>
     
 </h3>
-<p>Pertanyaannya, kenapa perlu menggunakan interrupt? Apakah tidak cukup menggunakan if di dalam main loop? Untuk menjawabnya, kita perlu mengingat bahwa sebuah CPU hanya bisa melakukan satu tugas  dalam satu waktu. Sementara itu, proses seperti animasi LED adalah proses yang memakan waktu, sebagian besar waktunya digunakan untuk menunggu beberapa ratus ms agar kita dapat melihat animasinya.</p>
+<p>Perlu diingat bahwa sebuah CPU hanya bisa melakukan satu tugas  dalam satu waktu. Sementara itu, proses seperti animasi LED adalah proses yang memakan waktu, sebagian besar waktunya digunakan untuk menunggu beberapa ratus ms agar kita dapat melihat animasinya. Inilah yang disebut blocking process.</p>
 <p>Misalkan kita menambahkan tombol &lsquo;previous&rsquo;, &rsquo;next&rsquo;, dan &lsquo;restart&rsquo; yang berguna untuk mengontrol animasi mana yang diputar. Tanpa interrupt, jika salah satu tombol ditekan maka tombol itu diabakan selama animasi sedang berjalan.</p>
 <p>Dengan interrupt, kita bisa menginterupsi di tengah-tengah proses animasi. Kemudian di dalam ISR, ditentukan animasi mana yang harus diputar selanjutnya. Setelah itu, ISR kembali ke proses yang diinterupsi. Bedanya, kali ini fungsi tersebut dihentikan paksa sehingga iterasi main loop juga akan dihentikan paksa.</p>
 
@@ -1250,7 +1026,8 @@ Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondi
 </ol>
 <p>Pin-pin di atas digunakan dalam fungsi-fungsi primer yang melakukan: bit shifting, trigger SR clock, latch SR ke output.</p>
 <p><em>*Catatan: Nomor pin SN74HC595 mengacu package DIP-16, dan ATMega328P DIP-28</em></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define SER PD0
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// shiftreg.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define SER PD0
 </span></span></span><span class="line"><span class="cl"><span class="cp">#define R_CLK PD1
 </span></span></span><span class="line"><span class="cl"><span class="cp">#define SR_CLK PD2
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span>
@@ -1261,29 +1038,32 @@ Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondi
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><p>Ketika routine <code>tick()</code> dieksekusi, data shift register akan digeser dengan nilai bit ke-0 mengikuti nilai <code>SER</code> atau <code>PD0</code> pada saat fungsi dieksekusi. Hal ini sesuai dengan karakteristik SR pada datasheet yang <a
   href="#functional-characteristics">sudah kita bahas</a>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">shift_bit</span><span class="p">(</span><span class="kt">bool</span> <span class="n">bit</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// shiftreg.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">shift_bit</span><span class="p">(</span><span class="kt">bool</span> <span class="n">bit</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">bit</span><span class="p">)</span>    <span class="n">PORTD</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SER</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">  <span class="k">else</span>        <span class="n">PORTD</span> <span class="o">&amp;=</span> <span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SER</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">  <span class="nf">tick</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><p>Fungsi <code>shift_bit(bool bit)</code> menerima boolean sebagai parameter. Boolean tersebut dijadikan sebagai nilai <code>PD0</code>. Setelah nilai <code>PD0</code> diubah, fungsi <code>tick()</code> dipanggil sehingga bit ke-0 pada SR ditentukan oleh parameter <code>bit</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">latch</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// shiftreg.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">bool</span> <span class="nf">latch</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">PORTD</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">R_CLK</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">_delay_ms</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">PORTD</span> <span class="o">&amp;=</span> <span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">R_CLK</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">restart_requested</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="n">restart_requested</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="n">PORTD</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">R_CLK</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="nf">_delay_ms</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="n">PORTD</span> <span class="o">&amp;=</span> <span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">R_CLK</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p>Fokus ke bawah terlebih dahulu, fungsi <code>latch()</code> akan menyalakan <code>R_CLK</code> atau <code>PD1</code> selama 1ms. Sesuai datasheet, high pada <code>RCLK</code> akan menyalin data pada SR ke storage register yang menyimpan nilai output.</p>
-<p>Kembali ke atas. Di dalam fungsi <code>latch()</code>, <code>restart_requested</code> yang merupakan variable flag akan diperiksa. Jika bernilai <code>true</code>, flag tersebut akan dikembalikan ke nilai defaultnya. Setelah itu menghentikan eksekusi fungsi <code>latch()</code> dengan <code>return false;</code>.</p>
+</span></span></code></pre></div><p>Fungsi <code>latch()</code> akan menyalakan <code>R_CLK</code> atau <code>PD1</code> selama 1ms. Sesuai datasheet, high pada <code>RCLK</code> akan menyalin data pada SR ke storage register yang menyimpan nilai output.</p>
+<p>Selanjutnya, <code>restart_requested</code> yang merupakan variable flag akan diperiksa. Jika bernilai <code>true</code>, flag tersebut akan dikembalikan ke nilai defaultnya. Setelah itu menghentikan eksekusi fungsi <code>latch()</code> dengan <code>return false;</code>.</p>
 <p>Proses serupa terjadi secara bertumpuk/bersarang, fungsi yang memanggil <code>latch()</code> dan mendapatkan nilai <code>false</code> akan mengakhiri dirinya dengan mengembalikan nilai <code>false</code>. Dan seterusnya.</p>
 <p>Sehingga ketika sinyal interrupt diberikan, semua proses secara instan akan terhenti dan memulai ulang <em>main-loop</em> untuk memulai animasi sebelumnya, selanjutnya, atau memulai ulang animasi saat ini.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">sr_write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// shiftreg.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">bool</span> <span class="nf">sr_write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="nf">shift_bit</span><span class="p">(</span><span class="n">data</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span>
@@ -1305,7 +1085,9 @@ Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondi
 </h3>
 <p>Tiga fungsi yang telah dibuat, pada akhirnya digunakan untuk menyala-matikan 8 LED yang terhubung ke IC SR.</p>
 <p>Untuk menampilkan animasi, kita perlu memanipulasi SR untuk menampilkan frame selama beberapa ms, kemudian menampilkan frame selanjutnya. Satu frame direpresentasikan oleh <code>uint8_t</code>, masing-masing bitnya menentukan nyala-mati satu buah LED.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;util/delay.h&gt;</span><span class="cp">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// anim.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#include</span> <span class="cpf">&lt;util/delay.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;anim.h&gt;</span><span class="cp">
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span>
 </span></span><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">draw_pattern</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">pattern</span><span class="p">,</span> <span class="kt">int</span> <span class="n">delay_ms</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">sr_write</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span> <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
@@ -1316,7 +1098,8 @@ Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondi
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><p>Fungsi <code>draw_pattern(uint8_t pattern, int delay_ms)</code> menampilkan <code>pattern</code> setidaknya selama <code>delay_ms</code>.</p>
 <p>Perlu diingat bahwa fungsi <code>_delay_ms(int)</code> hanya menerima bilangan konstan. Untuk mengakalinya, digunakan <code>for</code> loop dengan iterasi sebanyak <code>delay_ms</code>, di mana setiap iterasinya melakukan delay selama 1ms.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">binary_counter</span><span class="p">()</span> <span class="p">{</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// anim.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">binary_counter</span><span class="p">()</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">256</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">draw_pattern</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span> <span class="k">return</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
@@ -1328,13 +1111,14 @@ Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondi
     decoding="async"
     fetchpriority="auto"
     alt="Anim Eval Binary Counter"
-    width="1920"
-    height="720"
-    src="/posts/avr/01-shift-register/img/anim-eval-binary_counter_hu_992eafd04769edb3.gif"
-    srcset="/posts/avr/01-shift-register/img/anim-eval-binary_counter_hu_992eafd04769edb3.gif 800w, /posts/avr/01-shift-register/img/anim-eval-binary_counter_hu_35d0abd954ce4563.gif 1280w"
+    width="320"
+    height="106"
+    src="/posts/avr/01-shift-register/img/anim-binary_counter.gif"
+    srcset="/posts/avr/01-shift-register/img/anim-binary_counter.gif 800w, /posts/avr/01-shift-register/img/anim-binary_counter.gif 1280w"
     sizes="(min-width: 768px) 50vw, 65vw"
-    data-zoom-src="/posts/avr/01-shift-register/img/anim-eval-binary_counter.gif"><figcaption>Emulasi shift register untuk animasi binary_counter() melalui CLI.</figcaption></figure>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">bounce_left_right</span><span class="p">()</span> <span class="p">{</span>
+    data-zoom-src="/posts/avr/01-shift-register/img/anim-binary_counter.gif"><figcaption>Emulasi shift register untuk animasi binary_counter() melalui CLI.</figcaption></figure>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// anim.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">bounce_left_right</span><span class="p">()</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">draw_pattern</span><span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">),</span> <span class="mi">80</span><span class="p">))</span> <span class="k">return</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
@@ -1347,11 +1131,16 @@ Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondi
     class="my-0 rounded-md"
     loading="lazy"
     decoding="async"
-    fetchpriority="low"
+    fetchpriority="auto"
     alt="Anim Eval Bounce Left Right"
-    src="img/anim-eval-bounce_left_right.gif"
-    ><figcaption>Emulasi shift register untuk animasi bounce_left_right() melalui CLI.</figcaption></figure>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">left_sign</span><span class="p">(</span><span class="kt">int</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
+    width="320"
+    height="59"
+    src="/posts/avr/01-shift-register/img/anim-bounce.gif"
+    srcset="/posts/avr/01-shift-register/img/anim-bounce.gif 800w, /posts/avr/01-shift-register/img/anim-bounce.gif 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/anim-bounce.gif"><figcaption>Emulasi shift register untuk animasi bounce_left_right() melalui CLI.</figcaption></figure>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// anim.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">left_sign</span><span class="p">(</span><span class="kt">int</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">&lt;</span><span class="n">len</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">      <span class="nf">shift_bit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
@@ -1363,16 +1152,35 @@ Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondi
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><p>Routine <code>left_sign(int len)</code>, alih-alih memanggil fungsi seperti <code>sr_write</code> atau <code>draw_pattern</code>, ia menggunakan fungsi yang lebih dasar. <code>shift_bit</code> dan <code>latch</code>.</p>
-<p>Routine di atas akan melakukan bit shifting bernilai 1 sebanyak <code>len</code> kali, dan 0 sebanyak <code>8-len</code> kali. Animasi yang dihasilkan adalah LED sejumlah <code>len</code> bergeser ke kiri seperti lampu sign kendaraan.
+<p>Routine di atas akan melakukan bit shifting bernilai 1 sebanyak <code>len</code> kali, dan 0 sebanyak <code>8-len</code> kali. Animasi yang dihasilkan adalah LED sejumlah <code>len</code> bergeser ke kiri seperti lampu sign kendaraan.</p>
 <figure><img
     class="my-0 rounded-md"
     loading="lazy"
     decoding="async"
-    fetchpriority="low"
+    fetchpriority="auto"
     alt="Anim Eval Bounce Left Right"
-    src="img/anim-eval-left_sign.gif"
-    ><figcaption>Emulasi shift register untuk animasi left_sign(int len) melalui CLI.</figcaption></figure>
-</p>
+    width="320"
+    height="59"
+    src="/posts/avr/01-shift-register/img/anim-left.gif"
+    srcset="/posts/avr/01-shift-register/img/anim-left.gif 800w, /posts/avr/01-shift-register/img/anim-left.gif 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/anim-left.gif"><figcaption>Emulasi shift register untuk animasi left_sign(int len) melalui CLI.</figcaption></figure>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// anim.h
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">bool</span> <span class="nf">draw_pattern</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">pattern</span><span class="p">,</span> <span class="kt">int</span> <span class="n">delay</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">hello_world</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">binary_counter</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">stack_to_end</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">bounce_left_right</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">left_sign</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">loading_bar</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">random_spark</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">waterdrop</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">heartbeat</span><span class="p">();</span>
+</span></span></code></pre></div><p>File header di atas mendefinisikan fungsi-fungsi animasi. File tersebut akan disertakan pada <code>anim.c</code> dan <code>shiftreg.c</code>. Program lengkap dapat ditemukan di <a
+  href="https://github.com/vfadlan/avr-exp/05-shiftreg/"
+    target="_blank"
+  >repo github berikut</a>.</p>
 
 <h3 class="relative group">Interrupt for Interface
     <div id="interrupt-for-interface" class="anchor"></div>
@@ -1383,20 +1191,139 @@ Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondi
     </span>
     
 </h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;avr/interrupt.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="n">PCICR</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCIE2</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="n">PCMSK2</span> <span class="o">|=</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCINT21</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCINT22</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCINT23</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="nf">sei</span><span class="p">();</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// shiftreg.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#include</span> <span class="cpf">&lt;avr/io.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;avr/interrupt.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;util/delay.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define F_CPU 16000000UL
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define SER PD0
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define R_CLK PD1
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define SR_CLK PD2
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define ANIM_NUM 9
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">sr_write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">shift_bit</span><span class="p">(</span><span class="kt">bool</span> <span class="n">bit</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">tick</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">latch</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// main loop program here
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;anim.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">volatile</span> <span class="kt">bool</span> <span class="n">restart_requested</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">volatile</span> <span class="kt">int</span> <span class="n">mode</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">DDRD</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SER</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">R_CLK</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SR_CLK</span><span class="p">);</span> <span class="c1">// three output pins
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">PORTD</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PD5</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PD6</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PD7</span><span class="p">);</span>  <span class="c1">// three pull-up button interface
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">PCICR</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCIE2</span><span class="p">);</span> <span class="c1">// enable PCINT2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">PCMSK2</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCINT21</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCINT22</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCINT23</span><span class="p">);</span> <span class="c1">// enable PCINT2 for three pins
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="n">ADCSRA</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">ADEN</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ADMUX</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ADCSRA</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">ADSC</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span><span class="p">(</span><span class="n">ADCSRA</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">ADSC</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">srand</span><span class="p">(</span><span class="n">ADC</span><span class="p">);</span> <span class="c1">// seed PRNG with ADC noise
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  
+</span></span><span class="line"><span class="cl">  <span class="nf">sei</span><span class="p">();</span> <span class="c1">// enable global interrupt
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">switch</span> <span class="p">(</span><span class="n">mode</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">hello_world</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">binary_counter</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">bounce_left_right</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">case</span> <span class="mi">3</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">left_sign</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">case</span> <span class="mi">4</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">stack_to_end</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">case</span> <span class="mi">5</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">loading_bar</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">case</span> <span class="mi">6</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">random_spark</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">case</span> <span class="mi">7</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">waterdrop</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">case</span> <span class="mi">8</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">heartbeat</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">default</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">hello_world</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p>Untuk mendefinisikan program dengan interrupt, diperlukan library <code>&lt;avr/interrupt.h&gt;</code>. Selanjutnya, terdapat 2 register yang perlu ditangani:</p>
-<ul>
-<li><code>PCICR</code> (Pin Change Interrupt Control Register)</li>
-</ul>
+</span></span></code></pre></div><p>File <code>shiftreg.c</code> adalah file utama program ini. Terdapat variable global volatile <code>restart_requested</code> sebagai flag interrupt, dan <code>mode</code> menentukan animasi mana yang perlu diputar.</p>
+<p>Variabel <code>mode</code> bertipe data integer dengan nilai maksimal adalah <code>ANIM_NUM - 1</code> yang menyatakan banyaknya animasi yang tersedia.</p>
+<p>Untuk mengubah animasi yang diputar, digunakan tiga tombol interface: previous, restart, next. Karena animasi merupakan proses blocking, digunakan interruptuntuk mendeteksi aksi pada tombol.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">PORTD</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PD5</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PD6</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PD7</span><span class="p">);</span>  <span class="c1">// three pull-up button interface
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">PCICR</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCIE2</span><span class="p">);</span> <span class="c1">// enable PCINT2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">PCMSK2</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCINT21</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCINT22</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">PCINT23</span><span class="p">);</span> <span class="c1">// enable PCINT2 for three pins
+</span></span></span></code></pre></div><p>Pada baris pertama, sinyal <code>PD5</code>, <code>PD6</code>, dan <code>PD7</code> diatur menjadi HIGH. Masing-masing pin tersebut dihubungkan ke Vcc. Ketika tombol ditekan, pin akan dialirkan ke ground sehingga nilai pin terkait berubah menjadi LOW. Ini disebut pull-up button.</p>
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="Pull Up Button Configuration"
+    width="400"
+    height="293"
+    src="/posts/avr/01-shift-register/img/pull-up-btn.jpg"
+    srcset="/posts/avr/01-shift-register/img/pull-up-btn.jpg 800w, /posts/avr/01-shift-register/img/pull-up-btn.jpg 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/pull-up-btn.jpg"><figcaption>Tombol pull-up. Sumber: learn.sparkfun.com</figcaption></figure>
+<p>Pada baris kedua Pin Change Interrupt kedua diaktifkan. Baris selanjutnya, <code>PCMSK2</code> (Pin Change Mask 2) dimanipulasi sehingga PCINT21 (PD5), PCINT22, (PD6), PCINT23 (PD7) dapat mengirimkan sinyal interrupt ketika terjadi perubahan sinyal.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">ISR</span> <span class="p">(</span><span class="n">PCINT2_vect</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">_delay_ms</span><span class="p">(</span><span class="mi">25</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">restart_requested</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">((</span><span class="o">~</span><span class="p">(</span><span class="n">PIND</span> <span class="o">&gt;&gt;</span> <span class="n">PD5</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">mode</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">mode</span><span class="o">--</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">mode</span> <span class="o">=</span> <span class="n">ANIM_NUM</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">((</span><span class="o">~</span><span class="p">(</span><span class="n">PIND</span> <span class="o">&gt;&gt;</span> <span class="n">PD7</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">mode</span><span class="o">==</span><span class="p">(</span><span class="n">ANIM_NUM</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">mode</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">mode</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>ISR di atas menangani tiga tombol interface. Saat ISR pertama kali dijalankan, MCU perlu menunggu 25ms untuk mengabaikan bouncing signal.
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="Bouncing Signal"
+    width="532"
+    height="314"
+    src="/posts/avr/01-shift-register/img/0059-Switch_Debouncing_Figure_1.webp"
+    srcset="/posts/avr/01-shift-register/img/0059-Switch_Debouncing_Figure_1.webp 800w, /posts/avr/01-shift-register/img/0059-Switch_Debouncing_Figure_1.webp 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/0059-Switch_Debouncing_Figure_1.webp"><figcaption>Sinyal oscilloscope pull-up button ketika tombol ditekan. Sumber: circuitcellar.com</figcaption></figure>
+
+Ketika tombol mekanik ditekan, kontak yang dihasilkan tidak langsung sempurna. Alih-alih, terjadi fluktuasi seperti gambar di atas. Fluktuasi di atas disebut bouncing signal.</p>
+<p>Terdapat beberapa teknik untuk <em>debouncing</em> (mengurangi sinyal fluktuasi). Dapat menggunakan solusi hardware maupun software. Solusi sederhana dengan software adalah menunggu selama beberapa ms sampai sinyal tersebut stabil, seperti yang dilakukan <code>_delay_ms(25)</code>*.</p>
+<p>Setelah debouncing, <code>restart_requested</code> diubah menjadi <code>true</code> sehingga semua fungsi <code>latch()</code> dan yang memanggilnya akan terhenti begitu ISR selesai dijalankan.</p>
+<p>Selanjutnya, blok control-flow mengevaluasi jika tombol yang ditekan terhubung dengan <code>PD5</code> (tombol previous). Jika benar,  nilai mode akan dikurangi 1, atau kembali ke nilai <code>ANIM_NUM-1</code> sehingga <code>mode</code> tidak akan bernilai negatif.</p>
+<p>Jika salah, else if akan memeriksa jika tombol yang ditekan terhubung dengan <code>PD7</code> (tombol next). Jika benar, nilai mode akan diubah ditambah 1, atau kembali ke 0 sehingga <code>mode</code> akan selalu lebih kecil dari <code>ANIM_NUM</code>.</p>
+<p><em>*Catatan: penggunaan delay di dalam ISR sangat tidak direkomendasikan karena merupakan proses blocking. Sebaiknya gunakan timer interrupt. Namun kali ini kita gunakan delay, penggunaan timer akan dibahas di blog selanjutnya.</em></p>
 
 <h3 class="relative group">Result
     <div id="result" class="anchor"></div>
@@ -1407,7 +1334,8 @@ Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondi
     </span>
     
 </h3>
-
+<pre tabindex="0"><code>youtube video here
+</code></pre>
 <h2 class="relative group">Conclusion
     <div id="conclusion" class="anchor"></div>
     
@@ -1417,6 +1345,54 @@ Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondi
     </span>
     
 </h2>
+<p>Sekedar kilas balik, kita sudah membahas tentang shift register, karakteristik ic sn74hc595, interrupts, dan program c. Pada technical blog selanjutnya, kita akan mencoba menampilkan sesuatu ke 7-segment display dan 8x8 matrix sekaligus menggunakan 2 buah ic driver yang disusun berantai, max7219.</p>
+
+<h2 class="relative group">Nomenclature of the 7400 series IC (trivia)
+    <div id="nomenclature-of-the-7400-series-ic-trivia" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#nomenclature-of-the-7400-series-ic-trivia" aria-label="Anchor">#</a>
+    </span>
+    
+</h2>
+<p>IC 74HC595 memiliki makna dalam penamaannya. Untuk deskripsi lebih detail Anda dapat meninjau laman Wikipedia berikut: <a
+  href="https://en.wikipedia.org/wiki/7400-series_integrated_circuits"
+    target="_blank"
+  >7400-series Integrated Circuits</a>. Berikut adalah ringkasannya:</p>
+<ul>
+<li>Kode 74 di depan merepresentasikan temperatur operasinya: <figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="TI TTL Prefix"
+    width="670"
+    height="282"
+    src="/posts/avr/01-shift-register/img/74-prefix-nomen.png"
+    srcset="/posts/avr/01-shift-register/img/74-prefix-nomen.png 800w, /posts/avr/01-shift-register/img/74-prefix-nomen.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/74-prefix-nomen.png"></figure>
+</li>
+<li>HC adalah singkatan dari Highspeed CMOS, ini adalah kode family line. Terdapat banyak family line lain seperti L (Low Power), C (CMOS), F (Fast), dan masih banyak lagi. Untuk lebih detailnya silakan baca <a
+  href="https://en.wikipedia.org/wiki/7400-series_integrated_circuits#Families"
+    target="_blank"
+  >di sini</a>.</li>
+<li>Sedangkan 595 adalah kode subfamily. Banyak subfamily lain seperti 165 (SIPO SR), 00 (Quad AND Gate), 114 (Dual J-K Flip-Flop), dsb.</li>
+</ul>
+<p>IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Namun, perusahaan lain memiliki lisensi untuk memproduksi seri ini. Sehingga, diberikan prefiks untuk memberi keterangan perusahaan yang memproduksinya: <figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="TTL Manufacturer Prefix"
+    width="601"
+    height="280"
+    src="/posts/avr/01-shift-register/img/74-manprefix-nomen.png"
+    srcset="/posts/avr/01-shift-register/img/74-manprefix-nomen.png 800w, /posts/avr/01-shift-register/img/74-manprefix-nomen.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/01-shift-register/img/74-manprefix-nomen.png"></figure>
+</p>
 
 <h2 class="relative group">References and Further Reading
     <div id="references-and-further-reading" class="anchor"></div>
@@ -1427,6 +1403,33 @@ Sebagai contoh, ketika tombol dengan konfigurasi pull-up resistor ditekan, kondi
     </span>
     
 </h2>
+<ul>
+<li>GitHub: <a
+  href="https://github.com/vfadlan/avr-exp/tree/main/05-shiftreg"
+    target="_blank"
+  >vfadlan/avr-exp/05-shiftreg</a></li>
+<li><a
+  href="https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf"
+    target="_blank"
+  >ATMega328P Datasheet</a></li>
+<li><a
+  href="https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+    target="_blank"
+  >SNx4HC595 Datasheet</a></li>
+<li>The C Programming Language (2nd Edition) by Brian Kernighan and Dennis Ritchie</li>
+<li><a
+  href="https://www.ti.com/lit/an/scea117/scea117.pdf"
+    target="_blank"
+  >TI Application Note: Designing with Shift Registers</a></li>
+<li><a
+  href="https://circuitcellar.com/resources/quickbits/switch-debouncing/"
+    target="_blank"
+  >Switch Debouncing, Article from circuitcellar.com</a></li>
+<li><a
+  href="https://en.wikipedia.org/wiki/7400-series_integrated_circuits"
+    target="_blank"
+  >7400-Series Integrated Circuit, Article from wikipedia.org</a></li>
+</ul>
 
           
           

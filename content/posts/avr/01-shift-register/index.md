@@ -14,7 +14,6 @@ series_order: 1
   a. [↳Overview](#overview)  
   b. [↳Pin Descriptions](#pin-descriptions)  
   c. [↳Functional Characteristics](#functional-characteristics)  
-  d. [↳Nomenclature of the 7400 series IC (trivia)](#nomenclature-of-the-7400-series-ic-opsional)
 4. [Interrupts](#interrupts)  
   a. [↳A Brief Description](#a-brief-description)  
   b. [↳Blocking Process](#blocking-process)  
@@ -25,18 +24,20 @@ series_order: 1
   c. [↳Interrupt for Interface](#interrupt-for-interface)  
   d. [↳Result](#result)
 6. [Conclusion](#conclusion)
-7. [References and Further Reading](#references-and-further-reading)
-8. [Foot Notes](#foot-notes)
-## Intro
-Di blog kali ini, kita akan membahas tentang bagaimana menganimasikan 8 LED dengan shift register. Sebelum lanjut, saya mengasumsikan pembaca sudah memahami beberapa hal dasar tentang register, kita segera menemui ini berulang kali kedepannya. Jika ingin tahu, silakan baca blog sebelumnya atau sumber lain.
-{{< article link="/posts/avr/00-hello/" showSummary=true compactSummary=true >}}
+7. [↳Nomenclature of the 7400 series IC (trivia)](#nomenclature-of-the-7400-series-ic-opsional)
+8. [References and Further Reading](#references-and-further-reading)
+9. [Foot Notes](#foot-notes)
 
-Jadi, bagaimana caranya menganimasikan 8 LED dengan mikrokontroler? Cara paling sederhana adalah menggunakan 8 pin GPIO dari port yang sama. Contoh, jika kita menggunakan Port B, maka kita perlu mengubah register DDRB sekali dan memanipulasi PORTB untuk setiap frame-nya. Selesai.
+## Overview
+Bagaimana caranya menganimasikan 8 LED dengan mikrokontroler? Cara paling sederhana adalah menggunakan 8 pin GPIO dari port yang sama. Contoh, jika kita menggunakan Port B, maka kita perlu mengubah register DDRB sekali dan memanipulasi PORTB untuk setiap frame-nya. Selesai.
 
 Tapi terdapat masalah lain, jumlah pin GPIO pada MCU sangatlah terbatas. Beberapa MCU bahkan hanya memiliki 6 GPIO. Atau, meskipun jumlah pin yang dimiliki melimpah, kita tidak tahu pada update versi selanjutnya akan membutuhkan berapa banyak pin.
 
-Pada kasus kita, ATMega328P sebenarnya memiliki pin yang cukup untuk menangani 8 LED dengan port yang sama. _But, let's do it anyway_.
+Salah satu solusi yang dapat digunakan adalah IC Shift Register Serial In Parallel Out, yang akan kita gunakan adalah IC SN74HC595. Sementara IC tersebut menangani 8 LED, digunakan 3 tombol sebagai interface: previous, restart, dan next. Interrupt akan mendeteksi ketika salah satu tombol ditekan. Itulah yang akan kita bahas kali ini.
 
+Sebenarnya, ATMega328P memiliki pin yang cukup untuk menangani 8 LED dengan port yang sama. _But, let's do it anyway_.
+
+_Catatan: Blog ini tidak ditujukan sebagai tutorial atau blog singkat, melainkan 'technical walkthrough' tentang program yang saya buat. Itulah mengapa blog ini cukup panjang._
 ## Shift Register
 Kata "register" pada shift register secara konsep sama saja seperti register yang ada pada MCU. Register is register. Yang membedakan adalah kata "shift" (geser). Jadi, shift register adalah salah satu jenis register yang bisa menggeser data di dalamnya dari bit 0 ke bit 1, bit 1 ke bit 2, dan seterusnya ketika diberi sinyal clock.
 
@@ -77,7 +78,7 @@ Untuk memahami tabel di atas, berikut beberapa penjelasan untuk masing-masing je
 * ↑: Rising edge, ketika sinyal berubah dari LOW ke HIGH.
 
 Pada tabel fungsi, perubahan data dipicu oleh sinyal clock. Yang diperhatikan bukan sinyal HIGH atau LOW, tetapi transisi dari LOW ke HIGH (rising edge). 
-ss
+
 Berikut adalah penjelasan masing-masing mode:
 * Fungsi 1 dan 2, untuk mengaktifkan pin output (Qa-Qh), pin OE harus disambungkan ke ground.  
 * Fungsi 3, kita perlu menghubungkan pin SRCLR ke VCC agar SR tidak di-clear.  
@@ -86,20 +87,13 @@ Berikut adalah penjelasan masing-masing mode:
 * Fungsi 6, ketika RCLK diberi sinyal clock (rising edge), data di dalam SR akan disalin ke storage register.
 
 Jadi, koneksi ke MCU yang perlu ditentukan adalah untuk pin SER, SRCLK, dan RCLK. Sedangkan untuk pin output, masing-masing pin dihubungkan ke katoda LED. Untuk pin lain, OE dihubungkan ke ground, dan SRCLR dihubungkan ke VCC.
-### Nomenclature of the 7400 series IC (trivia)
-IC 74HC595 memiliki makna dalam penamaannya. Untuk deskripsi lebih detail Anda dapat meninjau laman Wikipedia berikut: [7400-series Integrated Circuits](https://en.wikipedia.org/wiki/7400-series_integrated_circuits). Berikut adalah ringkasannya:
-* Kode 74 di depan merepresentasikan temperatur operasinya: ![TI TTL Prefix](img/74-prefix-nomen.png)
-* HC adalah singkatan dari Highspeed CMOS, ini adalah kode family line. Terdapat banyak family line lain seperti L (Low Power), C (CMOS), F (Fast), dan masih banyak lagi. Untuk lebih detailnya silakan baca [di sini](https://en.wikipedia.org/wiki/7400-series_integrated_circuits#Families).
-* Sedangkan 595 adalah kode subfamily. Banyak subfamily lain seperti 165 (SIPO SR), 00 (Quad AND Gate), 114 (Dual J-K Flip-Flop), dsb.
-
-IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Namun, perusahaan lain memiliki lisensi untuk memproduksi seri ini. Sehingga, diberikan prefiks untuk memberi keterangan perusahaan yang memproduksinya: ![TTL Manufacturer Prefix](img/74-manprefix-nomen.png)
 
 ## Interrupts
 ### A Brief Description
 Interrupt adalah salah satu fungs dasar pada mikrokontroler yang berguna untuk menginterupsi program utama untuk melakukan proses lain yang lebih penting. Secara teknis, interrupt adalah sinyal yang menginformasikan CPU agar menghentikan apapun yang sedang dilakukan untuk sementara waktu. Setelah itu, Interrupt Service Routine (ISR) akan dijalankan. ISR umumnya ditulis dalam bentuk routine/fungsi. Kemudian, CPU kembali melanjutkan proses yang sebelumnya diinterupsi.
 
 ### Blocking Process
-Pertanyaannya, kenapa perlu menggunakan interrupt? Apakah tidak cukup menggunakan if di dalam main loop? Untuk menjawabnya, kita perlu mengingat bahwa sebuah CPU hanya bisa melakukan satu tugas  dalam satu waktu. Sementara itu, proses seperti animasi LED adalah proses yang memakan waktu, sebagian besar waktunya digunakan untuk menunggu beberapa ratus ms agar kita dapat melihat animasinya. 
+Perlu diingat bahwa sebuah CPU hanya bisa melakukan satu tugas  dalam satu waktu. Sementara itu, proses seperti animasi LED adalah proses yang memakan waktu, sebagian besar waktunya digunakan untuk menunggu beberapa ratus ms agar kita dapat melihat animasinya. Inilah yang disebut blocking process.
 
 Misalkan kita menambahkan tombol 'previous', 'next', dan 'restart' yang berguna untuk mengontrol animasi mana yang diputar. Tanpa interrupt, jika salah satu tombol ditekan maka tombol itu diabakan selama animasi sedang berjalan.
 
@@ -142,6 +136,7 @@ Pin-pin di atas digunakan dalam fungsi-fungsi primer yang melakukan: bit shiftin
 
 _*Catatan: Nomor pin SN74HC595 mengacu package DIP-16, dan ATMega328P DIP-28_
 ```c
+// shiftreg.c
 #define SER PD0
 #define R_CLK PD1
 #define SR_CLK PD2
@@ -154,6 +149,7 @@ void tick(void) {
 ```
 Ketika routine `tick()` dieksekusi, data shift register akan digeser dengan nilai bit ke-0 mengikuti nilai `SER` atau `PD0` pada saat fungsi dieksekusi. Hal ini sesuai dengan karakteristik SR pada datasheet yang [sudah kita bahas](#functional-characteristics).
 ```c
+// shiftreg.c
 void shift_bit(bool bit) {
   if (bit)    PORTD |= (1 << SER);
   else        PORTD &= (~(1 << SER));
@@ -163,27 +159,30 @@ void shift_bit(bool bit) {
 ```
 Fungsi `shift_bit(bool bit)` menerima boolean sebagai parameter. Boolean tersebut dijadikan sebagai nilai `PD0`. Setelah nilai `PD0` diubah, fungsi `tick()` dipanggil sehingga bit ke-0 pada SR ditentukan oleh parameter `bit`.
 ```c
+// shiftreg.c
 bool latch(void) {
+  PORTD |= (1 << R_CLK);
+  _delay_ms(1);
+  PORTD &= (~(1 << R_CLK));
+
   if (restart_requested) {
     restart_requested = false;
     return false;
   }
-
-  PORTD |= (1 << R_CLK);
-  _delay_ms(1);
-  PORTD &= (~(1 << R_CLK));
   return true;
 }
 ```
-Fokus ke bawah terlebih dahulu, fungsi `latch()` akan menyalakan `R_CLK` atau `PD1` selama 1ms. Sesuai datasheet, high pada `RCLK` akan menyalin data pada SR ke storage register yang menyimpan nilai output.
 
-Kembali ke atas. Di dalam fungsi `latch()`, `restart_requested` yang merupakan variable flag akan diperiksa. Jika bernilai `true`, flag tersebut akan dikembalikan ke nilai defaultnya. Setelah itu menghentikan eksekusi fungsi `latch()` dengan `return false;`.
+Fungsi `latch()` akan menyalakan `R_CLK` atau `PD1` selama 1ms. Sesuai datasheet, high pada `RCLK` akan menyalin data pada SR ke storage register yang menyimpan nilai output.
+
+Selanjutnya, `restart_requested` yang merupakan variable flag akan diperiksa. Jika bernilai `true`, flag tersebut akan dikembalikan ke nilai defaultnya. Setelah itu menghentikan eksekusi fungsi `latch()` dengan `return false;`.
 
 Proses serupa terjadi secara bertumpuk/bersarang, fungsi yang memanggil `latch()` dan mendapatkan nilai `false` akan mengakhiri dirinya dengan mengembalikan nilai `false`. Dan seterusnya.
 
 Sehingga ketika sinyal interrupt diberikan, semua proses secara instan akan terhenti dan memulai ulang _main-loop_ untuk memulai animasi sebelumnya, selanjutnya, atau memulai ulang animasi saat ini.
 
 ```c
+// shiftreg.c
 bool sr_write(uint8_t data) {
   for (int i=0; i<8; i++) {
     shift_bit(data & 0x80);
@@ -203,7 +202,9 @@ Tiga fungsi yang telah dibuat, pada akhirnya digunakan untuk menyala-matikan 8 L
 Untuk menampilkan animasi, kita perlu memanipulasi SR untuk menampilkan frame selama beberapa ms, kemudian menampilkan frame selanjutnya. Satu frame direpresentasikan oleh `uint8_t`, masing-masing bitnya menentukan nyala-mati satu buah LED.
 
 ```c
+// anim.c
 #include <util/delay.h>
+#include <anim.h>
 
 bool draw_pattern(uint8_t pattern, int delay_ms) {
   if (!sr_write(pattern)) return false;
@@ -219,6 +220,7 @@ Fungsi `draw_pattern(uint8_t pattern, int delay_ms)` menampilkan `pattern` setid
 Perlu diingat bahwa fungsi `_delay_ms(int)` hanya menerima bilangan konstan. Untuk mengakalinya, digunakan `for` loop dengan iterasi sebanyak `delay_ms`, di mana setiap iterasinya melakukan delay selama 1ms.
 
 ```c
+// anim.c
 void binary_counter() {
   for (int i=0; i<256; i++) {
     if (!draw_pattern(i, 30)) return;
@@ -227,9 +229,10 @@ void binary_counter() {
 ```
 Fungsi `binary_conter()` akan melakukan iterasi dari 0-255, nilai biner dari pencacah `i` kemudian ditampilkan selama 30ms.
 
-![Anim Eval Binary Counter](img/anim-eval-binary_counter.gif "Emulasi shift register untuk animasi binary_counter() melalui CLI.")
+![Anim Eval Binary Counter](img/anim-binary_counter.gif "Emulasi shift register untuk animasi binary_counter() melalui CLI.")
 
 ```c
+// anim.c
 void bounce_left_right() {
   for (int i=0; i<8; i++) {
     if (!draw_pattern((1 << i), 80)) return;
@@ -241,9 +244,10 @@ void bounce_left_right() {
 ```
 Selain menggunakan nilai biner dari suatu bilangan, operasi bitwise juga dapat digunakan untuk melakukan animasi. Fungsi `bounce_left_right()` menampilkan "bola" yang memantul dari kanan ke kiri dan sebaliknya.
 
-![Anim Eval Bounce Left Right](img/anim-eval-bounce_left_right.gif "Emulasi shift register untuk animasi bounce_left_right() melalui CLI.")
+![Anim Eval Bounce Left Right](img/anim-bounce.gif "Emulasi shift register untuk animasi bounce_left_right() melalui CLI.")
 
 ```c
+// anim.c
 void left_sign(int len) {
   for (int i=0; i<8; i++) {
     if (i<len) {
@@ -259,25 +263,179 @@ void left_sign(int len) {
 Routine `left_sign(int len)`, alih-alih memanggil fungsi seperti `sr_write` atau `draw_pattern`, ia menggunakan fungsi yang lebih dasar. `shift_bit` dan `latch`.
 
 Routine di atas akan melakukan bit shifting bernilai 1 sebanyak `len` kali, dan 0 sebanyak `8-len` kali. Animasi yang dihasilkan adalah LED sejumlah `len` bergeser ke kiri seperti lampu sign kendaraan.
-![Anim Eval Bounce Left Right](img/anim-eval-left_sign.gif "Emulasi shift register untuk animasi left_sign(int len) melalui CLI.")
-### Interrupt for Interface
-```c
-#include <avr/interrupt.h>
-int main() {
-  PCICR |= (1 << PCIE2);
-  PCMSK2 |=  (1 << PCINT21) | (1 << PCINT22) | (1 << PCINT23);
-  sei();
 
-  while (1) {
-    // main loop program here
+![Anim Eval Bounce Left Right](img/anim-left.gif "Emulasi shift register untuk animasi left_sign(int len) melalui CLI.")
+
+```c
+// anim.h
+#include <stdint.h>
+bool draw_pattern(uint8_t pattern, int delay);
+void hello_world();
+void binary_counter();
+void stack_to_end();
+void bounce_left_right();
+void left_sign(int);
+void loading_bar();
+void random_spark();
+void waterdrop();
+void heartbeat();
+```
+
+File header di atas mendefinisikan fungsi-fungsi animasi. File tersebut akan disertakan pada `anim.c` dan `shiftreg.c`. Program lengkap dapat ditemukan di [repo github berikut](https://github.com/vfadlan/avr-exp/05-shiftreg/).
+
+### Interrupt for Interface
+
+```c
+// shiftreg.c
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
+
+#define F_CPU 16000000UL
+
+#define SER PD0
+#define R_CLK PD1
+#define SR_CLK PD2
+#define ANIM_NUM 9
+
+bool sr_write(uint8_t data);
+void shift_bit(bool bit);
+void tick(void);
+bool latch(void);
+
+#include <anim.h>
+
+volatile bool restart_requested = false;
+volatile int mode = 0;
+
+int main(void) {
+  DDRD |= (1 << SER) | (1 << R_CLK) | (1 << SR_CLK); // three output pins
+  PORTD |= (1 << PD5) | (1 << PD6) | (1 << PD7);  // three pull-up button interface
+  PCICR |= (1 << PCIE2); // enable PCINT2
+  PCMSK2 |= (1 << PCINT21) | (1 << PCINT22) | (1 << PCINT23); // enable PCINT2 for three pins
+
+  ADCSRA |= (1 << ADEN);
+  ADMUX = 0x00;
+  ADCSRA |= (1 << ADSC);
+  while(ADCSRA & (1 << ADSC));
+  srand(ADC); // seed PRNG with ADC noise
+  
+  sei(); // enable global interrupt
+
+  while (true) {
+    switch (mode) {
+      case 0:
+        hello_world();
+        break;
+      case 1:
+        binary_counter();
+        break;
+      case 2:
+        bounce_left_right();
+        break;
+      case 3:
+        left_sign(3);
+        break;
+      case 4:
+        stack_to_end();
+        break;
+      case 5:
+        loading_bar();
+        break;
+      case 6:
+        random_spark();
+        break;
+      case 7:
+        waterdrop();
+        break;
+      case 8:
+        heartbeat();
+        break;
+      default:
+        hello_world();
+        break;
+    }
   }
 }
 ```
-Untuk mendefinisikan program dengan interrupt, diperlukan library `<avr/interrupt.h>`. Selanjutnya, terdapat 2 register yang perlu ditangani:
-* `PCICR` (Pin Change Interrupt Control Register)
 
+File `shiftreg.c` adalah file utama program ini. Terdapat variable global volatile `restart_requested` sebagai flag interrupt, dan `mode` menentukan animasi mana yang perlu diputar.
 
+Variabel `mode` bertipe data integer dengan nilai maksimal adalah `ANIM_NUM - 1` yang menyatakan banyaknya animasi yang tersedia.
+
+Untuk mengubah animasi yang diputar, digunakan tiga tombol interface: previous, restart, next. Karena animasi merupakan proses blocking, digunakan interruptuntuk mendeteksi aksi pada tombol.
+
+```c
+PORTD |= (1 << PD5) | (1 << PD6) | (1 << PD7);  // three pull-up button interface
+PCICR |= (1 << PCIE2); // enable PCINT2
+PCMSK2 |= (1 << PCINT21) | (1 << PCINT22) | (1 << PCINT23); // enable PCINT2 for three pins
+```
+
+Pada baris pertama, sinyal `PD5`, `PD6`, dan `PD7` diatur menjadi HIGH. Masing-masing pin tersebut dihubungkan ke Vcc. Ketika tombol ditekan, pin akan dialirkan ke ground sehingga nilai pin terkait berubah menjadi LOW. Ini disebut pull-up button. 
+
+![Pull Up Button Configuration](img/pull-up-btn.jpg "Tombol pull-up. Sumber: learn.sparkfun.com")
+
+Pada baris kedua Pin Change Interrupt kedua diaktifkan. Baris selanjutnya, `PCMSK2` (Pin Change Mask 2) dimanipulasi sehingga PCINT21 (PD5), PCINT22, (PD6), PCINT23 (PD7) dapat mengirimkan sinyal interrupt ketika terjadi perubahan sinyal.
+
+```c
+ISR (PCINT2_vect) {
+  _delay_ms(25);
+  restart_requested = true;
+
+  if ((~(PIND >> PD5)) & 1) {
+    if (mode) {
+      mode--;
+    } else {
+      mode = ANIM_NUM-1;
+    }
+
+  } else if ((~(PIND >> PD7)) & 1) {
+    if (mode==(ANIM_NUM-1)) {
+      mode = 0;
+    } else {
+      mode++;
+    }
+  }
+}
+```
+
+ISR di atas menangani tiga tombol interface. Saat ISR pertama kali dijalankan, MCU perlu menunggu 25ms untuk mengabaikan bouncing signal.
+![Bouncing Signal](img/0059-Switch_Debouncing_Figure_1.webp "Sinyal oscilloscope pull-up button ketika tombol ditekan. Sumber: circuitcellar.com" )
+Ketika tombol mekanik ditekan, kontak yang dihasilkan tidak langsung sempurna. Alih-alih, terjadi fluktuasi seperti gambar di atas. Fluktuasi di atas disebut bouncing signal.
+
+Terdapat beberapa teknik untuk _debouncing_ (mengurangi sinyal fluktuasi). Dapat menggunakan solusi hardware maupun software. Solusi sederhana dengan software adalah menunggu selama beberapa ms sampai sinyal tersebut stabil, seperti yang dilakukan `_delay_ms(25)`*.
+
+Setelah debouncing, `restart_requested` diubah menjadi `true` sehingga semua fungsi `latch()` dan yang memanggilnya akan terhenti begitu ISR selesai dijalankan.
+
+Selanjutnya, blok control-flow mengevaluasi jika tombol yang ditekan terhubung dengan `PD5` (tombol previous). Jika benar,  nilai mode akan dikurangi 1, atau kembali ke nilai `ANIM_NUM-1` sehingga `mode` tidak akan bernilai negatif.
+
+Jika salah, else if akan memeriksa jika tombol yang ditekan terhubung dengan `PD7` (tombol next). Jika benar, nilai mode akan diubah ditambah 1, atau kembali ke 0 sehingga `mode` akan selalu lebih kecil dari `ANIM_NUM`.
+
+_*Catatan: penggunaan delay di dalam ISR sangat tidak direkomendasikan karena merupakan proses blocking. Sebaiknya gunakan timer interrupt. Namun kali ini kita gunakan delay, penggunaan timer akan dibahas di blog selanjutnya._
 ### Result
+```
+youtube video here
+```
 
 ## Conclusion
+Sekedar kilas balik, kita sudah membahas tentang shift register, karakteristik ic sn74hc595, interrupts, dan program c. Pada technical blog selanjutnya, kita akan mencoba menampilkan sesuatu ke 7-segment display dan 8x8 matrix sekaligus menggunakan 2 buah ic driver yang disusun berantai, max7219.
+
+## Nomenclature of the 7400 series IC (trivia)
+IC 74HC595 memiliki makna dalam penamaannya. Untuk deskripsi lebih detail Anda dapat meninjau laman Wikipedia berikut: [7400-series Integrated Circuits](https://en.wikipedia.org/wiki/7400-series_integrated_circuits). Berikut adalah ringkasannya:
+* Kode 74 di depan merepresentasikan temperatur operasinya: ![TI TTL Prefix](img/74-prefix-nomen.png)
+* HC adalah singkatan dari Highspeed CMOS, ini adalah kode family line. Terdapat banyak family line lain seperti L (Low Power), C (CMOS), F (Fast), dan masih banyak lagi. Untuk lebih detailnya silakan baca [di sini](https://en.wikipedia.org/wiki/7400-series_integrated_circuits#Families).
+* Sedangkan 595 adalah kode subfamily. Banyak subfamily lain seperti 165 (SIPO SR), 00 (Quad AND Gate), 114 (Dual J-K Flip-Flop), dsb.
+
+IC 7400 series ini didesain oleh perusahaan asal Amerika, Texas Instruments. Namun, perusahaan lain memiliki lisensi untuk memproduksi seri ini. Sehingga, diberikan prefiks untuk memberi keterangan perusahaan yang memproduksinya: ![TTL Manufacturer Prefix](img/74-manprefix-nomen.png)
+
 ## References and Further Reading
+* GitHub: [vfadlan/avr-exp/05-shiftreg](https://github.com/vfadlan/avr-exp/tree/main/05-shiftreg)
+* [ATMega328P Datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf)
+* [SNx4HC595 Datasheet](https://www.ti.com/lit/ds/symlink/sn74hc595.pdf)
+* The C Programming Language (2nd Edition) by Brian Kernighan and Dennis Ritchie
+* [TI Application Note: Designing with Shift Registers](https://www.ti.com/lit/an/scea117/scea117.pdf)
+* [Switch Debouncing, Article from circuitcellar.com](https://circuitcellar.com/resources/quickbits/switch-debouncing/)
+* [7400-Series Integrated Circuit, Article from wikipedia.org](https://en.wikipedia.org/wiki/7400-series_integrated_circuits)
