@@ -421,7 +421,13 @@ youtube video here
 ```
 
 ## Conclusion
-Sekedar kilas balik, kita sudah membahas tentang shift register, karakteristik ic sn74hc595, interrupts, dan program c. Pada technical blog selanjutnya, kita akan mencoba menampilkan sesuatu ke 7-segment display dan 8x8 matrix sekaligus menggunakan 2 buah ic driver yang disusun berantai, max7219.
+Sekedar kilas balik, kita sudah membahas tentang shift register, karakteristik ic sn74hc595, interrupts, dan program c. 
+
+![Schematic](img/schematic.png "Overall Schematic")
+
+Gambar di atas adalah diagram rangkaian secara keseluruhan. Kode program tersedia di repo [repo github](https://github.com/vfadlan/avr-exp/05-shiftreg/).
+
+Pada technical blog selanjutnya, kita akan mencoba menampilkan sesuatu ke 7-segment display dan 8x8 matrix sekaligus menggunakan 2 buah ic driver yang disusun berantai, max7219.
 
 ## Nomenclature of the 7400 series IC (trivia)
 IC 74HC595 memiliki makna dalam penamaannya. Untuk deskripsi lebih detail Anda dapat meninjau laman Wikipedia berikut: [7400-series Integrated Circuits](https://en.wikipedia.org/wiki/7400-series_integrated_circuits). Berikut adalah ringkasannya:
