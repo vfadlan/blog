@@ -1,5 +1,5 @@
 ---
-date: 2025-12-28T05:15:34+07:00
+date: 2026-01-12T07:00:00+07:00
 draft: false
 params:
   author: Fadlan Abduh
@@ -414,11 +414,10 @@ Selanjutnya, blok control-flow mengevaluasi jika tombol yang ditekan terhubung d
 
 Jika salah, else if akan memeriksa jika tombol yang ditekan terhubung dengan `PD7` (tombol next). Jika benar, nilai mode akan diubah ditambah 1, atau kembali ke 0 sehingga `mode` akan selalu lebih kecil dari `ANIM_NUM`.
 
-_*Catatan: penggunaan delay di dalam ISR sangat tidak direkomendasikan karena merupakan proses blocking. Sebaiknya gunakan timer interrupt. Namun kali ini kita gunakan delay, penggunaan timer akan dibahas di blog selanjutnya._
+_*Catatan: penggunaan delay di dalam ISR sangat tidak direkomendasikan karena merupakan proses blocking. Sebaiknya gunakan timer interrupt. Namun kali ini kita gunakan delay, timer akan dibahas di blog selanjutnya._
 ### Result
-```
-youtube video here
-```
+
+{{< youtubeLite id="cznnqiWVpB8" label="8-bit LED with Shift Register Controlled by ATMega328P (Bare Metal)" >}}
 
 ## Conclusion
 Sekedar kilas balik, kita sudah membahas tentang shift register, karakteristik ic sn74hc595, interrupts, dan program c. 
@@ -427,7 +426,7 @@ Sekedar kilas balik, kita sudah membahas tentang shift register, karakteristik i
 
 Gambar di atas adalah diagram rangkaian secara keseluruhan. Kode program tersedia di repo [repo github](https://github.com/vfadlan/avr-exp/05-shiftreg/).
 
-Pada technical blog selanjutnya, kita akan mencoba menampilkan sesuatu ke 7-segment display dan 8x8 matrix sekaligus menggunakan 2 buah ic driver yang disusun berantai, max7219.
+Pada technical blog selanjutnya, kita akan mencoba menampilkan sesuatu ke 7-segment display dan 8x8 matrix sekaligus menggunakan 2 buah ic driver yang disusun berantai, max7219. Kita akan menggunakan beberapa peripheral ATMega328P lainnya yakni SPI dan Timer.
 
 ## Nomenclature of the 7400 series IC (trivia)
 IC 74HC595 memiliki makna dalam penamaannya. Untuk deskripsi lebih detail Anda dapat meninjau laman Wikipedia berikut: [7400-series Integrated Circuits](https://en.wikipedia.org/wiki/7400-series_integrated_circuits). Berikut adalah ringkasannya:

@@ -43,8 +43,8 @@
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2025-12-28T05:15:34+07:00">
-    <meta property="article:modified_time" content="2025-12-28T05:15:34+07:00">
+    <meta property="article:published_time" content="2026-01-12T07:00:00+07:00">
+    <meta property="article:modified_time" content="2026-01-12T07:00:00+07:00">
       <meta property="og:see_also" content="http://localhost:1313/posts/avr/00-hello/">
 
   
@@ -166,6 +166,20 @@
 
 
 
+  
+  
+  <link
+    type="text/css"
+    rel="stylesheet"
+    href="/lib/lite-youtube-embed/lite-yt-embed.badabc6055b427669bbcf084097334cdf2029c85696c4a56e25239825d3571d26ef82b775ba19032ccd52135ccb412c9ba79da4e9e9b6f3939a6178a5f65ee5d.css"
+    integrity="sha512-utq8YFW0J2abvPCECXM0zfICnIVpbEpW4lI5gl01cdJu&#43;Ct3W6GQMszVITXMtBLJunnaTp6bbzk5pheKX2XuXQ==">
+  
+  
+  <script
+    type="text/javascript"
+    src="/lib/lite-youtube-embed/lite-yt-embed.58a8a22aed9d1cd05780869df4b0d87972fcd144a9eaff8f9a1453e58e6521c5a89ccd80bdb9f48e25ae5ee87b98bd9de51b14dd9988c60e4c89630433292084.js"
+    integrity="sha512-WKiiKu2dHNBXgIad9LDYeXL80USp6v&#43;PmhRT5Y5lIcWonM2Avbn0jiWuXuh7mL2d5RsU3ZmIxg5MiWMEMykghA=="></script>
+
 
 
 
@@ -209,16 +223,16 @@
       "@type": "Person",
       "name": "Fadlan Abduh"
     },
-    "copyrightYear": "2025",
-    "dateCreated": "2025-12-28T05:15:34\u002b07:00",
-    "datePublished": "2025-12-28T05:15:34\u002b07:00",
+    "copyrightYear": "2026",
+    "dateCreated": "2026-01-12T07:00:00\u002b07:00",
+    "datePublished": "2026-01-12T07:00:00\u002b07:00",
     
-    "dateModified": "2025-12-28T05:15:34\u002b07:00",
+    "dateModified": "2026-01-12T07:00:00\u002b07:00",
     
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "2858"
+    "wordCount": "2865"
   }]
   </script>
 
@@ -561,7 +575,7 @@
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2025-12-28T05:15:34&#43;07:00">28 December 2025</time><span class="px-2 text-primary-500">&middot;</span><span>2858 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">14 mins</span>
+      <time datetime="2026-01-12T07:00:00&#43;07:00">12 January 2026</time><span class="px-2 text-primary-500">&middot;</span><span>2865 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">14 mins</span>
     
 
     
@@ -1323,7 +1337,7 @@ Ketika tombol mekanik ditekan, kontak yang dihasilkan tidak langsung sempurna. A
 <p>Setelah debouncing, <code>restart_requested</code> diubah menjadi <code>true</code> sehingga semua fungsi <code>latch()</code> dan yang memanggilnya akan terhenti begitu ISR selesai dijalankan.</p>
 <p>Selanjutnya, blok control-flow mengevaluasi jika tombol yang ditekan terhubung dengan <code>PD5</code> (tombol previous). Jika benar,  nilai mode akan dikurangi 1, atau kembali ke nilai <code>ANIM_NUM-1</code> sehingga <code>mode</code> tidak akan bernilai negatif.</p>
 <p>Jika salah, else if akan memeriksa jika tombol yang ditekan terhubung dengan <code>PD7</code> (tombol next). Jika benar, nilai mode akan diubah ditambah 1, atau kembali ke 0 sehingga <code>mode</code> akan selalu lebih kecil dari <code>ANIM_NUM</code>.</p>
-<p><em>*Catatan: penggunaan delay di dalam ISR sangat tidak direkomendasikan karena merupakan proses blocking. Sebaiknya gunakan timer interrupt. Namun kali ini kita gunakan delay, penggunaan timer akan dibahas di blog selanjutnya.</em></p>
+<p><em>*Catatan: penggunaan delay di dalam ISR sangat tidak direkomendasikan karena merupakan proses blocking. Sebaiknya gunakan timer interrupt. Namun kali ini kita gunakan delay, timer akan dibahas di blog selanjutnya.</em></p>
 
 <h3 class="relative group">Result
     <div id="result" class="anchor"></div>
@@ -1334,8 +1348,9 @@ Ketika tombol mekanik ditekan, kontak yang dihasilkan tidak langsung sempurna. A
     </span>
     
 </h3>
-<pre tabindex="0"><code>youtube video here
-</code></pre>
+<lite-youtube videoid="cznnqiWVpB8" playlabel="cznnqiWVpB8" params=""></lite-youtube>
+
+
 <h2 class="relative group">Conclusion
     <div id="conclusion" class="anchor"></div>
     
@@ -1362,7 +1377,7 @@ Ketika tombol mekanik ditekan, kontak yang dihasilkan tidak langsung sempurna. A
   href="https://github.com/vfadlan/avr-exp/05-shiftreg/"
     target="_blank"
   >repo github</a>.</p>
-<p>Pada technical blog selanjutnya, kita akan mencoba menampilkan sesuatu ke 7-segment display dan 8x8 matrix sekaligus menggunakan 2 buah ic driver yang disusun berantai, max7219.</p>
+<p>Pada technical blog selanjutnya, kita akan mencoba menampilkan sesuatu ke 7-segment display dan 8x8 matrix sekaligus menggunakan 2 buah ic driver yang disusun berantai, max7219. Kita akan menggunakan beberapa peripheral ATMega328P lainnya yakni SPI dan Timer.</p>
 
 <h2 class="relative group">Nomenclature of the 7400 series IC (trivia)
     <div id="nomenclature-of-the-7400-series-ic-trivia" class="anchor"></div>
