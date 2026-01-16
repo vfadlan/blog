@@ -16,7 +16,7 @@
       
       <guid>http://localhost:1313/posts/avr/01-shift-register/</guid>
       <description></description>
-      
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/posts/avr/01-shift-register/featured.jpg" />
     </item>
     
     <item>

@@ -7,6 +7,9 @@ title: Animating LEDs with Shift Register
 series: ["AVR"]
 series_order: 1
 ---
+
+![Featured](featured.jpg)
+
 ## Table of Contents
 1. [Intro](#intro)
 2. [Shift Register](#shift-register)
