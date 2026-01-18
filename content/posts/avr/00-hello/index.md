@@ -95,7 +95,7 @@ To handle all these bit-by-bit operations I had to equip myself with the right t
 ## Input
 There are many ways to receive an input signal. You can receive it from some communication channel, sensor, or a simpler one, like a switch button and a potentiometer.
 
-For handling digital input, it’s quite easy. What we do is the opposite of sending an output signal. We read the `PORTx` register.
+For handling digital input, it’s quite easy. What we do is the opposite of sending an output signal. We read the `PINx` register.
 
 But an analog signal is slightly more complicated than that. Firstly you have to do the conversion from analog to digital signal. In doing so, there are some registers that you should take care of: DDRx, PORTx, PINx, ADMUX, ADCSRA. And, if you manage to start the ADC process, the MCUs will store the output into two separate registers, ADCL and ADCH. They’re separated because ATMega328P have 10 bits ADC, while a register can only store up to 8 bits.
 

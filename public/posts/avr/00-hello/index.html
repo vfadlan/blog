@@ -46,6 +46,7 @@
     <meta property="article:published_time" content="2025-12-22T15:24:54+07:00">
     <meta property="article:modified_time" content="2025-12-22T15:24:54+07:00">
     <meta property="og:image" content="http://localhost:1313/posts/avr/00-hello/featured.jpg">
+      <meta property="og:see_also" content="http://localhost:1313/posts/avr/02-max7219/">
       <meta property="og:see_also" content="http://localhost:1313/posts/avr/01-shift-register/">
 
   
@@ -615,7 +616,7 @@
       </div>
     
     
-      <div class="text-sm text-neutral-700 dark:text-neutral-400">Web dev gone deviant, chasing hardware truth.</div>
+      <div class="text-sm text-neutral-700 dark:text-neutral-400">Messing aroud with ones and zeros.</div>
     
     <div class="text-2xl sm:text-lg">
 </div>
@@ -669,6 +670,16 @@
         <a href="/posts/avr/01-shift-register/">
           Part 1:
           Animating LEDs with Shift Register
+        </a>
+      </div>
+    
+  
+    
+      <div
+        class="py-1 border-dotted border-neutral-300 border-s-1 -ms-5 ps-5 dark:border-neutral-600">
+        <a href="/posts/avr/02-max7219/">
+          Part 2:
+          Timer and LED Driver
         </a>
       </div>
     
@@ -835,7 +846,7 @@ The <code>PORTB</code> register handles what signal each pin should send. It can
     
 </h2>
 <p>There are many ways to receive an input signal. You can receive it from some communication channel, sensor, or a simpler one, like a switch button and a potentiometer.</p>
-<p>For handling digital input, it’s quite easy. What we do is the opposite of sending an output signal. We read the <code>PORTx</code> register.</p>
+<p>For handling digital input, it’s quite easy. What we do is the opposite of sending an output signal. We read the <code>PINx</code> register.</p>
 <p>But an analog signal is slightly more complicated than that. Firstly you have to do the conversion from analog to digital signal. In doing so, there are some registers that you should take care of: DDRx, PORTx, PINx, ADMUX, ADCSRA. And, if you manage to start the ADC process, the MCUs will store the output into two separate registers, ADCL and ADCH. They’re separated because ATMega328P have 10 bits ADC, while a register can only store up to 8 bits.</p>
 
 <h2 class="relative group">First Project: Morse Code
@@ -962,6 +973,16 @@ The <code>PORTB</code> register handles what signal each pin should send. It can
         <a href="/posts/avr/01-shift-register/">
           Part 1:
           Animating LEDs with Shift Register
+        </a>
+      </div>
+    
+  
+    
+      <div
+        class="py-1 border-dotted border-neutral-300 border-s-1 -ms-5 ps-5 dark:border-neutral-600">
+        <a href="/posts/avr/02-max7219/">
+          Part 2:
+          Timer and LED Driver
         </a>
       </div>
     

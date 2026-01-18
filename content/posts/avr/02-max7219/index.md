@@ -56,30 +56,43 @@ _*Catatan: `TCNTH` untuk byte 8-15 dan `TCNT1L` untuk byte 0-7._
 ### Do The Math
 
 Unit waktu terkecil pada jam yang akan dibuat adalah 1 centisecond:
-```
-1s = 100 cs =1.000 ms = 1.000.000 µs = 1.000.000.000 ns
-1cs = 10ms = 10.000 µs = 10.000.000 ns
-```
+{{< katex >}}
+$$
+  1\text{ s} = 100\text{ cs} = 1,000\text{ ms} = 1,000,000\text{ μs} = 1,000,000,000\text{ ns}
+$$
+$$
+1\text{ cs} = 10\text{ ms} = 10,000\text{ μs} = 10,000,000\text{ ns}
+$$
 
 Unit `centiseconds` dijadikan sebagai variable global volatile yang nilainya diincrement setiap 10ms oleh ISR timer 1. Kita perlu mengkonfigurasi timer1 untuk menjalankan ISR setiap 10ms. Sebelum itu, kita hitung terlebih dahulu berapa lama durasi 1 clock cycle.
-```
-F_CPU 16MHz = 16.000.000 clock cycle / second = 1 clock cycle / 62.5 ns
+{{< katex >}}
+$$
+f_{CPU} = 16\text{ MHz} = 16,000,000\text{ clock cycles/s}
+$$
+$$
+T = \frac{1}{f_{CPU}} = \frac{1}{16,000,000\text{ Hz}} = 62.5\text{ ns/cycle}
+$$
+$$
+\frac{10\text{ ms}}{62.5\text{ ns}} = \frac{10,000,000\text{ ns}}{62.5\text{ ns}} = 160,000\text{ clock cycles}
+$$
 
-10ms / 62.5 ns = 10.000.000 ns / 62.5 ns = 160.0000 clock cycle
-```
-Butuh 160.000 clock cycle untuk mencapai durasi 10ms jika frekuensi yang digunakan adalah 16MHz. Angka ini terlalu besar untuk timer1 yang hanya 16-bit, 2^16 = 65536.
+{{< katex >}}
+Butuh 160.000 clock cycle untuk mencapai durasi 10ms jika frekuensi yang digunakan adalah 16MHz. Angka ini terlalu besar untuk timer1 yang hanya 16-bit, \(2^{16} = 65,536\).
 
-Untuk mengatur frekuensi timer ATMega328P, dapat diterapkan sebuah prescale. Yakni membagi frekuensi CPU dengan suatu bilangan. Pada timer 1, frekuensi dapat dibagi dengan 1, 8, 64, 256, atau 1024. 
+Untuk mengatur frekuensi timer ATMega328P, dapat diterapkan sebuah prescale. Yakni membagi frekuensi CPU dengan suatu bilangan. Pada timer 1, frekuensi dapat dibagi dengan \(1, 8, 64, 256,\) atau \(1,024\). 
 
 Perlu diingat bahwa prescale pada timer tidak akan memengaruhi frekuensi utama CPU. Untuk kejelasan, `tick` merepresentasikan 1 clock cycle pada timer, bukan frekuensi utama CPU.
 
-```
-16MHz/8 = 2MHz = 2.000.000 tick / second = 2.000.000 tick / 1.000.000.000 ns
-
-2 tick / 1.000 ns = 1 tick / 500 ns
-
-10.000.000 ns / 500 = 20.000 tick
-```
+{{< katex >}}
+$$
+\frac{16\text{ MHz}}{8} = 2\text{ MHz} = 2,000,000\text{ ticks/s} = \frac{2,000,000\text{ ticks}}{1,000,000,000\text{ ns}}
+$$
+$$
+T_{tick} = \frac{1}{2,000,000\text{ Hz}} = 500\text{ ns}
+$$
+$$
+\frac{10\text{ ms}}{500\text{ ns}} = \frac{10,000,000\text{ ns}}{500\text{ ns}} = 20,000\text{ ticks}
+$$
 
 Sekarang kita tahu bahwa untuk mencapai 10ms dibutuhkan 20.000 tick timer1, jika frekuensi timer1 dibagi 8. 19.999 (hitung dari 0) akan menjadi nilai pembanding timer1 untuk menjalankan ISR, sehingga ISR dijalankan setiap 10ms.
 
@@ -107,7 +120,7 @@ int main()
   // ...
   TCCR1B = (1 << 3) | 0b010; // ctc mode, presale 8 (2 MHz)
   OCR1A = 19999; // 10ms each match
-  TIMSK |= (1 << OCIE1A); // Enable compare match A interrupt
+  TIMSK1 |= (1 << OCIE1A); // Enable compare match A interrupt
   // ...
 }
 ```
@@ -177,11 +190,9 @@ button_t init_button(uint8_t *inputreg, char pin_no)
 }
 ```
 
-Karena ketiga tombol memiliki karakteristik yang sama, kita dapat memanfaatkan struct. 
+Karena ketiga tombol memiliki karakteristik/parameter yang sama, kita dapat memanfaatkan struct. 
 
 Array `*buttons` akan diiterasi di dalam ISR. Masing-masing elemen array tersebut menunjuk ke alamat memori sebuah struct `button_t`.
-
-Fungsi `init_button` dipaggil di dalam main routine untuk mendeklarasikan masing-masing tombol.
 
 ```c
 int main()
@@ -195,6 +206,7 @@ int main()
   //...
 }
 ```
+Pemanggilan fungsi `init_button` di dalam main akan menginisialisasi struct `button_t`. Ketiga tombol di atas merupakan pull-up button, sehingga nilai `last_state` adalah 1, dan kita perlu memberi nilai HIGH pada `PORTD`.
 
 Karena alamat ketiga variabel di atas disimpan dalam sebuah array, kita dapat menggunakan `for` loop di dalam ISR untuk mengecek keadaan setiap tombol:
 ```c
@@ -218,6 +230,8 @@ ISR (TIMER1_COMPA_vect)
         buttons[i]->delay++;
       }
       update_display = true;
+    } else {
+      buttons[i]->delay = 0;
     }
   }
 }
@@ -226,8 +240,6 @@ Di setiap iterasinya, jika kondisi tombol saat ini berbeda dengan kondisi terakh
 Dengan begitu, durasi total debounce adalah 30ms.
 
 Setelah nilai `delay` >= 3, flag `event` akan diaktifkan, keadaan terakhir diperbarui, dan `delay` diulang ke 0. Flag `event` nantinya digunakan pada _main loop_ untuk menjalankan aksi yang diperlukan.
-
-Tidak lupa, setelah aksi, member `event` dikembalikan ke nilai `false`.
 
 ```c
 extern uint8_t IMAGES_LEN;
@@ -271,11 +283,50 @@ int main()
   }
 }
 ```
+Tidak lupa, setelah aksi, member `event` dikembalikan ke nilai `false`.
+
+Sistem debounce di atas tidak menggunakan fungsi _blocking_ `_delay_ms` yang akan memblokir semua proses dalam periode tertentu. Alih-alih, ISR timer yang sudah dikonfigurasi digunakan untuk mengecek keadaan masing-masing tombol dan melakukan delay _non-blocking_. Karena merupakan proses _non-blocking_, display waktu tidak akan terhambat oleh proses debounce.
 
 ## MAX7219 LED Display Driver
+
+![7 Segment and 8x8 Matrix Displays](img/7seg-8x8-displays.png "Modul display 7 segment dan 8x8 matrix dengan driver MAX7219.")
+
+> The MAX7219/MAX7221 are compact, serial input/
+output common-cathode display drivers that interface
+microprocessors (μPs) to 7-segment numeric LED
+displays of up to 8 digits, bar-graph displays, or 64 individual
+LEDs. Included on-chip are a BCD code-B decoder,
+multiplex scan circuitry, segment and digit drivers, and
+an 8x8 static RAM that stores each digit. Only one
+external resistor is required to set the segment current for
+all LEDs. ~MAX7219/MAX7221 Datasheet
+
 ### Overview
-### Registers Map
+
+Kita akan menggunakan modul 7-segment untuk menampilkan waktu, dan modul 8x8 matrix untuk menampilkan karakter.
+
+Pada modul 7-segment 8 digit, terdapat 8 LED untuk masing-masing digit (termasuk titik), \(8 × 8 = 64\). Modul display 8x8 matrix juga memiliki jumlah LED yang sama, 64. Total, terdapat 128 LED yang perlu dikendalikan. Jumlah yang terlalu banyak jika hanya dikendalikan oleh ATMega328P.
+
+Oleh karena itu, IC MAX7219 digunakan sebagai _display driver_. Satu unit IC ini dapat mengendalikan 8 digit 7 segment, atau 64 LED. IC ini bekerja menggunakan teknik multiplexing. Yakni mengendalikan satu digit dalam satu waktu, dan beralih ke digit lainnya dengan sangat cepat sehingga tercipta ilusi bahwa semua digit tampil secara bersamaan.
+
+![7 Segment Multiplexing](img/7segment_multiplexing.gif "Scanning by columns at fast-enough frequencies cause the number '1.234' to appear static, due to the persistence of vision optical illusion. Source: Wikipedia.org")
+
+Untuk alasan kemudahan, kita menggunakan modul display yang sudah tertanam IC MAX7219.
+
+### Pinout Description
+
+![8x8 Matrix Pinout](img/8x8matrix-pinout.png "Display Module Pinout")
+
+Karena kedua modul menggunakan IC yang sama, pinout kedua modul juga memiliki kesamaan. Di sebelah kiri adalah in, sebalah kanan out.  
+
+Pin `DIN` dan `CLK` digunakan untuk protokol komunikasi _Serial Peripheral Interface (SPI)_. Pin `CS` akan memperbarui display ketika diberi sinyal _rising edge_.
+
+Sinyal output di sebelah kanan berguna untuk merantai (_daisy chaining_) beberapa modul display. Contoh, `DOUT` dari modul A disambungkan ke `DIN` dari modul B. Dengan ini, jumlah pin yang terhubung ke MCU tetaplah sama.
+
+Modul yang dirantai tidak harus memiliki jenis tampilan yang seragam, selama IC yang digunakan sama, MAX7219. Pada kasus kita, modul 7-segment 8 digit akan dihubungkan ke MCU, dan `DOUT` dari modul tersebut dirantai ke modul 8x8 matrix.
+
 ### Serial Peripheral Interface (SPI) Protocol
+### Registers Map
 ### Daisy Chaining
 ## Show Something
 ### 8 Digit 7-Segment LED

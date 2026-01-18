@@ -155,6 +155,145 @@
 
 
 
+  
+  
+  <link
+    type="text/css"
+    rel="stylesheet"
+    href="/lib/katex/katex.min.9e578d7ac3b5270b37ae32edae7835a744cda7734036e6e2f1ccf16f382b056ccd51c0df6b7ef3470991357a026507840aa22c1740ea2fe6bbce9b4223c5c182.css"
+    integrity="sha512-nleNesO1Jws3rjLtrng1p0TNp3NANubi8czxbzgrBWzNUcDfa37zRwmRNXoCZQeECqIsF0DqL&#43;a7zptCI8XBgg==">
+  
+  
+  
+  <script
+    defer
+    type="text/javascript"
+    src="/js/katex.bundle.a10a4a0655682a978b0422e48a40f3515d4d96c8e600a48e3dad34029a55cc00b128b89a908855227d1c07897ce09cdfe9f0d57decb148cb73f17dbb8a0a715c.js"
+    integrity="sha512-oQpKBlVoKpeLBCLkikDzUV1NlsjmAKSOPa00AppVzACxKLiakIhVIn0cB4l84Jzf6fDVfeyxSMtz8X27igpxXA=="
+    id="katex-render"></script>
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
 
 
 
@@ -219,7 +358,7 @@
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "1352"
+    "wordCount": "1782"
   }]
   </script>
 
@@ -562,7 +701,7 @@
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2026-01-15T07:00:00&#43;07:00">15 January 2026</time><span class="px-2 text-primary-500">&middot;</span><span>1352 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">7 mins</span>
+      <time datetime="2026-01-15T07:00:00&#43;07:00">15 January 2026</time><span class="px-2 text-primary-500">&middot;</span><span>1782 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">9 mins</span>
     
 
     
@@ -606,7 +745,7 @@
       </div>
     
     
-      <div class="text-sm text-neutral-700 dark:text-neutral-400">Web dev gone deviant, chasing hardware truth.</div>
+      <div class="text-sm text-neutral-700 dark:text-neutral-400">Messing aroud with ones and zeros.</div>
     
     <div class="text-2xl sm:text-lg">
 </div>
@@ -766,22 +905,49 @@ apat dikonfigurasi sedemikian rupa, sehingga perhitungannya dapat digunakan untu
     </span>
     
 </h3>
-<p>Unit waktu terkecil pada jam yang akan dibuat adalah 1 centisecond:</p>
-<pre tabindex="0"><code>1s = 100 cs =1.000 ms = 1.000.000 µs = 1.000.000.000 ns
-1cs = 10ms = 10.000 µs = 10.000.000 ns
-</code></pre><p>Unit <code>centiseconds</code> dijadikan sebagai variable global volatile yang nilainya diincrement setiap 10ms oleh ISR timer 1. Kita perlu mengkonfigurasi timer1 untuk menjalankan ISR setiap 10ms. Sebelum itu, kita hitung terlebih dahulu berapa lama durasi 1 clock cycle.</p>
-<pre tabindex="0"><code>F_CPU 16MHz = 16.000.000 clock cycle / second = 1 clock cycle / 62.5 ns
+<p>Unit waktu terkecil pada jam yang akan dibuat adalah 1 centisecond:
 
-10ms / 62.5 ns = 10.000.000 ns / 62.5 ns = 160.0000 clock cycle
-</code></pre><p>Butuh 160.000 clock cycle untuk mencapai durasi 10ms jika frekuensi yang digunakan adalah 16MHz. Angka ini terlalu besar untuk timer1 yang hanya 16-bit, 2^16 = 65536.</p>
-<p>Untuk mengatur frekuensi timer ATMega328P, dapat diterapkan sebuah prescale. Yakni membagi frekuensi CPU dengan suatu bilangan. Pada timer 1, frekuensi dapat dibagi dengan 1, 8, 64, 256, atau 1024.</p>
+
+</p>
+$$
+  1\text{ s} = 100\text{ cs} = 1,000\text{ ms} = 1,000,000\text{ μs} = 1,000,000,000\text{ ns}
+$$<p>
+</p>
+$$
+1\text{ cs} = 10\text{ ms} = 10,000\text{ μs} = 10,000,000\text{ ns}
+$$<p>Unit <code>centiseconds</code> dijadikan sebagai variable global volatile yang nilainya diincrement setiap 10ms oleh ISR timer 1. Kita perlu mengkonfigurasi timer1 untuk menjalankan ISR setiap 10ms. Sebelum itu, kita hitung terlebih dahulu berapa lama durasi 1 clock cycle.
+
+
+</p>
+$$
+f_{CPU} = 16\text{ MHz} = 16,000,000\text{ clock cycles/s}
+$$<p>
+</p>
+$$
+T = \frac{1}{f_{CPU}} = \frac{1}{16,000,000\text{ Hz}} = 62.5\text{ ns/cycle}
+$$<p>
+</p>
+$$
+\frac{10\text{ ms}}{62.5\text{ ns}} = \frac{10,000,000\text{ ns}}{62.5\text{ ns}} = 160,000\text{ clock cycles}
+$$<p>
+
+Butuh 160.000 clock cycle untuk mencapai durasi 10ms jika frekuensi yang digunakan adalah 16MHz. Angka ini terlalu besar untuk timer1 yang hanya 16-bit, \(2^{16} = 65,536\).</p>
+<p>Untuk mengatur frekuensi timer ATMega328P, dapat diterapkan sebuah prescale. Yakni membagi frekuensi CPU dengan suatu bilangan. Pada timer 1, frekuensi dapat dibagi dengan \(1, 8, 64, 256,\) atau \(1,024\).</p>
 <p>Perlu diingat bahwa prescale pada timer tidak akan memengaruhi frekuensi utama CPU. Untuk kejelasan, <code>tick</code> merepresentasikan 1 clock cycle pada timer, bukan frekuensi utama CPU.</p>
-<pre tabindex="0"><code>16MHz/8 = 2MHz = 2.000.000 tick / second = 2.000.000 tick / 1.000.000.000 ns
+<p>
 
-2 tick / 1.000 ns = 1 tick / 500 ns
-
-10.000.000 ns / 500 = 20.000 tick
-</code></pre><p>Sekarang kita tahu bahwa untuk mencapai 10ms dibutuhkan 20.000 tick timer1, jika frekuensi timer1 dibagi 8. 19.999 (hitung dari 0) akan menjadi nilai pembanding timer1 untuk menjalankan ISR, sehingga ISR dijalankan setiap 10ms.</p>
+</p>
+$$
+\frac{16\text{ MHz}}{8} = 2\text{ MHz} = 2,000,000\text{ ticks/s} = \frac{2,000,000\text{ ticks}}{1,000,000,000\text{ ns}}
+$$<p>
+</p>
+$$
+T_{tick} = \frac{1}{2,000,000\text{ Hz}} = 500\text{ ns}
+$$<p>
+</p>
+$$
+\frac{10\text{ ms}}{500\text{ ns}} = \frac{10,000,000\text{ ns}}{500\text{ ns}} = 20,000\text{ ticks}
+$$<p>Sekarang kita tahu bahwa untuk mencapai 10ms dibutuhkan 20.000 tick timer1, jika frekuensi timer1 dibagi 8. 19.999 (hitung dari 0) akan menjadi nilai pembanding timer1 untuk menjalankan ISR, sehingga ISR dijalankan setiap 10ms.</p>
 
 <h3 class="relative group">Registers
     <div id="registers" class="anchor"></div>
@@ -891,7 +1057,7 @@ apat dikonfigurasi sedemikian rupa, sehingga perhitungannya dapat digunakan untu
 </span></span><span class="line"><span class="cl">  <span class="c1">// ...
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">TCCR1B</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">|</span> <span class="mi">0</span><span class="n">b010</span><span class="p">;</span> <span class="c1">// ctc mode, presale 8 (2 MHz)
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">OCR1A</span> <span class="o">=</span> <span class="mi">19999</span><span class="p">;</span> <span class="c1">// 10ms each match
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">TIMSK</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">OCIE1A</span><span class="p">);</span> <span class="c1">// Enable compare match A interrupt
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">TIMSK1</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">OCIE1A</span><span class="p">);</span> <span class="c1">// Enable compare match A interrupt
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// ...
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
 </span></span></code></pre></div><p>Dengan konfigurasi timer di atas, sinyal interrupt vector TIMER1_COMPA akan dihasilkan setiap 10ms. Di dalam ISR kita dapat melakukan increment variabel <code>centiseconds</code>, dan mengaktifkan flag <code>update_display</code>.</p>
@@ -957,9 +1123,8 @@ Devices, ATMEL Application Notes</p></blockquote>
 </span></span><span class="line"><span class="cl">  <span class="n">temp</span><span class="p">.</span><span class="n">event</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">temp</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p>Karena ketiga tombol memiliki karakteristik yang sama, kita dapat memanfaatkan struct.</p>
+</span></span></code></pre></div><p>Karena ketiga tombol memiliki karakteristik/parameter yang sama, kita dapat memanfaatkan struct.</p>
 <p>Array <code>*buttons</code> akan diiterasi di dalam ISR. Masing-masing elemen array tersebut menunjuk ke alamat memori sebuah struct <code>button_t</code>.</p>
-<p>Fungsi <code>init_button</code> dipaggil di dalam main routine untuk mendeklarasikan masing-masing tombol.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="c1">//...
@@ -970,7 +1135,8 @@ Devices, ATMEL Application Notes</p></blockquote>
 </span></span><span class="line"><span class="cl">  <span class="n">PORTD</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">hold</span><span class="p">.</span><span class="n">pin_no</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">next</span><span class="p">.</span><span class="n">pin_no</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">prev</span><span class="p">.</span><span class="n">pin_no</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">  <span class="c1">//...
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
-</span></span></code></pre></div><p>Karena alamat ketiga variabel di atas disimpan dalam sebuah array, kita dapat menggunakan <code>for</code> loop di dalam ISR untuk mengecek keadaan setiap tombol:</p>
+</span></span></code></pre></div><p>Pemanggilan fungsi <code>init_button</code> di dalam main akan menginisialisasi struct <code>button_t</code>. Ketiga tombol di atas merupakan pull-up button, sehingga nilai <code>last_state</code> adalah 1, dan kita perlu memberi nilai HIGH pada <code>PORTD</code>.</p>
+<p>Karena alamat ketiga variabel di atas disimpan dalam sebuah array, kita dapat menggunakan <code>for</code> loop di dalam ISR untuk mengecek keadaan setiap tombol:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define DEBOUNCE_DELAY 3
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="nf">ISR</span> <span class="p">(</span><span class="n">TIMER1_COMPA_vect</span><span class="p">)</span> 
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
@@ -991,13 +1157,14 @@ Devices, ATMEL Application Notes</p></blockquote>
 </span></span><span class="line"><span class="cl">        <span class="n">buttons</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">delay</span><span class="o">++</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">      <span class="p">}</span>
 </span></span><span class="line"><span class="cl">      <span class="n">update_display</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">buttons</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">delay</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><p>Di setiap iterasinya, jika kondisi tombol saat ini berbeda dengan kondisi terakhir, nilai member <code>delay</code> akan di-increment. Ini akan terjadi sebanyak tiga kali setiap ISR dijalankan, yakni setiap 10ms.
 Dengan begitu, durasi total debounce adalah 30ms.</p>
 <p>Setelah nilai <code>delay</code> &gt;= 3, flag <code>event</code> akan diaktifkan, keadaan terakhir diperbarui, dan <code>delay</code> diulang ke 0. Flag <code>event</code> nantinya digunakan pada <em>main loop</em> untuk menjalankan aksi yang diperlukan.</p>
-<p>Tidak lupa, setelah aksi, member <code>event</code> dikembalikan ke nilai <code>false</code>.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">uint8_t</span> <span class="n">IMAGES_LEN</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="k">volatile</span> <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
@@ -1038,7 +1205,9 @@ Dengan begitu, durasi total debounce adalah 30ms.</p>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div>
+</span></span></code></pre></div><p>Tidak lupa, setelah aksi, member <code>event</code> dikembalikan ke nilai <code>false</code>.</p>
+<p>Sistem debounce di atas tidak menggunakan fungsi <em>blocking</em> <code>_delay_ms</code> yang akan memblokir semua proses dalam periode tertentu. Alih-alih, ISR timer yang sudah dikonfigurasi digunakan untuk mengecek keadaan masing-masing tombol dan melakukan delay <em>non-blocking</em>. Karena merupakan proses <em>non-blocking</em>, display waktu tidak akan terhambat oleh proses debounce.</p>
+
 <h2 class="relative group">MAX7219 LED Display Driver
     <div id="max7219-led-display-driver" class="anchor"></div>
     
@@ -1048,6 +1217,28 @@ Dengan begitu, durasi total debounce adalah 30ms.</p>
     </span>
     
 </h2>
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="7 Segment and 8x8 Matrix Displays"
+    width="960"
+    height="811"
+    src="/posts/avr/02-max7219/img/7seg-8x8-displays_hu_432b072886eecc74.png"
+    srcset="/posts/avr/02-max7219/img/7seg-8x8-displays_hu_432b072886eecc74.png 800w, /posts/avr/02-max7219/img/7seg-8x8-displays.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/7seg-8x8-displays.png"><figcaption>Modul display 7 segment dan 8x8 matrix dengan driver MAX7219.</figcaption></figure>
+<blockquote>
+<p>The MAX7219/MAX7221 are compact, serial input/
+output common-cathode display drivers that interface
+microprocessors (μPs) to 7-segment numeric LED
+displays of up to 8 digits, bar-graph displays, or 64 individual
+LEDs. Included on-chip are a BCD code-B decoder,
+multiplex scan circuitry, segment and digit drivers, and
+an 8x8 static RAM that stores each digit. Only one
+external resistor is required to set the segment current for
+all LEDs. ~MAX7219/MAX7221 Datasheet</p></blockquote>
 
 <h3 class="relative group">Overview
     <div id="overview" class="anchor"></div>
@@ -1058,16 +1249,48 @@ Dengan begitu, durasi total debounce adalah 30ms.</p>
     </span>
     
 </h3>
+<p>Kita akan menggunakan modul 7-segment untuk menampilkan waktu, dan modul 8x8 matrix untuk menampilkan karakter.</p>
+<p>Pada modul 7-segment 8 digit, terdapat 8 LED untuk masing-masing digit (termasuk titik), \(8 × 8 = 64\). Modul display 8x8 matrix juga memiliki jumlah LED yang sama, 64. Total, terdapat 128 LED yang perlu dikendalikan. Jumlah yang terlalu banyak jika hanya dikendalikan oleh ATMega328P.</p>
+<p>Oleh karena itu, IC MAX7219 digunakan sebagai <em>display driver</em>. Satu unit IC ini dapat mengendalikan 8 digit 7 segment, atau 64 LED. IC ini bekerja menggunakan teknik multiplexing. Yakni mengendalikan satu digit dalam satu waktu, dan beralih ke digit lainnya dengan sangat cepat sehingga tercipta ilusi bahwa semua digit tampil secara bersamaan.</p>
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="7 Segment Multiplexing"
+    width="1688"
+    height="630"
+    src="/posts/avr/02-max7219/img/7segment_multiplexing_hu_11b0b6a75e4119c5.gif"
+    srcset="/posts/avr/02-max7219/img/7segment_multiplexing_hu_11b0b6a75e4119c5.gif 800w, /posts/avr/02-max7219/img/7segment_multiplexing_hu_6709f78a21978d42.gif 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/7segment_multiplexing.gif"><figcaption>Scanning by columns at fast-enough frequencies cause the number &lsquo;1.234&rsquo; to appear static, due to the persistence of vision optical illusion. Source: Wikipedia.org</figcaption></figure>
+<p>Untuk alasan kemudahan, kita menggunakan modul display yang sudah tertanam IC MAX7219.</p>
 
-<h3 class="relative group">Registers Map
-    <div id="registers-map" class="anchor"></div>
+<h3 class="relative group">Pinout Description
+    <div id="pinout-description" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
-        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#registers-map" aria-label="Anchor">#</a>
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#pinout-description" aria-label="Anchor">#</a>
     </span>
     
 </h3>
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="8x8 Matrix Pinout"
+    width="874"
+    height="420"
+    src="/posts/avr/02-max7219/img/8x8matrix-pinout_hu_f176bb2c4773d22b.png"
+    srcset="/posts/avr/02-max7219/img/8x8matrix-pinout_hu_f176bb2c4773d22b.png 800w, /posts/avr/02-max7219/img/8x8matrix-pinout.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/8x8matrix-pinout.png"><figcaption>Display Module Pinout</figcaption></figure>
+<p>Karena kedua modul menggunakan IC yang sama, pinout kedua modul juga memiliki kesamaan. Di sebelah kiri adalah in, sebalah kanan out.</p>
+<p>Pin <code>DIN</code> dan <code>CLK</code> digunakan untuk protokol komunikasi <em>Serial Peripheral Interface (SPI)</em>. Pin <code>CS</code> akan memperbarui display ketika diberi sinyal <em>rising edge</em>.</p>
+<p>Sinyal output di sebelah kanan berguna untuk merantai (<em>daisy chaining</em>) beberapa modul display. Contoh, <code>DOUT</code> dari modul A disambungkan ke <code>DIN</code> dari modul B. Dengan ini, jumlah pin yang terhubung ke MCU tetaplah sama.</p>
+<p>Modul yang dirantai tidak harus memiliki jenis tampilan yang seragam, selama IC yang digunakan sama, MAX7219. Pada kasus kita, modul 7-segment 8 digit akan dihubungkan ke MCU, dan <code>DOUT</code> dari modul tersebut dirantai ke modul 8x8 matrix.</p>
 
 <h3 class="relative group">Serial Peripheral Interface (SPI) Protocol
     <div id="serial-peripheral-interface-spi-protocol" class="anchor"></div>
@@ -1075,6 +1298,16 @@ Dengan begitu, durasi total debounce adalah 30ms.</p>
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
         <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#serial-peripheral-interface-spi-protocol" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+
+<h3 class="relative group">Registers Map
+    <div id="registers-map" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#registers-map" aria-label="Anchor">#</a>
     </span>
     
 </h3>
