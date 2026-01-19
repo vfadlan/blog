@@ -1,5 +1,5 @@
 ---
-date: 2026-01-20T07:00:00+07:00
+date: 2026-01-20T13:45:00+07:00
 draft: true
 params:
   author: Fadlan Abduh
@@ -16,8 +16,8 @@ b. [↳ Registers](#registers)
 c. [↳ Button Debouncing](#button-debouncing)  
 3. [MAX7219 LED Display Driver](#max7219-led-display-driver)  
 a. [↳ Overview](#overview)  
-b. [↳ Registers Map](#registers-map)  
-c. [↳ Serial Peripheral Interface (SPI) Protocol](#serial-peripheral-interface-spi-protocol)  
+b. [↳ Serial Peripheral Interface (SPI) Protocol](#serial-peripheral-interface-spi-protocol)  
+c. [↳ Registers Map](#registers-map)  
 d. [↳ Daisy Chaining](#daisy-chaining)
 4. [Show Something](#show-something)  
 a. [↳ 8 Digit 7-Segment LED](#8-digit-7-segment-led)  
@@ -317,7 +317,7 @@ Untuk alasan kemudahan, kita menggunakan modul display yang sudah tertanam IC MA
 
 ![8x8 Matrix Pinout](img/8x8matrix-pinout.png "Display Module Pinout")
 
-Karena kedua modul menggunakan IC yang sama, pinout kedua modul juga memiliki kesamaan. Di sebelah kiri adalah in, sebalah kanan out.  
+Karena kedua modul menggunakan IC yang sama, pinout kedua modul juga sama. Di sebelah kiri adalah in, sebalah kanan out.  
 
 Pin `DIN` dan `CLK` digunakan untuk protokol komunikasi _Serial Peripheral Interface (SPI)_. Pin `CS` akan memperbarui display ketika diberi sinyal _rising edge_.
 
@@ -326,6 +326,61 @@ Sinyal output di sebelah kanan berguna untuk merantai (_daisy chaining_) beberap
 Modul yang dirantai tidak harus memiliki jenis tampilan yang seragam, selama IC yang digunakan sama, MAX7219. Pada kasus kita, modul 7-segment 8 digit akan dihubungkan ke MCU, dan `DOUT` dari modul tersebut dirantai ke modul 8x8 matrix.
 
 ### Serial Peripheral Interface (SPI) Protocol
+
+![SPI Master Slave](img/spi-maslave.png "SPI Master-Slave Interconnection")
+
+Serial Peripheral Interface (SPI) adalah protokol komunikasi serial synchronous, yang berarti mengirimkan data secara serial dengan clock yang tersinkronisasi. Protokol ini menggunakan arsitektur master-slave seperti yang terlihat pada gambar di atas. Dalam hal ini, ATMega328P berperan sebagai master, dan dua modul MAX7219 sebagai slave.
+
+Dapat diperhatikan pada sisi master dan slave, masing-masing terdapat 8-bit shift register. Pada blog sebelumnya, kita mencoba "mengisi" shift register dengan menyala-matikan tiga buah pin: `SER`, `SCLK`, `RCLK`.
+
+Kali ini, kita tidak perlu mengisi shift register master secara manual. Mikrokontroler ATMega328P sudah dilengkapi dengan peripheral SPI. Sehingga kita cukup mengkonfigurasi periferal tersebut satu kali, dan mengisi shift register seperti mengisi variabel.
+
+Perlu dicatat bahwa protokol SPI memiliki variasi yang cukup banyak, sehingga konfigurasi perangkat satu dengan lainnya mungkin berbeda. Secara umum, terdapat empat jalur utama pada protokol SPI:
+|Kode|Kepanjangan|Arah|Deskripsi|
+|:--|:--|:--|:--|
+|SCK|Serial Clock|Master -> Slave|Dikirim oleh master untuk mensinkronkan transfer data|
+|MOSI|Master Out Slave In|Master -> Slave|Data dari master ke slave|
+|MISO|Master In Slave Out|Slave -> Master|Data dari slave ke master|
+|SS/CS|Slave Select / Chip Select|Master -> Slave|Untuk memilih slave mana yang aktif|
+
+IC MAX7219 tidak memiliki pin `SS/CS`, hanya ada pin `LOAD`. Data yang disimpan pada shift register MAX7219 akan di-_latch_ ketika `LOAD` diberi sinyal _rising edge_. Ini membuat MAX7219 tidak bisa dianggap sepenuhnya "SPI". Namun, kita masih bisa menangani pin `LOAD` secara manual. 
+
+Berhubung MAX7219 adalah modul driver display (output), pin MISO tidak digunakan di sini. Pada jalur MOSI, bit pertama yang dikirim adalah bit paling signifikan (MSB first).
+
+![SPI Control Register](img/spcr.png "SPI Control Register")
+![SPCR Clock Phase](img/spcr-cpha.png "SPCR Clock Phase")
+![SPI Status Register](img/spsr.png "SPI2x, SPR1, SPR0")
+![MAX7219 Timing Diagram](img/max7219-timing-diagram.png "MAX7219 Timing Diagram")
+
+Terdapat banyak opsi konfigurasi yang dapat diubah, kita akan mengikuti datasheet MAX7219 dan kebutuhan untuk konfigurasi SPI:
+1. `SPIE = 0`, tidak butuh.
+2. `SPE = 1`, perlu dinyalakan untuk menggunakan SPI.
+3. `DORD = 0`, MSB first.
+4. `MSTR = 1`, MCU sebagai master.
+5. `CPOL = 0`, idle low sesuai timing diagram.
+6. `CPHA = 0`, sample diambil pada rising/leading edge clock.
+7. `SPR1:0 = 0`, MAX7219 mampu menghandle SCK sampai 10 MHz.
+8. `SPI2X = 1`, 16MHz/2 = 8MHz.
+
+Tidak lupa kita perlu mengatur pin `SCK`, `MOSI`, dan `LOAD` sebagai output. Pada ATMega328P, pin `SCK = PB5`, `MOSI = PB3`, dan pin `LOAD = PB2`. Pin `LOAD` dapat menggunakan pin manapun karena kita mengontrolnya secara manual.
+
+```c
+void SPI_init(int sck, int mosi, int load) {
+  PORTB |= (1 << load);
+  DDRB |= (1 << sck) | (1 << mosi) | (1 << load);
+  SPCR = (1 << SPE) | (1 << MSTR);
+  SPSR |= 1; // prescale 2
+}
+
+void SPI_transmit(uint8_t data) {
+  SPDR = data;
+  while (!(SPSR & (1 << SPIF)));
+}
+```
+Pada fungsi `SPI_transmit`, assignment ke variabel `SPDR` akan mengisi shift register internal dan mengirimkan data ke jalur `MOSI` secara langsung. Ukuran data pada satu kali transmisi adalah 1 byte. Setelah transmisi selesai, bit `SPIF` pada `SPSR` akan berubah menjadi 1.
+
+![SPI Data Register](img/spdr.png "SPI Data Register")
+
 ### Registers Map
 ### Daisy Chaining
 ## Show Something

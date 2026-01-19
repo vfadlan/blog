@@ -43,8 +43,8 @@
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2026-01-15T07:00:00+07:00">
-    <meta property="article:modified_time" content="2026-01-15T07:00:00+07:00">
+    <meta property="article:published_time" content="2026-01-18T07:00:00+07:00">
+    <meta property="article:modified_time" content="2026-01-18T07:00:00+07:00">
       <meta property="og:see_also" content="http://localhost:1313/posts/avr/01-shift-register/">
       <meta property="og:see_also" content="http://localhost:1313/posts/avr/00-hello/">
 
@@ -350,15 +350,15 @@
       "name": "Fadlan Abduh"
     },
     "copyrightYear": "2026",
-    "dateCreated": "2026-01-15T07:00:00\u002b07:00",
-    "datePublished": "2026-01-15T07:00:00\u002b07:00",
+    "dateCreated": "2026-01-18T07:00:00\u002b07:00",
+    "datePublished": "2026-01-18T07:00:00\u002b07:00",
     
-    "dateModified": "2026-01-15T07:00:00\u002b07:00",
+    "dateModified": "2026-01-18T07:00:00\u002b07:00",
     
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "1782"
+    "wordCount": "2264"
   }]
   </script>
 
@@ -701,7 +701,7 @@
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2026-01-15T07:00:00&#43;07:00">15 January 2026</time><span class="px-2 text-primary-500">&middot;</span><span>1782 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">9 mins</span>
+      <time datetime="2026-01-18T07:00:00&#43;07:00">18 January 2026</time><span class="px-2 text-primary-500">&middot;</span><span>2264 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">11 mins</span>
     
 
     
@@ -845,9 +845,9 @@ c. <a
 a. <a
   href="#overview">↳ Overview</a><br>
 b. <a
-  href="#registers-map">↳ Registers Map</a><br>
-c. <a
   href="#serial-peripheral-interface-spi-protocol">↳ Serial Peripheral Interface (SPI) Protocol</a><br>
+c. <a
+  href="#registers-map">↳ Registers Map</a><br>
 d. <a
   href="#daisy-chaining">↳ Daisy Chaining</a></li>
 <li><a
@@ -1287,7 +1287,7 @@ all LEDs. ~MAX7219/MAX7221 Datasheet</p></blockquote>
     srcset="/posts/avr/02-max7219/img/8x8matrix-pinout_hu_f176bb2c4773d22b.png 800w, /posts/avr/02-max7219/img/8x8matrix-pinout.png 1280w"
     sizes="(min-width: 768px) 50vw, 65vw"
     data-zoom-src="/posts/avr/02-max7219/img/8x8matrix-pinout.png"><figcaption>Display Module Pinout</figcaption></figure>
-<p>Karena kedua modul menggunakan IC yang sama, pinout kedua modul juga memiliki kesamaan. Di sebelah kiri adalah in, sebalah kanan out.</p>
+<p>Karena kedua modul menggunakan IC yang sama, pinout kedua modul juga sama. Di sebelah kiri adalah in, sebalah kanan out.</p>
 <p>Pin <code>DIN</code> dan <code>CLK</code> digunakan untuk protokol komunikasi <em>Serial Peripheral Interface (SPI)</em>. Pin <code>CS</code> akan memperbarui display ketika diberi sinyal <em>rising edge</em>.</p>
 <p>Sinyal output di sebelah kanan berguna untuk merantai (<em>daisy chaining</em>) beberapa modul display. Contoh, <code>DOUT</code> dari modul A disambungkan ke <code>DIN</code> dari modul B. Dengan ini, jumlah pin yang terhubung ke MCU tetaplah sama.</p>
 <p>Modul yang dirantai tidak harus memiliki jenis tampilan yang seragam, selama IC yang digunakan sama, MAX7219. Pada kasus kita, modul 7-segment 8 digit akan dihubungkan ke MCU, dan <code>DOUT</code> dari modul tersebut dirantai ke modul 8x8 matrix.</p>
@@ -1301,6 +1301,148 @@ all LEDs. ~MAX7219/MAX7221 Datasheet</p></blockquote>
     </span>
     
 </h3>
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="SPI Master Slave"
+    width="2330"
+    height="998"
+    src="/posts/avr/02-max7219/img/spi-maslave_hu_cbe7621dd5a54b7c.png"
+    srcset="/posts/avr/02-max7219/img/spi-maslave_hu_cbe7621dd5a54b7c.png 800w, /posts/avr/02-max7219/img/spi-maslave_hu_223edce5c359bb8e.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/spi-maslave.png"><figcaption>SPI Master-Slave Interconnection</figcaption></figure>
+<p>Serial Peripheral Interface (SPI) adalah protokol komunikasi serial synchronous, yang berarti mengirimkan data secara serial dengan clock yang tersinkronisasi. Protokol ini menggunakan arsitektur master-slave seperti yang terlihat pada gambar di atas. Dalam hal ini, ATMega328P berperan sebagai master, dan dua modul MAX7219 sebagai slave.</p>
+<p>Dapat diperhatikan pada sisi master dan slave, masing-masing terdapat 8-bit shift register. Pada blog sebelumnya, kita mencoba &ldquo;mengisi&rdquo; shift register dengan menyala-matikan tiga buah pin: <code>SER</code>, <code>SCLK</code>, <code>RCLK</code>.</p>
+<p>Kali ini, kita tidak perlu mengisi shift register master secara manual. Mikrokontroler ATMega328P sudah dilengkapi dengan peripheral SPI. Sehingga kita cukup mengkonfigurasi periferal tersebut satu kali, dan mengisi shift register seperti mengisi variabel.</p>
+<p>Perlu dicatat bahwa protokol SPI memiliki variasi yang cukup banyak, sehingga konfigurasi perangkat satu dengan lainnya mungkin berbeda. Secara umum, terdapat empat jalur utama pada protokol SPI:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Kode</th>
+          <th style="text-align: left">Kepanjangan</th>
+          <th style="text-align: left">Arah</th>
+          <th style="text-align: left">Deskripsi</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">SCK</td>
+          <td style="text-align: left">Serial Clock</td>
+          <td style="text-align: left">Master -&gt; Slave</td>
+          <td style="text-align: left">Dikirim oleh master untuk mensinkronkan transfer data</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">MOSI</td>
+          <td style="text-align: left">Master Out Slave In</td>
+          <td style="text-align: left">Master -&gt; Slave</td>
+          <td style="text-align: left">Data dari master ke slave</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">MISO</td>
+          <td style="text-align: left">Master In Slave Out</td>
+          <td style="text-align: left">Slave -&gt; Master</td>
+          <td style="text-align: left">Data dari slave ke master</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">SS/CS</td>
+          <td style="text-align: left">Slave Select / Chip Select</td>
+          <td style="text-align: left">Master -&gt; Slave</td>
+          <td style="text-align: left">Untuk memilih slave mana yang aktif</td>
+      </tr>
+  </tbody>
+</table>
+<p>IC MAX7219 tidak memiliki pin <code>SS/CS</code>, hanya ada pin <code>LOAD</code>. Data yang disimpan pada shift register MAX7219 akan di-<em>latch</em> ketika <code>LOAD</code> diberi sinyal <em>rising edge</em>. Ini membuat MAX7219 tidak bisa dianggap sepenuhnya &ldquo;SPI&rdquo;. Namun, kita masih bisa menangani pin <code>LOAD</code> secara manual.</p>
+<p>Berhubung MAX7219 adalah modul driver display (output), pin MISO tidak digunakan di sini. Pada jalur MOSI, bit pertama yang dikirim adalah bit paling signifikan (MSB first).</p>
+<p><figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="SPI Control Register"
+    width="1424"
+    height="1121"
+    src="/posts/avr/02-max7219/img/spcr_hu_8de00ca4cb95912c.png"
+    srcset="/posts/avr/02-max7219/img/spcr_hu_8de00ca4cb95912c.png 800w, /posts/avr/02-max7219/img/spcr_hu_c2ee82c384c91b17.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/spcr.png"><figcaption>SPI Control Register</figcaption></figure>
+
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="SPCR Clock Phase"
+    width="1366"
+    height="357"
+    src="/posts/avr/02-max7219/img/spcr-cpha_hu_712fdd96f37f507b.png"
+    srcset="/posts/avr/02-max7219/img/spcr-cpha_hu_712fdd96f37f507b.png 800w, /posts/avr/02-max7219/img/spcr-cpha_hu_985560965c0f8cc2.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/spcr-cpha.png"><figcaption>SPCR Clock Phase</figcaption></figure>
+
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="SPI Status Register"
+    width="1360"
+    height="668"
+    src="/posts/avr/02-max7219/img/spsr_hu_cffbdc869b9ab6da.png"
+    srcset="/posts/avr/02-max7219/img/spsr_hu_cffbdc869b9ab6da.png 800w, /posts/avr/02-max7219/img/spsr_hu_f85e837efdd148f3.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/spsr.png"><figcaption>SPI2x, SPR1, SPR0</figcaption></figure>
+
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="MAX7219 Timing Diagram"
+    width="1398"
+    height="522"
+    src="/posts/avr/02-max7219/img/max7219-timing-diagram_hu_3f02f65a36257057.png"
+    srcset="/posts/avr/02-max7219/img/max7219-timing-diagram_hu_3f02f65a36257057.png 800w, /posts/avr/02-max7219/img/max7219-timing-diagram_hu_6cb7f30e17a73b8.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/max7219-timing-diagram.png"><figcaption>MAX7219 Timing Diagram</figcaption></figure>
+</p>
+<p>Terdapat banyak opsi konfigurasi yang dapat diubah, kita akan mengikuti datasheet MAX7219 dan kebutuhan untuk konfigurasi SPI:</p>
+<ol>
+<li><code>SPIE = 0</code>, tidak butuh.</li>
+<li><code>SPE = 1</code>, perlu dinyalakan untuk menggunakan SPI.</li>
+<li><code>DORD = 0</code>, MSB first.</li>
+<li><code>MSTR = 1</code>, MCU sebagai master.</li>
+<li><code>CPOL = 0</code>, idle low sesuai timing diagram.</li>
+<li><code>CPHA = 0</code>, sample diambil pada rising/leading edge clock.</li>
+<li><code>SPR1:0 = 0</code>, MAX7219 mampu menghandle SCK sampai 10 MHz.</li>
+<li><code>SPI2X = 1</code>, 16MHz/2 = 8MHz.</li>
+</ol>
+<p>Tidak lupa kita perlu mengatur pin <code>SCK</code>, <code>MOSI</code>, dan <code>LOAD</code> sebagai output. Pada ATMega328P, pin <code>SCK = PB5</code>, <code>MOSI = PB3</code>, dan pin <code>LOAD = PB2</code>. Pin <code>LOAD</code> dapat menggunakan pin manapun karena kita mengontrolnya secara manual.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">SPI_init</span><span class="p">(</span><span class="kt">int</span> <span class="n">sck</span><span class="p">,</span> <span class="kt">int</span> <span class="n">mosi</span><span class="p">,</span> <span class="kt">int</span> <span class="n">load</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">PORTB</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">load</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">DDRB</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">sck</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">mosi</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">load</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">SPCR</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SPE</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">MSTR</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">SPSR</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// prescale 2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">SPI_transmit</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">SPDR</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">SPSR</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SPIF</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Pada fungsi <code>SPI_transmit</code>, assignment ke variabel <code>SPDR</code> akan mengisi shift register internal dan mengirimkan data ke jalur <code>MOSI</code> secara langsung. Ukuran data pada satu kali transmisi adalah 1 byte. Setelah transmisi selesai, bit <code>SPIF</code> pada <code>SPSR</code> akan berubah menjadi 1.</p>
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="SPI Data Register"
+    width="1434"
+    height="306"
+    src="/posts/avr/02-max7219/img/spdr_hu_3985f1fc010a982b.png"
+    srcset="/posts/avr/02-max7219/img/spdr_hu_3985f1fc010a982b.png 800w, /posts/avr/02-max7219/img/spdr_hu_880b7c79267ecc8a.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/spdr.png"><figcaption>SPI Data Register</figcaption></figure>
 
 <h3 class="relative group">Registers Map
     <div id="registers-map" class="anchor"></div>
