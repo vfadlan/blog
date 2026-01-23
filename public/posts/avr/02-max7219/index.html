@@ -43,8 +43,8 @@
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2026-01-18T07:00:00+07:00">
-    <meta property="article:modified_time" content="2026-01-18T07:00:00+07:00">
+    <meta property="article:published_time" content="2026-01-20T07:00:00+07:00">
+    <meta property="article:modified_time" content="2026-01-20T07:00:00+07:00">
       <meta property="og:see_also" content="http://localhost:1313/posts/avr/01-shift-register/">
       <meta property="og:see_also" content="http://localhost:1313/posts/avr/00-hello/">
 
@@ -350,15 +350,15 @@
       "name": "Fadlan Abduh"
     },
     "copyrightYear": "2026",
-    "dateCreated": "2026-01-18T07:00:00\u002b07:00",
-    "datePublished": "2026-01-18T07:00:00\u002b07:00",
+    "dateCreated": "2026-01-20T07:00:00\u002b07:00",
+    "datePublished": "2026-01-20T07:00:00\u002b07:00",
     
-    "dateModified": "2026-01-18T07:00:00\u002b07:00",
+    "dateModified": "2026-01-20T07:00:00\u002b07:00",
     
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "2264"
+    "wordCount": "3256"
   }]
   </script>
 
@@ -701,7 +701,7 @@
   <div class="flex flex-row flex-wrap items-center">
     
     
-      <time datetime="2026-01-18T07:00:00&#43;07:00">18 January 2026</time><span class="px-2 text-primary-500">&middot;</span><span>2264 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">11 mins</span>
+      <time datetime="2026-01-20T07:00:00&#43;07:00">20 January 2026</time><span class="px-2 text-primary-500">&middot;</span><span>3256 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">16 mins</span>
     
 
     
@@ -911,10 +911,6 @@ apat dikonfigurasi sedemikian rupa, sehingga perhitungannya dapat digunakan untu
 </p>
 $$
   1\text{ s} = 100\text{ cs} = 1,000\text{ ms} = 1,000,000\text{ μs} = 1,000,000,000\text{ ns}
-$$<p>
-</p>
-$$
-1\text{ cs} = 10\text{ ms} = 10,000\text{ μs} = 10,000,000\text{ ns}
 $$<p>Unit <code>centiseconds</code> dijadikan sebagai variable global volatile yang nilainya diincrement setiap 10ms oleh ISR timer 1. Kita perlu mengkonfigurasi timer1 untuk menjalankan ISR setiap 10ms. Sebelum itu, kita hitung terlebih dahulu berapa lama durasi 1 clock cycle.
 
 
@@ -924,7 +920,7 @@ f_{CPU} = 16\text{ MHz} = 16,000,000\text{ clock cycles/s}
 $$<p>
 </p>
 $$
-T = \frac{1}{f_{CPU}} = \frac{1}{16,000,000\text{ Hz}} = 62.5\text{ ns/cycle}
+T = \frac{1,000,000,000\text{ ns}}{16,000,000\text { ticks}} = 62.5\text{ ns/cycle}
 $$<p>
 </p>
 $$
@@ -942,7 +938,7 @@ $$
 $$<p>
 </p>
 $$
-T_{tick} = \frac{1}{2,000,000\text{ Hz}} = 500\text{ ns}
+T_{tick} = \frac{1,000,000,000\text{ ns}}{2,000,000\text { ticks}} = 500\text{ ns}
 $$<p>
 </p>
 $$
@@ -1453,6 +1449,57 @@ all LEDs. ~MAX7219/MAX7221 Datasheet</p></blockquote>
     </span>
     
 </h3>
+<p><figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="Serial Data Format"
+    width="1349"
+    height="166"
+    src="/posts/avr/02-max7219/img/data-format_hu_aa1bc4a5d888d6bc.png"
+    srcset="/posts/avr/02-max7219/img/data-format_hu_aa1bc4a5d888d6bc.png 800w, /posts/avr/02-max7219/img/data-format_hu_61b30f11f9380568.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/data-format.png"><figcaption>MAX7219 Serial Data Format</figcaption></figure>
+
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="Address Map"
+    width="857"
+    height="1062"
+    src="/posts/avr/02-max7219/img/address-map_hu_a4745ca0283583c7.png"
+    srcset="/posts/avr/02-max7219/img/address-map_hu_a4745ca0283583c7.png 800w, /posts/avr/02-max7219/img/address-map.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/address-map.png"><figcaption>MAX7219 Register Address Map</figcaption></figure>
+</p>
+<p>Format data instruksi yang diterima MAX7219 berukuran 2 Byte. Byte paling signifikan berisi alamat register yang akan diubah (D8-D11), byte bawah berisi data yang akan ditulis pada register tersebut.</p>
+<p>Secara default, MAX7219 berada dalam shutdown mode. Untuk keluar dari shutdown mode pada saat inisialisasi, kita perlu mengirim alamat register shutdown <code>0x0C</code> diikuti dengan mode normal <code>1</code>.
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="Shutdown Register"
+    width="1033"
+    height="193"
+    src="/posts/avr/02-max7219/img/shutdown-register_hu_d99e98e1d647047d.png"
+    srcset="/posts/avr/02-max7219/img/shutdown-register_hu_d99e98e1d647047d.png 800w, /posts/avr/02-max7219/img/shutdown-register.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/shutdown-register.png"></figure>
+</p>
+<p>Pada datasheet MAX7219, nilai data masing-masing register dijelaskan dengan sangat lengkap. Saya tidak akan menampilkan semua tabelnya di sini. Kurang lebih berikut adalah deskripsi singkat masing-masing register:</p>
+<ol>
+<li><code>No-Op</code>: No Operation, digunakan untuk daisy-chaining.</li>
+<li><code>Digit 0-7</code>: Menentukan LED mana saja yang menyala pada tiap-tiap digit.</li>
+<li><code>Decode Mode</code>: Untuk mengaktifkan 7-segment decoder pada beberapa digit.</li>
+<li><code>Intensity</code>: Mengatur kecerahan dalam skala 0-15.</li>
+<li><code>Scan Limit</code>: Menentukan berapa digit yang aktif.</li>
+<li><code>Shutdown</code>: Shutdown mode.</li>
+<li><code>Display Test</code>: Jika aktif semua LED akan menyala.</li>
+</ol>
 
 <h3 class="relative group">Daisy Chaining
     <div id="daisy-chaining" class="anchor"></div>
@@ -1463,6 +1510,87 @@ all LEDs. ~MAX7219/MAX7221 Datasheet</p></blockquote>
     </span>
     
 </h3>
+<p>Dalam melakukan daisy chaining, hal yang perlu diperhatikan adalah cara kita mengirim instruksi. Mengacu pada datasheet, kita perlu menggunakan instruksi <code>No Operation</code>.</p>
+<p>Pada satu kali transmisi instruksi, hanya 1 modul yang mendapat instruksi aktif. Modul lainnya akan mendapat instruksi <code>No-Op</code>. Contoh berikut mengeluarkan tiga modul dari mode shutdown:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Keterangan</th>
+          <th style="text-align: left">Modul 1</th>
+          <th style="text-align: left">Modul 2</th>
+          <th style="text-align: left">Modul 3</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Transmisi Pertama</td>
+          <td style="text-align: left"><code>0x0C00</code></td>
+          <td style="text-align: left"><code>0x0</code></td>
+          <td style="text-align: left"><code>0x0</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Transmisi Kedua</td>
+          <td style="text-align: left"><code>0x0</code></td>
+          <td style="text-align: left"><code>0x0C00</code></td>
+          <td style="text-align: left"><code>0x0</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Transmisi Ketiga</td>
+          <td style="text-align: left"><code>0x0</code></td>
+          <td style="text-align: left"><code>0x0</code></td>
+          <td style="text-align: left"><code>0x0C00</code></td>
+      </tr>
+  </tbody>
+</table>
+
+<h3 class="relative group">Initialization
+    <div id="initialization" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none">
+        <a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#initialization" aria-label="Anchor">#</a>
+    </span>
+    
+</h3>
+<p>Untuk melakukan inisialisasi, kita perlu mengetahui terlebih dahulu total modul MAX7219 yang terhubung. Sehingga kita dapat mengirimkan jumlah instruksi <code>No-Op</code> yang tepat.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// register address
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define MAX_TEST 0xF
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define MAX_SHUTDOWN 0xC
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define MAX_SCAN 0xB
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define MAX_INTENSITY 0xA
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define MAX_MODE 0x9
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">volatile</span> <span class="kt">uint8_t</span> <span class="n">device_num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">send_instruction</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">instruction</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">load_pin</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">target_id</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">PORTB</span> <span class="o">&amp;=</span> <span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">load_pin</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="p">(</span><span class="n">device_num</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">target_id</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">SPI_transmit</span><span class="p">(</span><span class="mh">0x00</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">SPI_transmit</span><span class="p">(</span><span class="mh">0x00</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nf">SPI_transmit</span><span class="p">(</span><span class="n">instruction</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">);</span> <span class="c1">// address
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nf">SPI_transmit</span><span class="p">(</span><span class="n">instruction</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">);</span> <span class="c1">// data
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">target_id</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">SPI_transmit</span><span class="p">(</span><span class="mh">0x00</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">SPI_transmit</span><span class="p">(</span><span class="mh">0x00</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">PORTB</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">load_pin</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">display_init</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">decode_mode</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">scan_limit</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">intensity</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">load_pin</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">id</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">total_display</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">device_num</span> <span class="o">=</span> <span class="n">total_display</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">send_instruction</span><span class="p">((</span><span class="n">MAX_TEST</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">),</span> <span class="n">load_pin</span><span class="p">,</span> <span class="n">id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">send_instruction</span><span class="p">((</span><span class="n">MAX_SHUTDOWN</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">),</span> <span class="n">load_pin</span><span class="p">,</span> <span class="n">id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">send_instruction</span><span class="p">(((</span><span class="n">MAX_MODE</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">decode_mode</span><span class="p">),</span> <span class="n">load_pin</span><span class="p">,</span> <span class="n">id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">send_instruction</span><span class="p">(((</span><span class="n">MAX_SCAN</span><span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">scan_limit</span> <span class="o">&amp;</span> <span class="mh">0x7</span><span class="p">)),</span> <span class="n">load_pin</span><span class="p">,</span> <span class="n">id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">send_instruction</span><span class="p">(((</span><span class="n">MAX_INTENSITY</span><span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">intensity</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">)),</span> <span class="n">load_pin</span><span class="p">,</span> <span class="n">id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">send_instruction</span><span class="p">(((</span><span class="n">MAX_SHUTDOWN</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="mi">1</span><span class="p">),</span> <span class="n">load_pin</span><span class="p">,</span> <span class="n">id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Jumlah device MAX7219 didefinisikan sebagai variabel global sehingga dapat diakses oleh kedua fungsi.</p>
+<p>Pada fungsi <code>send_instruction</code>, pin load akan menjadi <code>LOW</code>. Setelah itu instruksi <code>No-Op</code> akan dikirimkan sebelum dan/atau sesudah instruksi utama sesuai kebutuhan. Ketika semua instruksi terkirim, pin load kembali ke posisi <code>HIGH</code> sehingga display akan diperbarui.</p>
+<p>Routine <code>display_init</code> akan mengirimkan serangkaian instruksi untuk menginisialisasi display sesuai argumen yang diberikan: <code>decode_mode</code>, <code>scan_limit</code>, <code>intensity</code>, <code>load_pin</code>, <code>id</code>, <code>total_display</code>.</p>
 
 <h2 class="relative group">Show Something
     <div id="show-something" class="anchor"></div>
@@ -1473,6 +1601,33 @@ all LEDs. ~MAX7219/MAX7221 Datasheet</p></blockquote>
     </span>
     
 </h2>
+<p>MAX7219 disertai dengan <code>Code-B Decoder</code>, ini berguna untuk men-decode bilangan biner 4-bit (0-15) pada register digit ke tampilan 7 segment. Ketika diaktifkan, decoder akan menentukan segmen mana saja (A-G) yang akan menyala.</p>
+<p><figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="7 Segment Naming"
+    width="684"
+    height="366"
+    src="/posts/avr/02-max7219/img/7-segment-layout.png"
+    srcset="/posts/avr/02-max7219/img/7-segment-layout.png 800w, /posts/avr/02-max7219/img/7-segment-layout.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/7-segment-layout.png"></figure>
+
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="Code B Font"
+    width="1414"
+    height="894"
+    src="/posts/avr/02-max7219/img/code-b-font_hu_4365c0b5e00d9c31.png"
+    srcset="/posts/avr/02-max7219/img/code-b-font_hu_4365c0b5e00d9c31.png 800w, /posts/avr/02-max7219/img/code-b-font_hu_da36960c801ce456.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/code-b-font.png"></figure>
+</p>
 
 <h3 class="relative group">8 Digit 7-Segment LED
     <div id="8-digit-7-segment-led" class="anchor"></div>
@@ -1483,6 +1638,58 @@ all LEDs. ~MAX7219/MAX7221 Datasheet</p></blockquote>
     </span>
     
 </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define SCK PB5
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define MOSI PB3
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define LOAD PB2
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nf">SPI_init</span><span class="p">(</span><span class="n">SCK</span><span class="p">,</span> <span class="n">MOSI</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">display_init</span><span class="p">(</span><span class="mh">0xFF</span><span class="p">,</span> <span class="mh">0x07</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></div><p>Modul pertama yang terhubung ke MCU adalah modul 7 segment untuk menampilkan waktu. Pada inisialisasi, <code>0xFF</code> mengaktifkan decoder untuk semua digit, <code>0x07</code> mengatur brightness menjadi 7/15, <code>0</code> karena merupakan perangkat pertama, dan total modul ada <code>2</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">display_codeB</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">digit</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">code</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">load_pin</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">id</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">send_instruction</span><span class="p">((((</span><span class="n">digit</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">code</span><span class="p">),</span> <span class="n">load_pin</span><span class="p">,</span> <span class="n">id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Rutin display_codeB akan mengirim instruksi ke register beralamat <code>digit</code>, sehingga digit terkait menampilkan nilai code.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">update_display</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">centiseconds</span> <span class="o">&gt;=</span> <span class="mi">8640000</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">centiseconds</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      
+</span></span><span class="line"><span class="cl">      <span class="n">cs</span> <span class="o">=</span> <span class="n">centiseconds</span> <span class="o">%</span> <span class="mi">100</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">remaining_seconds</span> <span class="o">=</span> <span class="n">centiseconds</span><span class="o">/</span><span class="mi">100</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">h</span> <span class="o">=</span> <span class="n">remaining_seconds</span> <span class="o">/</span> <span class="mi">3600</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">m</span> <span class="o">=</span> <span class="n">remaining_seconds</span> <span class="o">/</span> <span class="mi">60</span> <span class="o">%</span> <span class="mi">60</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">s</span> <span class="o">=</span> <span class="n">remaining_seconds</span> <span class="o">%</span> <span class="mi">60</span><span class="p">;</span> <span class="c1">// v
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">      <span class="nf">display_codeB</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">((</span><span class="n">cs</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">)),</span> <span class="n">LOAD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">display_codeB</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">cs</span> <span class="o">/</span> <span class="mi">10</span><span class="p">),</span> <span class="n">LOAD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="nf">display_codeB</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">((</span><span class="n">s</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">)),</span> <span class="n">LOAD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">display_codeB</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="p">(</span><span class="n">s</span> <span class="o">/</span> <span class="mi">10</span><span class="p">),</span> <span class="n">LOAD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="nf">display_codeB</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="p">((</span><span class="n">m</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">)),</span> <span class="n">LOAD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">display_codeB</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="p">(</span><span class="n">m</span> <span class="o">/</span> <span class="mi">10</span><span class="p">),</span> <span class="n">LOAD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="nf">display_codeB</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="p">((</span><span class="n">h</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">)),</span> <span class="n">LOAD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">display_codeB</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="p">(</span><span class="n">h</span> <span class="o">/</span> <span class="mi">10</span><span class="p">),</span> <span class="n">LOAD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="nf">display_char</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="n">update_display</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Pada setiap 10ms, nilai masing-masing satuan (jam, menit, sekon, centisekon) akan dihitung. Proses ini berlangsung singkat, jauh lebih singkat dari 160.000 clock cycle (10ms).</p>
 
 <h3 class="relative group">8x8 LED Matrix
     <div id="8x8-led-matrix" class="anchor"></div>
@@ -1493,6 +1700,57 @@ all LEDs. ~MAX7219/MAX7221 Datasheet</p></blockquote>
     </span>
     
 </h3>
+<p>Untuk display kedua, kita menggunakan modul 8x8 matrix untuk menampilkan beberapa karakter.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">display_init</span><span class="p">(</span><span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x07</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+</span></span></code></pre></div><p><code>0x00</code> untuk menonaktifkan decoder. Ketika decoder dinonaktifkan, masing-masing register digit akan menentukan satu baris seperti ilustrasi di bawah.</p>
+<figure><img
+    class="my-0 rounded-md"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="auto"
+    alt="8x8 Matrix Bytes"
+    width="734"
+    height="457"
+    src="/posts/avr/02-max7219/img/8x8-matrix-bytes.png"
+    srcset="/posts/avr/02-max7219/img/8x8-matrix-bytes.png 800w, /posts/avr/02-max7219/img/8x8-matrix-bytes.png 1280w"
+    sizes="(min-width: 768px) 50vw, 65vw"
+    data-zoom-src="/posts/avr/02-max7219/img/8x8-matrix-bytes.png"></figure>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">EMOJI_NUM</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uint64_t</span> <span class="n">IMAGES</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="mh">0x0800080810202418</span><span class="p">,</span> <span class="c1">// 0 ?
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="mh">0x8142241818244281</span><span class="p">,</span> <span class="c1">// 1 x
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="mh">0x1818001818181818</span><span class="p">,</span> <span class="c1">// 2 !
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="mh">0x040A112040800000</span><span class="p">,</span> <span class="c1">// 3 v
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="mh">0x00183C7EFFFF6600</span><span class="p">,</span> <span class="c1">// 4 heart emoji
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="mh">0x3C4299A581A5423C</span><span class="p">,</span> <span class="c1">// 5 smile emoji
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="mh">0x3C42A59981A5423C</span><span class="p">,</span> <span class="c1">// 6 sad face emoji
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="mh">0x3C4281BD81A5423C</span><span class="p">,</span> <span class="c1">// 7 flat face emoji
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="mh">0x3c3c1818181e1c18</span><span class="p">,</span> <span class="c1">// 0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="mh">0x7e7e1c3060667e3c</span><span class="p">,</span> <span class="c1">// 1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">IMAGES_LEN</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">IMAGES</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">display_char</span><span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">load_pin</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">id</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">uint64_t</span> <span class="n">image</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">uint8_t</span> <span class="n">d</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">image</span> <span class="o">=</span> <span class="n">IMAGES</span><span class="p">[</span><span class="n">c</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">j</span><span class="o">&lt;</span><span class="mi">8</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">d</span> <span class="o">=</span> <span class="p">((</span><span class="n">image</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="n">j</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mh">0xFF</span> <span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">send_instruction</span><span class="p">((((</span><span class="mi">8</span><span class="o">-</span><span class="n">j</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">d</span><span class="p">),</span> <span class="n">load_pin</span><span class="p">,</span> <span class="n">id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Array <code>IMAGES</code> menyimpan karakter-karakter mulai dari emoji, angka, huruf kapital, dan huruf kecil. Masing-masing elemen berukuran 64-bit, setiap bit-nya menentukan nyala/mati satu buah led pada matrix 8x8. Pada definisi di atas, data disimpan dalam bentuk heksadesimal untuk alasan keringkasan. 2 digit heksadesimal setara dengan 1 byte, 1 baris.</p>
+<p>Array gambar penuh dapat diakses pada repository github: <a
+  href="https://github.com/vfadlan/avr-exp/tree/main/08-max7219-timer"
+    target="_blank"
+  >vfadlan/avr-exp/08-max7219-timer</a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">display_char</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span></code></pre></div><p>Pemanggilan fungsi di atas akan menampilkan <code>IMAGES[c]</code> pada modul kedua.</p>
 
 <h2 class="relative group">Result
     <div id="result" class="anchor"></div>
@@ -1513,6 +1771,10 @@ all LEDs. ~MAX7219/MAX7221 Datasheet</p></blockquote>
     </span>
     
 </h2>
+<p>Dalam menggunakan timer, kita perlu melakukan perhitungan untuk mendapat hasil yang presisi. Bahkan hingga ke level nanosecond.</p>
+<p>Sejauh ini, kita menggunakan timer untuk debounce tombol, dan menghitung waktu setiap 10ms. Waktu tersebut ditampilkan ke modul 7-segment 8 digit.</p>
+<p>Display 7-segment 8 digit dikendarai oleh IC MAX7219 yang menggunakan SPI sebagai protokol komunikasinya. IC tersebut menangani berbagai macam hal seperti multiplexing, 7-segment decoder, daisy-chaining, dll.</p>
+<p>Dengan penggunaan IC MAX7219 sebagai driver eksternal, beban kerja CPU berkurang signifikan. Selain itu, ATMega328P dilengkapi dengan peripheral SPI sehingga dapat meringankan pekerjaan CPU dalam proses komunikasi.</p>
 
 <h2 class="relative group">References and Further Reading
     <div id="references-and-further-reading" class="anchor"></div>
@@ -1533,8 +1795,7 @@ all LEDs. ~MAX7219/MAX7221 Datasheet</p></blockquote>
     target="_blank"
   >ATMega328P Datasheet</a></li>
 <li>[MAX7219 Driver Datasheet]</li>
-<li>[AVR1200: Using External Interrupts for megaAVR
-Devices]</li>
+<li>[AVR1200: Using External Interrupts for megaAVR Devices]</li>
 </ul>
 
           

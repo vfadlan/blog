@@ -1,6 +1,6 @@
 ---
-date: 2026-01-20T13:45:00+07:00
-draft: true
+date: 2026-01-24T13:00:00+07:00
+draft: false
 params:
   author: Fadlan Abduh
 title: Timer and LED Driver
@@ -60,9 +60,6 @@ Unit waktu terkecil pada jam yang akan dibuat adalah 1 centisecond:
 $$
   1\text{ s} = 100\text{ cs} = 1,000\text{ ms} = 1,000,000\text{ μs} = 1,000,000,000\text{ ns}
 $$
-$$
-1\text{ cs} = 10\text{ ms} = 10,000\text{ μs} = 10,000,000\text{ ns}
-$$
 
 Unit `centiseconds` dijadikan sebagai variable global volatile yang nilainya diincrement setiap 10ms oleh ISR timer 1. Kita perlu mengkonfigurasi timer1 untuk menjalankan ISR setiap 10ms. Sebelum itu, kita hitung terlebih dahulu berapa lama durasi 1 clock cycle.
 {{< katex >}}
@@ -70,7 +67,7 @@ $$
 f_{CPU} = 16\text{ MHz} = 16,000,000\text{ clock cycles/s}
 $$
 $$
-T = \frac{1}{f_{CPU}} = \frac{1}{16,000,000\text{ Hz}} = 62.5\text{ ns/cycle}
+T = \frac{1,000,000,000\text{ ns}}{16,000,000\text { ticks}} = 62.5\text{ ns/cycle}
 $$
 $$
 \frac{10\text{ ms}}{62.5\text{ ns}} = \frac{10,000,000\text{ ns}}{62.5\text{ ns}} = 160,000\text{ clock cycles}
@@ -88,7 +85,7 @@ $$
 \frac{16\text{ MHz}}{8} = 2\text{ MHz} = 2,000,000\text{ ticks/s} = \frac{2,000,000\text{ ticks}}{1,000,000,000\text{ ns}}
 $$
 $$
-T_{tick} = \frac{1}{2,000,000\text{ Hz}} = 500\text{ ns}
+T_{tick} = \frac{1,000,000,000\text{ ns}}{2,000,000\text { ticks}} = 500\text{ ns}
 $$
 $$
 \frac{10\text{ ms}}{500\text{ ns}} = \frac{10,000,000\text{ ns}}{500\text{ ns}} = 20,000\text{ ticks}
@@ -382,15 +379,221 @@ Pada fungsi `SPI_transmit`, assignment ke variabel `SPDR` akan mengisi shift reg
 ![SPI Data Register](img/spdr.png "SPI Data Register")
 
 ### Registers Map
+![Serial Data Format](img/data-format.png "MAX7219 Serial Data Format")
+![Address Map](img/address-map.png "MAX7219 Register Address Map")
+
+Format data instruksi yang diterima MAX7219 berukuran 2 Byte. Byte paling signifikan berisi alamat register yang akan diubah (D8-D11), byte bawah berisi data yang akan ditulis pada register tersebut.
+
+Secara default, MAX7219 berada dalam shutdown mode. Untuk keluar dari shutdown mode pada saat inisialisasi, kita perlu mengirim alamat register shutdown `0x0C` diikuti dengan mode normal `1`.
+![Shutdown Register](img/shutdown-register.png)
+
+Pada datasheet MAX7219, nilai data masing-masing register dijelaskan dengan sangat lengkap. Saya tidak akan menampilkan semua tabelnya di sini. Kurang lebih berikut adalah deskripsi singkat masing-masing register:
+1. `No-Op`: No Operation, digunakan untuk daisy-chaining.
+2. `Digit 0-7`: Menentukan LED mana saja yang menyala pada tiap-tiap digit.
+3. `Decode Mode`: Untuk mengaktifkan 7-segment decoder pada beberapa digit.
+4. `Intensity`: Mengatur kecerahan dalam skala 0-15.
+5. `Scan Limit`: Menentukan berapa digit yang aktif.
+6. `Shutdown`: Shutdown mode.
+7. `Display Test`: Jika aktif semua LED akan menyala.
+
 ### Daisy Chaining
+
+Dalam melakukan daisy chaining, hal yang perlu diperhatikan adalah cara kita mengirim instruksi. Mengacu pada datasheet, kita perlu menggunakan instruksi `No Operation`.
+
+Pada satu kali transmisi instruksi, hanya 1 modul yang mendapat instruksi aktif. Modul lainnya akan mendapat instruksi `No-Op`. Contoh berikut mengeluarkan tiga modul dari mode shutdown:
+
+|Keterangan|Modul 1|Modul 2|Modul 3|
+|:--|:--|:--|:--|
+|Transmisi Pertama|`0x0C00`|`0x0`|`0x0`|
+|Transmisi Kedua|`0x0`|`0x0C00`|`0x0`|
+|Transmisi Ketiga|`0x0`|`0x0`|`0x0C00`|
+
+
+### Initialization
+
+Untuk melakukan inisialisasi, kita perlu mengetahui terlebih dahulu total modul MAX7219 yang terhubung. Sehingga kita dapat mengirimkan jumlah instruksi `No-Op` yang tepat.
+
+```c
+// register address
+#define MAX_TEST 0xF
+#define MAX_SHUTDOWN 0xC
+#define MAX_SCAN 0xB
+#define MAX_INTENSITY 0xA
+#define MAX_MODE 0x9
+volatile uint8_t device_num = 0;
+void send_instruction(uint16_t instruction, uint8_t load_pin, uint8_t target_id) {
+  PORTB &= (~(1 << load_pin));
+
+  for (int i=0; i<(device_num - 1 - target_id); i++) {
+    SPI_transmit(0x00);
+    SPI_transmit(0x00);
+  }
+
+  SPI_transmit(instruction >> 8); // address
+  SPI_transmit(instruction & 0xFF); // data
+
+  for (int i=0; i<target_id; i++) {
+    SPI_transmit(0x00);
+    SPI_transmit(0x00);
+  }
+
+  PORTB |= (1 << load_pin);
+}
+
+void display_init(uint8_t decode_mode, uint8_t scan_limit, uint8_t intensity, uint8_t load_pin, uint8_t id, uint8_t total_display) {
+  device_num = total_display;
+  send_instruction((MAX_TEST << 8), load_pin, id);
+  send_instruction((MAX_SHUTDOWN << 8), load_pin, id);
+  send_instruction(((MAX_MODE << 8) | decode_mode), load_pin, id);
+  send_instruction(((MAX_SCAN<< 8) | (scan_limit & 0x7)), load_pin, id);
+  send_instruction(((MAX_INTENSITY<< 8) | (intensity & 0xF)), load_pin, id);
+  send_instruction(((MAX_SHUTDOWN << 8) | 1), load_pin, id);
+}
+```
+Jumlah device MAX7219 didefinisikan sebagai variabel global sehingga dapat diakses oleh kedua fungsi.
+
+Pada fungsi `send_instruction`, pin load akan menjadi `LOW`. Setelah itu instruksi `No-Op` akan dikirimkan sebelum dan/atau sesudah instruksi utama sesuai kebutuhan. Ketika semua instruksi terkirim, pin load kembali ke posisi `HIGH` sehingga display akan diperbarui.
+
+Routine `display_init` akan mengirimkan serangkaian instruksi untuk menginisialisasi display sesuai argumen yang diberikan: `decode_mode`, `scan_limit`, `intensity`, `load_pin`, `id`, `total_display`.
+
 ## Show Something
+
+MAX7219 disertai dengan `Code-B Decoder`, ini berguna untuk men-decode bilangan biner 4-bit (0-15) pada register digit ke tampilan 7 segment. Ketika diaktifkan, decoder akan menentukan segmen mana saja (A-G) yang akan menyala.
+
+![7 Segment Naming](img/7-segment-layout.png)
+![Code B Font](img/code-b-font.png)
+
 ### 8 Digit 7-Segment LED
+```c
+//...
+#define SCK PB5
+#define MOSI PB3
+#define LOAD PB2
+
+int main()
+{
+  //...
+  SPI_init(SCK, MOSI, LOAD);
+  display_init(0xFF, 0x07, 7, LOAD, 0, 2);
+  //...
+}
+```
+
+Modul pertama yang terhubung ke MCU adalah modul 7 segment untuk menampilkan waktu. Pada inisialisasi, `0xFF` mengaktifkan decoder untuk semua digit, `0x07` mengatur brightness menjadi 7/15, `0` karena merupakan perangkat pertama, dan total modul ada `2`.
+
+```c
+void display_codeB(uint8_t digit, uint8_t code, uint8_t load_pin, uint8_t id) {
+  send_instruction((((digit & 0xF) << 8) | code), load_pin, id);
+}
+```
+
+Rutin display_codeB akan mengirim instruksi ke register beralamat `digit`, sehingga digit terkait menampilkan nilai code.
+
+```c
+
+int main()
+{
+  while(1) {
+    // ...
+    if (update_display) {
+      if (centiseconds >= 8640000) {
+        centiseconds = 0;
+      }
+      
+      cs = centiseconds % 100;
+      remaining_seconds = centiseconds/100;
+      h = remaining_seconds / 3600;
+      m = remaining_seconds / 60 % 60;
+      s = remaining_seconds % 60; // v
+
+      display_codeB(1, ((cs % 10) | (1 << 7)), LOAD, 0);
+      display_codeB(2, (cs / 10), LOAD, 0);
+
+      display_codeB(3, ((s % 10) | (1 << 7)), LOAD, 0);
+      display_codeB(4, (s / 10), LOAD, 0);
+
+      display_codeB(5, ((m % 10) | (1 << 7)), LOAD, 0);
+      display_codeB(6, (m / 10), LOAD, 0);
+
+      display_codeB(7, ((h % 10) | (1 << 7)), LOAD, 0);
+      display_codeB(8, (h / 10), LOAD, 0);
+
+      display_char(c, LOAD, 1);
+
+      update_display = false;
+    }
+  }
+}
+```
+
+Pada setiap 10ms, nilai masing-masing satuan (jam, menit, sekon, centisekon) akan dihitung. Proses ini berlangsung singkat, jauh lebih singkat dari 160.000 clock cycle (10ms).
+
 ### 8x8 LED Matrix
+
+Untuk display kedua, kita menggunakan modul 8x8 matrix untuk menampilkan beberapa karakter.
+```c
+display_init(0x00, 0x07, 7, LOAD, 1, 2);
+```
+`0x00` untuk menonaktifkan decoder. Ketika decoder dinonaktifkan, masing-masing register digit akan menentukan satu baris seperti ilustrasi di bawah.
+
+![8x8 Matrix Bytes](img/8x8-matrix-bytes.png)
+
+```c
+
+const uint8_t EMOJI_NUM = 6;
+const uint64_t IMAGES[] = {
+  0x0800080810202418, // 0 ?
+  0x8142241818244281, // 1 x
+  0x1818001818181818, // 2 !
+  0x040A112040800000, // 3 v
+  0x00183C7EFFFF6600, // 4 heart emoji
+  0x3C4299A581A5423C, // 5 smile emoji
+  0x3C42A59981A5423C, // 6 sad face emoji
+  0x3C4281BD81A5423C, // 7 flat face emoji
+  0x3c3c1818181e1c18, // 0
+  0x7e7e1c3060667e3c, // 1
+  //...
+}
+
+const uint8_t IMAGES_LEN = sizeof(IMAGES)/8;
+
+void display_char(int c, uint8_t load_pin, uint8_t id) {
+  uint64_t image;
+  uint8_t d;
+
+  image = IMAGES[c];
+
+  for (int j=0; j<8; j++) {
+    d = ((image >> (8 * j)) & 0xFF );
+    send_instruction((((8-j) << 8) | d), load_pin, id);
+  }
+}
+```
+
+Array `IMAGES` menyimpan karakter-karakter mulai dari emoji, angka, huruf kapital, dan huruf kecil. Masing-masing elemen berukuran 64-bit, setiap bit-nya menentukan nyala/mati satu buah led pada matrix 8x8. Pada definisi di atas, data disimpan dalam bentuk heksadesimal untuk alasan keringkasan. 2 digit heksadesimal setara dengan 1 byte, 1 baris.
+
+Array gambar penuh dapat diakses pada repository github: [vfadlan/avr-exp/08-max7219-timer](https://github.com/vfadlan/avr-exp/tree/main/08-max7219-timer).
+
+```c
+display_char(c, LOAD, 1);
+```
+
+Pemanggilan fungsi di atas akan menampilkan `IMAGES[c]` pada modul kedua.
+
 ## Result
+
 ## Conclusion
+
+Dalam menggunakan timer, kita perlu melakukan perhitungan untuk mendapat hasil yang presisi. Bahkan hingga ke level nanosecond.
+
+Sejauh ini, kita menggunakan timer untuk debounce tombol, dan menghitung waktu setiap 10ms. Waktu tersebut ditampilkan ke modul 7-segment 8 digit.
+
+Display 7-segment 8 digit dikendarai oleh IC MAX7219 yang menggunakan SPI sebagai protokol komunikasinya. IC tersebut menangani berbagai macam hal seperti multiplexing, 7-segment decoder, daisy-chaining, dll.
+
+Dengan penggunaan IC MAX7219 sebagai driver eksternal, beban kerja CPU berkurang signifikan. Selain itu, ATMega328P dilengkapi dengan peripheral SPI sehingga dapat meringankan pekerjaan CPU dalam proses komunikasi.
+
 ## References and Further Reading
 * GitHub: [vfadlan/avr-exp/08-max7219-timer](https://github.com/vfadlan/avr-exp/tree/main/08-max7219-timer)
 * [ATMega328P Datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf)
 * [MAX7219 Driver Datasheet]
-* [AVR1200: Using External Interrupts for megaAVR
-Devices]
+* [AVR1200: Using External Interrupts for megaAVR Devices]
