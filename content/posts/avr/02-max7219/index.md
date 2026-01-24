@@ -582,6 +582,8 @@ Pemanggilan fungsi di atas akan menampilkan `IMAGES[c]` pada modul kedua.
 
 ## Result
 
+{{< youtubeLite id="tb8b-7_S8ds" label="MAX7219 Daisy Chaining" >}}
+
 ## Conclusion
 
 Dalam menggunakan timer, kita perlu melakukan perhitungan untuk mendapat hasil yang presisi. Bahkan hingga ke level nanosecond.
