@@ -19,45 +19,5 @@
       
     </item>
     
-    <item>
-      <title>Timer and LED Driver</title>
-      <link>http://localhost:1313/posts/avr/02-max7219/</link>
-      <pubDate>Sat, 24 Jan 2026 13:00:00 +0700</pubDate>
-      
-      <guid>http://localhost:1313/posts/avr/02-max7219/</guid>
-      <description></description>
-      
-    </item>
-    
-    <item>
-      <title>Animating LEDs with Shift Register</title>
-      <link>http://localhost:1313/posts/avr/01-shift-register/</link>
-      <pubDate>Mon, 12 Jan 2026 07:00:00 +0700</pubDate>
-      
-      <guid>http://localhost:1313/posts/avr/01-shift-register/</guid>
-      <description></description>
-      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/posts/avr/01-shift-register/featured.jpg" />
-    </item>
-    
-    <item>
-      <title>Hello, Bare Metal AVR.</title>
-      <link>http://localhost:1313/posts/avr/00-hello/</link>
-      <pubDate>Mon, 22 Dec 2025 15:24:54 +0700</pubDate>
-      
-      <guid>http://localhost:1313/posts/avr/00-hello/</guid>
-      <description></description>
-      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:1313/posts/avr/00-hello/featured.jpg" />
-    </item>
-    
-    <item>
-      <title>New Blogsite</title>
-      <link>http://localhost:1313/posts/new-blogsite/</link>
-      <pubDate>Sun, 21 Dec 2025 08:14:54 +0700</pubDate>
-      
-      <guid>http://localhost:1313/posts/new-blogsite/</guid>
-      <description></description>
-      
-    </item>
-    
   </channel>
 </rss>

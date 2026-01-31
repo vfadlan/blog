@@ -20,28 +20,4 @@
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
-  <url>
-    <loc>http://localhost:1313/posts/avr/02-max7219/</loc>
-    <lastmod>2026-01-24T13:00:00+07:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>http://localhost:1313/posts/avr/01-shift-register/</loc>
-    <lastmod>2026-01-12T07:00:00+07:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>http://localhost:1313/posts/avr/00-hello/</loc>
-    <lastmod>2025-12-22T15:24:54+07:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>http://localhost:1313/posts/new-blogsite/</loc>
-    <lastmod>2025-12-21T08:14:54+07:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url>
 </urlset>
